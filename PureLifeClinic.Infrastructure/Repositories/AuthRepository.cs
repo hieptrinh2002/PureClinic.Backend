@@ -10,14 +10,11 @@ namespace Project.Infrastructure.Repositories
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
 
-        public AuthRepository(
-            UserManager<User> userManager,
-            SignInManager<User> signInManager)
+        public AuthRepository(UserManager<User> userManager, SignInManager<User> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
         }
-
 
         public async Task<ResponseViewModel<UserViewModel>> Login(string userName, string password)
         {

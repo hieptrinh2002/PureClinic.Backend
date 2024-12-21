@@ -5,7 +5,6 @@ using Project.Core.Interfaces.IServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace Project.API.Controllers.V1
 {

@@ -3,13 +3,18 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33712.159
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Project.Core", "Project.Core\Project.Core.csproj", "{540CC202-D687-4B54-8746-4E943F0D16C6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PureLifeClinic.Core", "PureLifeClinic.Core\PureLifeClinic.Core.csproj", "{540CC202-D687-4B54-8746-4E943F0D16C6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Project.Infrastructure", "Project.Infrastructure\Project.Infrastructure.csproj", "{A9767277-DD3A-47BA-9704-E525D32F1D9D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PureLifeClinic.Infrastructure", "PureLifeClinic.Infrastructure\PureLifeClinic.Infrastructure.csproj", "{A9767277-DD3A-47BA-9704-E525D32F1D9D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Project.UnitTest", "Project.UnitTest\Project.UnitTest.csproj", "{9A138398-C199-404D-9E42-3095A2290A07}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PureLifeClinic.UnitTest", "PureLifeClinic.UnitTest\PureLifeClinic.UnitTest.csproj", "{9A138398-C199-404D-9E42-3095A2290A07}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Project.API", "Project.API\Project.API.csproj", "{E80FE11C-4A4B-456B-A79A-9201F5A11060}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PureLifeClinic.API", "PureLifeClinic.API\PureLifeClinic.API.csproj", "{E80FE11C-4A4B-456B-A79A-9201F5A11060}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{235A1B2E-2B63-44A8-A928-4E779372463B}"
+	ProjectSection(SolutionItems) = preProject
+		goal.txt = goal.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

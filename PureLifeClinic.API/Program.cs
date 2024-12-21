@@ -131,7 +131,6 @@ app.UseAuthorization();
 
 #region Custom Middleware
 app.UseMiddleware<RequestResponseLoggingMiddleware>();
-
 #endregion
 
 app.UseEndpoints(endpoints =>

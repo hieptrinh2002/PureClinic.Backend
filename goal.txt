@@ -1,0 +1,34 @@
+﻿- Hệ thống quản lý phòng khám 
+
+* Phân hệ: 
+  - System:
+	+ Realtime: danh sách chờ bệnh nhân, push notification khi có lịch hẹn, ...
+	+ chatbox: Quản lý, tư vấn bệnh nhân, lịch khám bệnh qua chat box.
+	+ cron job: Tự động lập lịch hệ thống gửi reminder cho bệnh nhân trước 1 ngày khám bệnh (mailtrap)
+	+ logger
+	+ elastic search + logs ( khó quá thì chuyển qua search full text? :))
+	+ authentication && auhorization
+	+ Cloudinary or Azure Blob Storage (saving imgs)
+	+ Caching with redis && MemoryCache (performance optimization)
+	+ Clean architecture
+	+ Dynamic layout if possible.
+	+ review, stars từ khách hàng 
+	+ Rabbit MQ (phức tạp ?)
+	+ SqlServer + MongoDB + Redis
+	+ Unit test
+
+  - Employee:
+	+ Tiếp nhận yêu cầu khám bệnh và lên lịch khám
+	+ Quản lý/ xem được trạng thái của bác sĩ 
+	+ Quản lý trạng thái lịch hẹn: chờ xác nhận, đã hoàn tất.
+	+ CRUD ....
+
+  - Doctor: 
+    + Quản lý bệnh án/ bệnh nhân đã khám 
+	+ Xem lịch sử khám bệnh của các bệnh nhân đã khám
+	+ Xem các đơn thuốc đã kê khai
+	+ Tiếp nhận cuộc hẹn khám bệnh
+
+  - Customer
+    + Xem danh sách dịch vụ phòng khám
+	+ Xem danh sách bác sĩ, thông tin chi tiết...

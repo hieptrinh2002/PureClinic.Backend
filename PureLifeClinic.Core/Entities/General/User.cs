@@ -16,6 +16,10 @@ namespace Project.Core.Entities.General
         public int? UpdatedBy { get; set; }
         public DateTime? UpdatedDate { get; set; }
 
+        [StringLength(maximumLength: 13, MinimumLength = 10)]
+        public string? PhoneNumber { get; set; }
+
+
         [ForeignKey(nameof(RoleId))]
         public Role Role { get; set; }
     }

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Project.Core\Project.Core.csproj" />
+    <ProjectReference Include="..\PureLifeClinic.Core\PureLifeClinic.Core.csproj" />
   </ItemGroup>
 
 </Project>
