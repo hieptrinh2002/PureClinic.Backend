@@ -1,14 +1,18 @@
 ﻿using Asp.Versioning;
-using Project.API.Helpers;
-using Project.Core.Entities.Business;
-using Project.Core.Interfaces.IServices;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Project.API.Helpers;
+using Project.Core.Common;
+using Project.Core.Entities.Business;
+using Project.Core.Interfaces.IMapper;
+using Project.Core.Interfaces.IServices;
+using PureLifeClinic.Core.Entities.Business;
+using PureLifeClinic.Core.Entities.General;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
-using Project.Core.Common;
-using Microsoft.Extensions.Options;
 
 namespace Project.API.Controllers.V1
 {
@@ -21,21 +25,27 @@ namespace Project.API.Controllers.V1
         private readonly IAuthService _authService;
         private readonly IConfiguration _configuration;
         private readonly AppSettings _appSettings;
-
+        private readonly IUserContext _userContext;
+        private readonly IBaseMapper<RefreshToken, RefreshTokenViewModel> _refreshTokenViewModelMapper;
+         
         public AuthController(
             ILogger<AuthController> logger,
             IAuthService authService,
             IConfiguration configuration,
-            IOptions<AppSettings> appSettings)
+            IOptions<AppSettings> appSettings,
+            IBaseMapper<RefreshToken, RefreshTokenViewModel> refreshTokenViewModelMapper,
+        IUserContext userContext)
         {
             _logger = logger;
             _authService = authService;
             _configuration = configuration;
             _appSettings = appSettings.Value;
+            _userContext = userContext; 
+            _refreshTokenViewModelMapper = refreshTokenViewModelMapper; 
         }
 
         [HttpPost, Route("login")]
-        public async Task<IActionResult> Login(LoginViewModel model)
+        public async Task<IActionResult> Login(LoginViewModel model, CancellationToken cancellationToken)
         {
             if (ModelState.IsValid)
             {
@@ -44,11 +54,29 @@ namespace Project.API.Controllers.V1
                     var result = await _authService.Login(model.UserName, model.Password);
                     if (result.Success)
                     {
-                        var token = GenerateJwtToken(result);
+                        // get Token data
+                        var tokenData = GenerateJwtToken(result.Data.Id);
+                        var refreshToken = tokenData.Data.RefreshToken;
+                        // insert Refresh Token
+                        RefreshTokenCreateViewModel refreshTokenModel = new RefreshTokenCreateViewModel
+                        {
+                            Token = refreshToken.Token,
+                            CreateOn = refreshToken.CreateOn,
+                            ExpireOn = refreshToken.ExpireOn,
+                            AccessTokenId = tokenData.Data.AccessTokenId,
+                        };
+
+                        var createdTokenResult = await _authService.InsertRefreshToken(result.Data.Id, refreshTokenModel, default);
+                        SetRefreshTokenInCookies(createdTokenResult.Data.Token, createdTokenResult.Data.ExpireOn);
+
                         return Ok(new ResponseViewModel<AuthResultViewModel>
                         {
                             Success = true,
-                            Data = token,
+                            Data = new AuthResultViewModel
+                            {
+                                AccessToken = tokenData.Data.AccessToken,
+                                RefreshToken = createdTokenResult.Data
+                            },
                             Message = "Login successful"
                         });
                     }
@@ -93,7 +121,7 @@ namespace Project.API.Controllers.V1
             return Ok();
         }
 
-        private AuthResultViewModel GenerateJwtToken(ResponseViewModel<UserViewModel> auth)
+        private ResponseViewModel<GenarateTokenViewModel> GenerateJwtToken(int userId)
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.JwtConfig.Secret);
@@ -102,8 +130,8 @@ namespace Project.API.Controllers.V1
             {
                 new Claim(JwtRegisteredClaimNames.Aud, _appSettings.JwtConfig.ValidAudience),
                 new Claim(JwtRegisteredClaimNames.Iss, _appSettings.JwtConfig.ValidIssuer),
-                new Claim(JwtRegisteredClaimNames.Sub, auth.Data.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };
 
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -116,11 +144,111 @@ namespace Project.API.Controllers.V1
             var token = jwtTokenHandler.CreateToken(tokenDescriptor);
             var jwtToken = jwtTokenHandler.WriteToken(token);
 
-            return new AuthResultViewModel()
+            return new ResponseViewModel<GenarateTokenViewModel>()
             {
-                AccessToken = jwtToken,
+                Data = new GenarateTokenViewModel
+                {
+                    RefreshToken = GenerateRefreshToken(),
+                    AccessToken = jwtToken,
+                    AccessTokenId = token.Id,
+                },
                 Success = true,
             };
         }
+
+        private RefreshToken GenerateRefreshToken()
+        {
+            var randomNumber = new byte[32];
+
+            using var generator = new RNGCryptoServiceProvider();
+
+            generator.GetBytes(randomNumber);
+
+            return new RefreshToken
+            {
+                Token = Convert.ToBase64String(randomNumber),
+                ExpireOn = DateTime.UtcNow.AddDays(_appSettings.JwtConfig.RefreshTokenExpiryDays),
+                CreateOn = DateTime.UtcNow
+            };
+        }
+
+        [HttpGet("refresh-token")]
+        public async Task<IActionResult> RefreshTokenCheckAsync()
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var refreshToken = Request.Cookies["refreshTokenKey"];
+
+                    var result = await _authService.RefreshTokenCheckAsync(refreshToken);
+
+                    if (!result.Success)
+                    {
+                        return BadRequest(new ResponseViewModel
+                        {
+                            Message = "Invalid refresh token.",
+                            Success = false,
+                        });
+                    }
+
+                    var tokenData = GenerateJwtToken(Convert.ToInt32(_userContext.UserId));
+
+                    var refreshTokenData = GenerateRefreshToken();
+
+                    return Ok(new ResponseViewModel<AuthResultViewModel>
+                    {
+                        Success = true,
+                        Data = new AuthResultViewModel
+                        {
+                            AccessToken = tokenData.Data.AccessToken,
+                            RefreshToken = _refreshTokenViewModelMapper.MapModel(refreshTokenData)
+                        }
+                    });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, $"An error occurred while refresh token");
+                    string message = $"An error occurred while refresh token- " + ex.Message;
+
+                    return StatusCode(StatusCodes.Status500InternalServerError, new ResponseViewModel
+                    {
+                        Success = false,
+                        Message = message,
+                        Error = new ErrorViewModel
+                        {
+                            Code = "REFRESH_ERROR",
+                            Message = message
+                        }
+                    });
+                }
+            }
+            return BadRequest(new ResponseViewModel
+            {
+                Success = false,
+                Message = "Invalid input",
+                Error = new ErrorViewModel
+                {
+                    Code = "INPUT_VALIDATION_ERROR",
+                    Message = ModelStateHelper.GetErrors(ModelState)
+                }
+            });
+        }
+        # region SetRefreshTokenInCookies
+
+        private void SetRefreshTokenInCookies(string refreshToken, DateTime expires)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = expires.ToLocalTime()
+            };
+
+            //cookieOptionsExpires = DateTime.UtcNow.AddSeconds(cookieOptions.Timeout);
+
+            Response.Cookies.Append("refreshTokenKey", refreshToken, cookieOptions);
+        }
+
+        #endregion
     }
 }

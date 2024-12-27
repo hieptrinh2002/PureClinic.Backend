@@ -19,6 +19,5 @@ namespace Project.Infrastructure.Repositories
                 .FirstOrDefaultAsync(cancellationToken);
             return price;
         }
-
     }
 }

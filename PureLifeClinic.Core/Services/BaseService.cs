@@ -65,7 +65,5 @@ namespace Project.Core.Services
         {
             return await _repository.IsExistsForUpdate(id, key, value, cancellationToken);
         }
-
     }
-
 }

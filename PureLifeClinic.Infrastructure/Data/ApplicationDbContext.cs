@@ -1,6 +1,7 @@
 ﻿using Project.Core.Entities.General;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using PureLifeClinic.Core.Entities.General;
 
 namespace Project.Infrastructure.Data
 {
@@ -12,6 +13,8 @@ namespace Project.Infrastructure.Data
 
         #region DbSet Section
         public DbSet<Product> Products { get; set; }
+
+        public DbSet<RefreshToken> RefreshTokens { get; set; }  
 
         #endregion
 

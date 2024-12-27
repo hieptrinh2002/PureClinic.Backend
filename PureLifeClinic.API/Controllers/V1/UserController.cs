@@ -11,7 +11,7 @@ namespace Project.API.Controllers.V1
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
-    // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class UserController : ControllerBase
     {
         private readonly ILogger<UserController> _logger;
@@ -350,7 +350,6 @@ namespace Project.API.Controllers.V1
                     {
                         Code = "INVALID_INPUT",
                         Message = ModelStateHelper.GetErrors(ModelState)
-
                     }
                 });
             }

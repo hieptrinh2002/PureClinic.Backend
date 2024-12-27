@@ -55,7 +55,7 @@ namespace Project.Core.Services
 
         public async Task Delete(int id, CancellationToken cancellationToken)
         {
-            var entity = await _productRepository.GetById(id, cancellationToken);
+            var entity = await _productRepository. GetById(id, cancellationToken);
             await _productRepository.Delete(entity, cancellationToken);
         }
 

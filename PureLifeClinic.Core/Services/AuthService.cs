@@ -1,18 +1,61 @@
-﻿using Project.Core.Entities.Business;
-using Project.Core.Entities.General;
+﻿using Microsoft.AspNetCore.Identity;
+using Project.Core.Entities.Business;
+using Project.Core.Exceptions;
 using Project.Core.Interfaces.IMapper;
 using Project.Core.Interfaces.IRepositories;
 using Project.Core.Interfaces.IServices;
+using PureLifeClinic.Core.Entities.Business;
+using PureLifeClinic.Core.Entities.General;
 
 namespace Project.Core.Services
 {
-    public class AuthService : IAuthService
+    public class AuthService : BaseService<RefreshToken, RefreshTokenViewModel>, IAuthService
     {
         private readonly IAuthRepository _authRepository;
+        private readonly IUserRepository _userRepository;
 
-        public AuthService(IAuthRepository authRepository)
+        private readonly IUserContext _userContext;
+        private readonly IBaseMapper<RefreshTokenCreateViewModel, RefreshToken> _refreshTokenCreateMapper;
+        private readonly IBaseMapper<RefreshToken, RefreshTokenViewModel> _refreshTokenViewModelMapper;
+
+        public AuthService(
+            IAuthRepository authRepository,
+            IUserRepository userRepository,
+            IUserContext userContext,
+            IBaseMapper<RefreshTokenCreateViewModel, RefreshToken> refreshTokenCreateMapper,
+            IBaseMapper<RefreshToken, RefreshTokenViewModel> refreshTokenViewModelMapper) : base(refreshTokenViewModelMapper,authRepository)
         {
             _authRepository = authRepository;
+            _userRepository = userRepository;
+            _userContext = userContext;
+            _refreshTokenCreateMapper = refreshTokenCreateMapper;
+            _refreshTokenViewModelMapper = refreshTokenViewModelMapper;
+        }
+
+        public async Task<ResponseViewModel<RefreshTokenViewModel>> InsertRefreshToken(int userId, RefreshTokenCreateViewModel refreshTokenModel, CancellationToken cancellationToken)
+        {
+            var refreshToken = _refreshTokenCreateMapper.MapModel(refreshTokenModel);
+            refreshToken.UserId = userId;
+
+            await _authRepository.Create(refreshToken, cancellationToken);
+
+            return new ResponseViewModel<RefreshTokenViewModel>
+            {
+                Success = true,
+                Message = "create refresh token successful",
+                Data = _refreshTokenViewModelMapper.MapModel(refreshToken)
+            };
+        }
+
+        public async Task<ResponseViewModel<RefreshTokenViewModel>> RefreshTokenCheckAsync(string refreshToken)
+        {
+            //find the user that match the sent refresh token
+            var result = await _authRepository.ValidateRefreshToken(refreshToken);
+            if (!result.Success)
+            {
+                throw new NotFoundException("Invalid refresh token");
+            }
+            return result;  
         }
 
         public async Task<ResponseViewModel<UserViewModel>> Login(string userName, string password)
@@ -46,7 +89,5 @@ namespace Project.Core.Services
         {
             await _authRepository.Logout();
         }
-
-
     }
 }

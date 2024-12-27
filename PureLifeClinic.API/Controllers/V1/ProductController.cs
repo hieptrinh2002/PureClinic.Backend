@@ -210,6 +210,7 @@ namespace Project.API.Controllers.V1
             }
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Create(ProductCreateViewModel model, CancellationToken cancellationToken)
         {

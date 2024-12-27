@@ -7,5 +7,7 @@ namespace Project.Core.Common
         public string? ValidAudience { get; set; }
         public string? ValidIssuer { get; set; }
         public int TokenExpirationMinutes { get; set; }
+
+        public int RefreshTokenExpiryDays { get; set; }
     }
 }

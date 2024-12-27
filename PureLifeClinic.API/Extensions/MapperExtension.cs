@@ -3,6 +3,8 @@ using Project.Core.Entities.Business;
 using Project.Core.Entities.General;
 using Project.Core.Interfaces.IMapper;
 using Project.Core.Mapper;
+using PureLifeClinic.Core.Entities.Business;
+using PureLifeClinic.Core.Entities.General;
 
 namespace Project.API.Extensions
 {
@@ -15,16 +17,17 @@ namespace Project.API.Extensions
 
             services.AddSingleton<IMapper>(sp => new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<Product, ProductViewModel>();
-                cfg.CreateMap<ProductCreateViewModel, Product>();
-                cfg.CreateMap<ProductUpdateViewModel, Product>();
+                cfg.CreateMap<RefreshToken, RefreshTokenViewModel>().ReverseMap();
+                cfg.CreateMap<RefreshTokenCreateViewModel, RefreshToken>();
 
-                cfg.CreateMap<Role, RoleViewModel>();
+                cfg.CreateMap<Product, ProductViewModel>().ReverseMap();
+                cfg.CreateMap<ProductCreateViewModel, Product>().ReverseMap();
+
+                cfg.CreateMap<Role, RoleViewModel>().ReverseMap();
                 cfg.CreateMap<RoleCreateViewModel, Role>();
                 cfg.CreateMap<RoleUpdateViewModel, Role>();
 
-                cfg.CreateMap<User, UserViewModel>();
-                cfg.CreateMap<UserViewModel, User>();
+                cfg.CreateMap<User, UserViewModel>().ReverseMap();
 
             }).CreateMapper());
 
@@ -39,6 +42,9 @@ namespace Project.API.Extensions
 
             services.AddSingleton<IBaseMapper<User, UserViewModel>, BaseMapper<User, UserViewModel>>();
             services.AddSingleton<IBaseMapper<UserViewModel, User>, BaseMapper<UserViewModel, User>>();
+
+            services.AddSingleton<IBaseMapper<RefreshTokenCreateViewModel, RefreshToken>, BaseMapper<RefreshTokenCreateViewModel, RefreshToken>>();
+            services.AddSingleton<IBaseMapper<RefreshToken, RefreshTokenViewModel>, BaseMapper<RefreshToken, RefreshTokenViewModel>>();
 
             #endregion
 

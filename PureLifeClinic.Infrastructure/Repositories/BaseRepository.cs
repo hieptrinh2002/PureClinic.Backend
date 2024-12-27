@@ -1,11 +1,10 @@
-﻿using Project.Core.Entities.Business;
+﻿using Microsoft.EntityFrameworkCore;
+using Project.Core.Common;
+using Project.Core.Entities.Business;
 using Project.Core.Exceptions;
 using Project.Core.Interfaces.IRepositories;
 using Project.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using Project.Core.Common;
-using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Project.Infrastructure.Repositories
 {
@@ -188,7 +187,6 @@ namespace Project.Infrastructure.Repositories
             return await _dbContext.Set<T>().AnyAsync(lambda, cancellationToken);
         }
 
-
         public async Task<T> Create(T model, CancellationToken cancellationToken = default)
         {
             await _dbContext.Set<T>().AddAsync(model, cancellationToken);
@@ -218,6 +216,5 @@ namespace Project.Infrastructure.Repositories
         {
             await _dbContext.SaveChangesAsync(cancellationToken);
         }
-
     }
 }

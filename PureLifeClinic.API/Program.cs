@@ -12,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Register DbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("PrimaryDbConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("PrimaryDbConnection")).UseLazyLoadingProxies());
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 
 // Add caching services
@@ -30,6 +30,7 @@ builder.Services.RegisterService();
 builder.Services.RegisterMapperService();
 builder.Services.AddAuthorization();
 builder.Services.AddSwaggerGen();
+
 // API Versioning
 builder.Services
     .AddApiVersioning()

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using PureLifeClinic.Core.Entities.General;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -19,8 +20,8 @@ namespace Project.Core.Entities.General
         [StringLength(maximumLength: 13, MinimumLength = 10)]
         public string? PhoneNumber { get; set; }
 
-
         [ForeignKey(nameof(RoleId))]
-        public Role Role { get; set; }
+        public virtual Role Role { get; set; }
+        public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
     }
 }
