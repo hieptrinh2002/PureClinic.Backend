@@ -17,7 +17,7 @@ ASP.NET Core Web API, featuring Security Identity, JWT, and API Versioning. This
 
 ## Project Features
 
-This project template includes the following features:
+This project includes the following features:
 
 - **Clean Architecture**: The project is structured according to the principles of [Clean Architecture], which promotes separation of concerns and a clear division of responsibilities.
 - **SOLID Design Principles**: The code adheres to [SOLID principles] (Single Responsibility, Open-Closed, Liskov Substitution, Interface Segregation, and Dependency Inversion), making it easier to maintain and extend.
