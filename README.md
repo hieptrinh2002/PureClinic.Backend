@@ -1,5 +1,4 @@
 # ASP.NET Core Web API: Secure, Scalable, and Elegant (Clean Architecture)
-ASP.NET Core Web API, featuring Security Identity, JWT, and API Versioning. This repository embodies best coding practices, delivering a clean, efficient, and scalable solution.
 ## Project Structure
 ```
 ├── src
