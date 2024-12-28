@@ -57,17 +57,21 @@ namespace Project.Infrastructure.Repositories
             }
 
         }
-
         public async Task Logout()
         {
             await _signInManager.SignOutAsync();
         }
 
-      
         public async Task<ResponseViewModel<RefreshTokenViewModel>> ValidateRefreshToken(string refreshToken)
         {
             var users = _userManager.Users;
-            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.RefreshTokens.Any(r => r.Token == refreshToken));
+
+            //lazy loading => refreshToken will not be loaded
+            //var user = await _userManager.Users.FirstOrDefaultAsync(u => u.RefreshTokens.Any(r => r.Token == refreshToken));
+
+            //eager loading 
+            var user = await _userManager.Users.Include(token => token.RefreshTokens).FirstOrDefaultAsync(u => u.RefreshTokens.Any(r => r.Token == refreshToken));
+
             if (user == null)
             {
                 return new ResponseViewModel<RefreshTokenViewModel>
@@ -78,6 +82,7 @@ namespace Project.Infrastructure.Repositories
             try
             {
                 var rfToken = user.RefreshTokens?.Single(t => t.Token == refreshToken);
+
                 if (rfToken == null || !rfToken.IsActive)
                 {
                     return new ResponseViewModel<RefreshTokenViewModel>
@@ -99,7 +104,7 @@ namespace Project.Infrastructure.Repositories
             {
                 return new ResponseViewModel<RefreshTokenViewModel>
                 {
-                    Success = true,
+                    Success = false,
                 };
             }
         }

@@ -27,14 +27,14 @@ namespace Project.API.Controllers.V1
         private readonly AppSettings _appSettings;
         private readonly IUserContext _userContext;
         private readonly IBaseMapper<RefreshToken, RefreshTokenViewModel> _refreshTokenViewModelMapper;
-         
+
         public AuthController(
             ILogger<AuthController> logger,
             IAuthService authService,
             IConfiguration configuration,
             IOptions<AppSettings> appSettings,
             IBaseMapper<RefreshToken, RefreshTokenViewModel> refreshTokenViewModelMapper,
-        IUserContext userContext)
+            IUserContext userContext)
         {
             _logger = logger;
             _authService = authService;
@@ -193,8 +193,26 @@ namespace Project.API.Controllers.V1
                     }
 
                     var tokenData = GenerateJwtToken(Convert.ToInt32(_userContext.UserId));
-
                     var refreshTokenData = GenerateRefreshToken();
+
+                    if(tokenData == null || refreshTokenData == null)
+                    {
+                        throw new Exception("Token was genarated failed");
+                    }    
+
+                    refreshTokenData.AccessTokenId = tokenData?.Data?.AccessTokenId;
+
+                    // autp mapper
+                    RefreshTokenCreateViewModel refreshTokenCreateModel = new RefreshTokenCreateViewModel
+                    {
+                        Token = refreshTokenData.Token,
+                        CreateOn = refreshTokenData.CreateOn,
+                        ExpireOn = refreshTokenData.ExpireOn,
+                        AccessTokenId = tokenData.Data?.AccessTokenId,
+                    };
+
+                    // insert refreshToken to db
+                    var createdTokenResult = await _authService.InsertRefreshToken(Convert.ToInt32(_userContext.UserId), refreshTokenCreateModel, default);
 
                     return Ok(new ResponseViewModel<AuthResultViewModel>
                     {
