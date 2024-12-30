@@ -8,6 +8,7 @@ using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Interfaces.IServices;
 
+
 namespace PureLifeClinic.API.Controllers.V1
 {
     [ApiVersion("1.0")]
@@ -417,9 +418,7 @@ namespace PureLifeClinic.API.Controllers.V1
                         Message = ex.Message
                     }
                 });
-
             }
         }
     }
-
 }

@@ -6,14 +6,14 @@
 	+ chatbox: Quản lý, tư vấn bệnh nhân, lịch khám bệnh qua chat box.
 	+ cron job: Tự động lập lịch hệ thống gửi reminder cho bệnh nhân trước 1 ngày khám bệnh (mailtrap)
 	+ logger
-	+ elastic search + logs ( khó quá thì chuyển qua search full text? :))
-	+ authentication && auhorization
+	+ elastic search + logs (khó quá thì chuyển qua search full text? :)))
+	+ authentication && authorization
 	+ Cloudinary or Azure Blob Storage (saving imgs)
 	+ Caching with redis && MemoryCache (performance optimization)
 	+ Clean architecture
 	+ Dynamic layout if possible.
 	+ review, stars từ khách hàng 
-	+ Rabbit MQ (phức tạp ?)
+	+ Rabbit MQ (phức tạp?)
 	+ SqlServer + MongoDB + Redis
 	+ Unit test
 
@@ -33,5 +33,15 @@
     + Xem danh sách dịch vụ phòng khám
 	+ Xem danh sách bác sĩ, thông tin chi tiết...
 
+plan: 
+- 23/12/2024 - 19/12/2024: 
+	+ init project structure base 
+	+ authentication (jwt/ refresh Token)
+- 30/12/2024 - 05/01/2025: 
+	+ CRUD profile API (doctor, user) 
+	+ Send mail services => OPT/ confirm mails when register account
+	+ Lock account when login failed more than 5 times
+- 6/01/2025 - 12/01/2025: 
+	+ (in progress)
 
 
