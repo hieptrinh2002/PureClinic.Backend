@@ -1,11 +1,11 @@
-﻿using Project.Core.Entities.General;
-using Project.Infrastructure.Data;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using PureLifeClinic.Core.Entities.General;
+using PureLifeClinic.Infrastructure.Data;
 using System.Text;
 
-namespace Project.API.Extensions
+namespace PureLifeClinic.API.Extensions
 {
     public static class SecurityExtension
     {

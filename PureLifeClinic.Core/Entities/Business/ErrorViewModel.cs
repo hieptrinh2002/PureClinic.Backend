@@ -1,5 +1,4 @@
-﻿
-namespace Project.Core.Entities.Business
+﻿namespace PureLifeClinic.Core.Entities.Business
 {
     public class ErrorViewModel
     {

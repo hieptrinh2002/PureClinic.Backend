@@ -1,8 +1,8 @@
-﻿using Project.Core.Common;
-using Project.Core.Entities.Business;
+﻿using PureLifeClinic.Core.Common;
+using PureLifeClinic.Core.Entities.Business;
 using System.Linq.Expressions;
 
-namespace Project.Core.Interfaces.IRepositories
+namespace PureLifeClinic.Core.Interfaces.IRepositories
 {
     //Unit of Work Pattern
     public interface IBaseRepository<T> where T : class

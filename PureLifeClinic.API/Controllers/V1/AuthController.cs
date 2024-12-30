@@ -2,19 +2,18 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Project.API.Helpers;
-using Project.Core.Common;
-using Project.Core.Entities.Business;
-using Project.Core.Interfaces.IMapper;
-using Project.Core.Interfaces.IServices;
+using PureLifeClinic.API.Helpers;
+using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Entities.General;
+using PureLifeClinic.Core.Interfaces.IMapper;
+using PureLifeClinic.Core.Interfaces.IServices;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Project.API.Controllers.V1
+namespace PureLifeClinic.API.Controllers.V1
 {
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
@@ -26,7 +25,6 @@ namespace Project.API.Controllers.V1
         private readonly IConfiguration _configuration;
         private readonly AppSettings _appSettings;
         private readonly IUserContext _userContext;
-        private readonly IBaseMapper<RefreshToken, RefreshTokenViewModel> _refreshTokenViewModelMapper;
 
         public AuthController(
             ILogger<AuthController> logger,
@@ -40,8 +38,7 @@ namespace Project.API.Controllers.V1
             _authService = authService;
             _configuration = configuration;
             _appSettings = appSettings.Value;
-            _userContext = userContext; 
-            _refreshTokenViewModelMapper = refreshTokenViewModelMapper; 
+            _userContext = userContext;
         }
 
         [HttpPost, Route("login")]
@@ -195,10 +192,10 @@ namespace Project.API.Controllers.V1
                     var tokenData = GenerateJwtToken(Convert.ToInt32(_userContext.UserId));
                     var refreshTokenData = GenerateRefreshToken();
 
-                    if(tokenData == null || refreshTokenData == null)
+                    if (tokenData == null || refreshTokenData == null)
                     {
                         throw new Exception("Token was genarated failed");
-                    }    
+                    }
 
                     refreshTokenData.AccessTokenId = tokenData?.Data?.AccessTokenId;
 
@@ -213,14 +210,17 @@ namespace Project.API.Controllers.V1
 
                     // insert refreshToken to db
                     var createdTokenResult = await _authService.InsertRefreshToken(Convert.ToInt32(_userContext.UserId), refreshTokenCreateModel, default);
-
+                    if (!createdTokenResult.Success || createdTokenResult.Data == null)
+                    {
+                        throw new Exception("Token was genarated failed");
+                    }
                     return Ok(new ResponseViewModel<AuthResultViewModel>
                     {
                         Success = true,
                         Data = new AuthResultViewModel
                         {
                             AccessToken = tokenData.Data.AccessToken,
-                            RefreshToken = _refreshTokenViewModelMapper.MapModel(refreshTokenData)
+                            RefreshToken = createdTokenResult.Data //_refreshTokenViewModelMapper.MapModel(refreshTokenData)
                         }
                     });
                 }

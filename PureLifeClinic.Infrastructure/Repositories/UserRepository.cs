@@ -1,11 +1,11 @@
-﻿using Project.Core.Entities.Business;
-using Project.Core.Entities.General;
-using Project.Core.Interfaces.IRepositories;
-using Project.Core.Interfaces.IServices;
-using Project.Infrastructure.Data;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
+using PureLifeClinic.Core.Entities.Business;
+using PureLifeClinic.Core.Entities.General;
+using PureLifeClinic.Core.Interfaces.IRepositories;
+using PureLifeClinic.Core.Interfaces.IServices;
+using PureLifeClinic.Infrastructure.Data;
 
-namespace Project.Infrastructure.Repositories
+namespace PureLifeClinic.Infrastructure.Repositories
 {
     public class UserRepository : BaseRepository<User>, IUserRepository
     {

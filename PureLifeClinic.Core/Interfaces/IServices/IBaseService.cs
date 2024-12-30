@@ -1,7 +1,7 @@
-﻿using Project.Core.Common;
-using Project.Core.Entities.Business;
+﻿using PureLifeClinic.Core.Common;
+using PureLifeClinic.Core.Entities.Business;
 
-namespace Project.Core.Interfaces.IServices
+namespace PureLifeClinic.Core.Interfaces.IServices
 {
     public interface IBaseService<TViewModel> where TViewModel : class
     {

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Project.Core.Entities.Business
+namespace PureLifeClinic.Core.Entities.Business
 {
     public class RoleViewModel
     {

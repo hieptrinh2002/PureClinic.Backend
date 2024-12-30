@@ -1,14 +1,13 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Project.Core.Entities.Business;
-using Project.Core.Entities.General;
-using Project.Core.Interfaces.IMapper;
-using Project.Core.Interfaces.IRepositories;
-using Project.Infrastructure.Data;
+using PureLifeClinic.Core.Entities.Business;
+using PureLifeClinic.Infrastructure.Data;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Entities.General;
+using PureLifeClinic.Core.Interfaces.IMapper;
+using PureLifeClinic.Core.Interfaces.IRepositories;
 
-namespace Project.Infrastructure.Repositories
+namespace PureLifeClinic.Infrastructure.Repositories
 {
     public class AuthRepository : BaseRepository<RefreshToken>, IAuthRepository
     {

@@ -1,9 +1,8 @@
-﻿using Project.Core.Entities.General;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PureLifeClinic.Core.Entities.General;
 
-namespace Project.Infrastructure.Data
+namespace PureLifeClinic.Infrastructure.Data
 {
     public class ApplicationDbContext : IdentityDbContext<User, Role, int>
     {

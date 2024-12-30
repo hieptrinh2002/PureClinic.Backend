@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using Project.Core.Interfaces.IMapper;
+using PureLifeClinic.Core.Interfaces.IMapper;
 
-namespace Project.Core.Mapper
+namespace PureLifeClinic.Core.Mapper
 {
     public class BaseMapper<TSource, TDestination> : IBaseMapper<TSource, TDestination>
     {

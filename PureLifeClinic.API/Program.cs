@@ -1,12 +1,12 @@
 using Asp.Versioning;
-using Project.API.Extensions;
-using Project.API.Middlewares;
-using Project.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using PureLifeClinic.API.Extensions;
+using PureLifeClinic.API.Middlewares;
+using PureLifeClinic.Core.Common;
+using PureLifeClinic.Infrastructure.Data;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using Project.Core.Common;
 
 var builder = WebApplication.CreateBuilder(args);
 

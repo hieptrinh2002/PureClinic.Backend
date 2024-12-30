@@ -1,6 +1,6 @@
-﻿using Project.Core.Interfaces.IServices;
+﻿using PureLifeClinic.Core.Interfaces.IServices;
 
-namespace Project.Core.Services
+namespace PureLifeClinic.Core.Services
 {
     public class UserContext : IUserContext
     {

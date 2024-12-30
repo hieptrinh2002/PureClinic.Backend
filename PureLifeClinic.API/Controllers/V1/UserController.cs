@@ -1,12 +1,12 @@
 ﻿using Asp.Versioning;
-using Project.API.Helpers;
-using Project.Core.Entities.Business;
-using Project.Core.Interfaces.IServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PureLifeClinic.API.Helpers;
+using PureLifeClinic.Core.Entities.Business;
+using PureLifeClinic.Core.Interfaces.IServices;
 
-namespace Project.API.Controllers.V1
+namespace PureLifeClinic.API.Controllers.V1
 {
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
@@ -263,7 +263,7 @@ namespace Project.API.Controllers.V1
                 try
                 {
                     var response = await _userService.Update(model, cancellationToken);
-                    
+
                     if (response.Success)
                     {
                         return Ok(response);

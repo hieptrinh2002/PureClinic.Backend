@@ -1,12 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Project.Core.Common;
-using Project.Core.Entities.Business;
-using Project.Core.Exceptions;
-using Project.Core.Interfaces.IRepositories;
-using Project.Infrastructure.Data;
+using PureLifeClinic.Core.Exceptions;
+using PureLifeClinic.Infrastructure.Data;
+using PureLifeClinic.Core.Common;
+using PureLifeClinic.Core.Entities.Business;
+using PureLifeClinic.Core.Interfaces.IRepositories;
 using System.Linq.Expressions;
 
-namespace Project.Infrastructure.Repositories
+namespace PureLifeClinic.Infrastructure.Repositories
 {
     //Unit of Work Pattern
     public class BaseRepository<T> : IBaseRepository<T> where T : class

@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Project.Core.Entities.General;
+using PureLifeClinic.Core.Entities.General;
 
-namespace Project.Infrastructure.Data
+namespace PureLifeClinic.Infrastructure.Data
 {
     public class ApplicationDbContextSeed
     {

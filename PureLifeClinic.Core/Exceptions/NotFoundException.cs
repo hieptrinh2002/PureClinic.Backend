@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace Project.Core.Exceptions
+namespace PureLifeClinic.Core.Exceptions
 {
     public class NotFoundException : Exception
     {

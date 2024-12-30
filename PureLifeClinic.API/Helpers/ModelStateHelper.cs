@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Project.API.Helpers
+namespace PureLifeClinic.API.Helpers
 {
     public static class ModelStateHelper
     {

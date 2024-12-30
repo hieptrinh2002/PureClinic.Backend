@@ -1,5 +1,5 @@
 ﻿
-namespace Project.Core.Interfaces.IServices
+namespace PureLifeClinic.Core.Interfaces.IServices
 {
     public interface IUserContext
     {

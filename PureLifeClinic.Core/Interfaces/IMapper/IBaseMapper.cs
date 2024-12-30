@@ -1,5 +1,4 @@
-﻿
-namespace Project.Core.Interfaces.IMapper
+﻿namespace PureLifeClinic.Core.Interfaces.IMapper
 {
     public interface IBaseMapper<TSource, TDestination>
     {

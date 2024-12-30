@@ -4,7 +4,7 @@ using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Text.Json;
 
-namespace Project.API.Extensions
+namespace PureLifeClinic.API.Extensions
 {
     public class SwaggerDefaultValues : IOperationFilter
     {

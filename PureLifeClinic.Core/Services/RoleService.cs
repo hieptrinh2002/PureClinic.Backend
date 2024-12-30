@@ -1,10 +1,10 @@
-﻿using Project.Core.Entities.Business;
-using Project.Core.Entities.General;
-using Project.Core.Interfaces.IMapper;
-using Project.Core.Interfaces.IRepositories;
-using Project.Core.Interfaces.IServices;
+﻿using PureLifeClinic.Core.Interfaces.IRepositories;
+using PureLifeClinic.Core.Interfaces.IServices;
+using PureLifeClinic.Core.Entities.Business;
+using PureLifeClinic.Core.Entities.General;
+using PureLifeClinic.Core.Interfaces.IMapper;
 
-namespace Project.Core.Services
+namespace PureLifeClinic.Core.Services
 {
     public class RoleService : BaseService<Role, RoleViewModel>, IRoleService
     {
