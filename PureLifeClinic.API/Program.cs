@@ -7,6 +7,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Project.Core.Common;
+using PureLifeClinic.Core.Common;
 
 var builder = WebApplication.CreateBuilder(args);
 

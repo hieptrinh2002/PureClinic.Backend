@@ -3,6 +3,7 @@ using Project.Core.Interfaces.IRepositories;
 using Project.Core.Interfaces.IServices;
 using Project.Core.Services;
 using Project.Infrastructure.Repositories;
+using PureLifeClinic.Core.Interfaces.IServices;
 
 namespace Project.API.Extensions
 {
@@ -16,7 +17,7 @@ namespace Project.API.Extensions
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthService, AuthService>();
-
+            services.AddTransient<IMailService, MailService>();
             #endregion
 
             #region Repositories

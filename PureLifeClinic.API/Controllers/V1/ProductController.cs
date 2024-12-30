@@ -6,7 +6,6 @@ using Microsoft.Extensions.Caching.Memory;
 using Project.API.Helpers;
 using Project.Core.Common;
 using Project.Core.Entities.Business;
-using Project.Core.Entities.General;
 using Project.Core.Interfaces.IServices;
 
 namespace Project.API.Controllers.V1
@@ -418,9 +417,7 @@ namespace Project.API.Controllers.V1
                         Message = ex.Message
                     }
                 });
-
             }
         }
     }
-
 }
