@@ -3,6 +3,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Moq;
 using PureLifeClinic.API.Controllers.V1;
+using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Interfaces.IServices;
 
@@ -24,6 +25,107 @@ namespace PureLifeClinic.UnitTest.API
         }
 
         [Fact]
+        public async Task Get_ShouldReturnFilteredProducts_WhenSearchIsProvided()
+        {
+            // Arrange
+            string searchQuery = "Product";
+            var mockProducts = new List<ProductViewModel>
+            {
+                new ProductViewModel { Id = 1, Name = "Product 1", Code = "P001" },
+                new ProductViewModel { Id = 2, Name = "Product 2", Code = "P002" }
+            };
+            var paginatedData = new PaginatedDataViewModel<ProductViewModel>(mockProducts, mockProducts.Count);
+
+            _mockProductService.Setup(service => service.GetPaginatedData(
+                It.IsAny<int>(),
+                It.IsAny<int>(),
+                It.Is<List<ExpressionFilter>>(filters =>
+                    filters.Any(f => f.PropertyName == "Code" && f.Value == searchQuery) &&
+                    filters.Any(f => f.PropertyName == "Name" && f.Value == searchQuery) &&
+                    filters.Any(f => f.PropertyName == "Description" && f.Value == searchQuery)),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<CancellationToken>())
+            ).ReturnsAsync(paginatedData);
+
+            // Act
+            var result = await _controller.Get(1, 10, searchQuery, null, null, CancellationToken.None);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var response = Assert.IsType<ResponseViewModel<PaginatedDataViewModel<ProductViewModel>>>(okResult.Value);
+            Assert.True(response.Success);
+            Assert.NotNull(response.Data);
+            Assert.Equal(2, response.Data.Data.Count()); 
+            Assert.Equal(mockProducts.Count, response.Data.TotalCount);
+
+
+            // check method GetPaginatedData only called oncetime
+            _mockProductService.Verify(service => service.GetPaginatedData(
+                It.IsAny<int>(),
+                It.IsAny<int>(),
+                It.Is<List<ExpressionFilter>>(filters =>
+                    filters.Any(f => f.PropertyName == "Code" && f.Value == searchQuery) &&
+                    filters.Any(f => f.PropertyName == "Name" && f.Value == searchQuery) &&
+                    filters.Any(f => f.PropertyName == "Description" && f.Value == searchQuery)),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+
+        [Fact]
+        public async Task Get_ShouldReturnPaginatedProducts_WhenValidRequest()
+        {
+            // Arrange
+            var mockProducts = new List<ProductViewModel>
+            {
+                new ProductViewModel { Id = 1, Name = "Product 1", Code = "P001" },
+                new ProductViewModel { Id = 2, Name = "Product 2", Code = "P002" }
+            };
+            var paginatedData = new PaginatedDataViewModel<ProductViewModel>(mockProducts, mockProducts.Count);
+
+            _mockProductService.Setup(service => service.GetPaginatedData(
+                It.IsAny<int>(), It.IsAny<int>(), It.IsAny<List<ExpressionFilter>>(),
+                It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>())
+            ).ReturnsAsync(paginatedData);
+
+            // Act
+            var result = await _controller.Get(1, 10, null, null, null, CancellationToken.None);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var response = Assert.IsType<ResponseViewModel<PaginatedDataViewModel<ProductViewModel>>>(okResult.Value);
+            Assert.True(response.Success);
+            Assert.Equal("Products retrieved successfully", response.Message);
+            Assert.NotNull(response.Data);
+            Assert.Equal(2, response.Data.Data.Count()); // Verify the number of products
+            Assert.Equal(mockProducts.Count, response.Data.TotalCount); // Verify the total count of products
+        }
+
+        [Fact]
+        public async Task Get_ShouldReturnError_WhenExceptionOccurs()
+        {
+            // Arrange
+            _mockProductService.Setup(service => service.GetPaginatedData(
+                It.IsAny<int>(), It.IsAny<int>(), It.IsAny<List<ExpressionFilter>>(),
+                It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>())
+            ).ThrowsAsync(new System.Exception("Database error"));
+
+            // Act
+            var result = await _controller.Get(1, 10, null, null, null, CancellationToken.None);
+
+            // Assert
+            var statusCodeResult = Assert.IsType<ObjectResult>(result);
+            Assert.Equal(500, statusCodeResult.StatusCode);
+            var errorResponse = Assert.IsType<ResponseViewModel<IEnumerable<ProductViewModel>>>(statusCodeResult.Value);
+            Assert.False(errorResponse.Success);
+            Assert.Equal("Error retrieving products", errorResponse.Message);
+            Assert.NotNull(errorResponse.Error);
+            Assert.Equal("ERROR_CODE", errorResponse.Error.Code);
+        }
+
+        [Fact]
         public async Task Get_ShouldReturnAllProducts_WhenProductsExist()
         {
             // Arrange
@@ -32,6 +134,7 @@ namespace PureLifeClinic.UnitTest.API
                 new ProductViewModel { Id = 1, Name = "Product 1", Code = "P001" },
                 new ProductViewModel { Id = 2, Name = "Product 2", Code = "P002" }
             };
+
             _mockProductService.Setup(service => service.GetAll(It.IsAny<CancellationToken>()))
                                .ReturnsAsync(mockProducts);
 

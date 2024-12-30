@@ -63,6 +63,5 @@ namespace PureLifeClinic.Core.Services
         {
             return await _productRepository.PriceCheck(productId, cancellationToken);
         }
-
     }
 }
