@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
-namespace Project.Core.Entities.General
+namespace PureLifeClinic.Core.Entities.General
 {
     public class Role : IdentityRole<int>
     {

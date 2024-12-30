@@ -1,7 +1,6 @@
-﻿using Project.Core.Entities.Business;
-using Project.Core.Entities.General;
+﻿using PureLifeClinic.Core.Entities.Business;
 
-namespace Project.Core.Interfaces.IServices
+namespace PureLifeClinic.Core.Interfaces.IServices
 {
     public interface IProductService : IBaseService<ProductViewModel>
     {

@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using PureLifeClinic.Core.Entities.General;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Project.Core.Entities.General
+namespace PureLifeClinic.Core.Entities.General
 {
     public class User : IdentityUser<int>
     {

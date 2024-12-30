@@ -1,8 +1,8 @@
-﻿using Project.Core.Interfaces.IServices;
+﻿using PureLifeClinic.Core.Interfaces.IServices;
 using System.Security.Claims;
 using System.Text;
 
-namespace Project.API.Middlewares
+namespace PureLifeClinic.API.Middlewares
 {
     public class RequestResponseLoggingMiddleware
     {

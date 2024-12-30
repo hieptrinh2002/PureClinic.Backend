@@ -1,11 +1,11 @@
-﻿using Project.Core.Common;
-using Project.Core.Entities.Business;
-using Project.Core.Interfaces.IMapper;
-using Project.Core.Interfaces.IRepositories;
-using Project.Core.Interfaces.IServices;
+﻿using PureLifeClinic.Core.Interfaces.IServices;
+using PureLifeClinic.Core.Common;
+using PureLifeClinic.Core.Entities.Business;
+using PureLifeClinic.Core.Interfaces.IMapper;
+using PureLifeClinic.Core.Interfaces.IRepositories;
 using System.Linq.Expressions;
 
-namespace Project.Core.Services
+namespace PureLifeClinic.Core.Services
 {
     public class BaseService<T, TViewModel> : IBaseService<TViewModel>
         where T : class

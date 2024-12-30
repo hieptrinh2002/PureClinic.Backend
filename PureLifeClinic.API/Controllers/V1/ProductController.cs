@@ -3,13 +3,12 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using Project.API.Helpers;
-using Project.Core.Common;
-using Project.Core.Entities.Business;
-using Project.Core.Entities.General;
-using Project.Core.Interfaces.IServices;
+using PureLifeClinic.API.Helpers;
+using PureLifeClinic.Core.Common;
+using PureLifeClinic.Core.Entities.Business;
+using PureLifeClinic.Core.Interfaces.IServices;
 
-namespace Project.API.Controllers.V1
+namespace PureLifeClinic.API.Controllers.V1
 {
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
@@ -378,7 +377,7 @@ namespace Project.API.Controllers.V1
             try
             {
                 await _productService.Delete(id, cancellationToken);
-                
+
                 // Remove data from cache by key
                 _memoryCache.Remove($"Product_{id}");
 

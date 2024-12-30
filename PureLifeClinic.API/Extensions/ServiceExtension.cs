@@ -1,10 +1,10 @@
-﻿using Project.API.Middlewares;
-using Project.Core.Interfaces.IRepositories;
-using Project.Core.Interfaces.IServices;
-using Project.Core.Services;
-using Project.Infrastructure.Repositories;
+﻿using Project.Infrastructure.Repositories;
+using PureLifeClinic.Core.Interfaces.IRepositories;
+using PureLifeClinic.Core.Interfaces.IServices;
+using PureLifeClinic.Core.Services;
+using PureLifeClinic.Infrastructure.Repositories;
 
-namespace Project.API.Extensions
+namespace PureLifeClinic.API.Extensions
 {
     public static class ServiceExtension
     {

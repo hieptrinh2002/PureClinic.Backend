@@ -1,13 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Project.Core.Entities.Business;
-using Project.Core.Exceptions;
-using Project.Core.Interfaces.IMapper;
-using Project.Core.Interfaces.IRepositories;
-using Project.Core.Interfaces.IServices;
-using PureLifeClinic.Core.Entities.Business;
+﻿using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Entities.General;
+using PureLifeClinic.Core.Exceptions;
+using PureLifeClinic.Core.Interfaces.IMapper;
+using PureLifeClinic.Core.Interfaces.IRepositories;
+using PureLifeClinic.Core.Interfaces.IServices;
 
-namespace Project.Core.Services
+namespace PureLifeClinic.Core.Services
 {
     public class AuthService : BaseService<RefreshToken, RefreshTokenViewModel>, IAuthService
     {

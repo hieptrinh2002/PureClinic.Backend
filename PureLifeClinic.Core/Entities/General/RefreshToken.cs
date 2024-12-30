@@ -1,5 +1,4 @@
-﻿using Project.Core.Entities.General;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PureLifeClinic.Core.Entities.General

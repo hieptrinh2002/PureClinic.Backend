@@ -1,9 +1,9 @@
-﻿using Project.Core.Entities.General;
-using Project.Core.Interfaces.IRepositories;
-using Project.Infrastructure.Data;
+﻿using PureLifeClinic.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using PureLifeClinic.Core.Entities.General;
+using PureLifeClinic.Core.Interfaces.IRepositories;
 
-namespace Project.Infrastructure.Repositories
+namespace PureLifeClinic.Infrastructure.Repositories
 {
     public class ProductRepository : BaseRepository<Product>, IProductRepository
     {

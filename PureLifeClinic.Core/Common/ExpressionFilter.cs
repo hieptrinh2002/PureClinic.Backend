@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Project.Core.Common
+namespace PureLifeClinic.Core.Common
 {
     public class ExpressionFilter
     {

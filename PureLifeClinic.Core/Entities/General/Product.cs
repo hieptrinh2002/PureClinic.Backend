@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Project.Core.Entities.General
+namespace PureLifeClinic.Core.Entities.General
 {
     [Table("Products")]
     public class Product : Base<int>

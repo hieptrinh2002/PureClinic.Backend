@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Project.Core.Entities.General
+namespace PureLifeClinic.Core.Entities.General
 {
     //Base class for entities common properties
     public class Base<T>

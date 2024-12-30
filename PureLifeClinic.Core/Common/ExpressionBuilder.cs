@@ -1,7 +1,7 @@
 ﻿using System.Linq.Expressions;
 using System.Reflection;
 
-namespace Project.Core.Common
+namespace PureLifeClinic.Core.Common
 {
     public static class ExpressionBuilder
     {

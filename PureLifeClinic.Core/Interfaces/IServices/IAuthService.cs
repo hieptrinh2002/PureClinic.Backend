@@ -1,8 +1,6 @@
-﻿using Project.Core.Entities.Business;
-using PureLifeClinic.Core.Entities.Business;
-using PureLifeClinic.Core.Entities.General;
+﻿using PureLifeClinic.Core.Entities.Business;
 
-namespace Project.Core.Interfaces.IServices
+namespace PureLifeClinic.Core.Interfaces.IServices
 {
     public interface IAuthService
     {

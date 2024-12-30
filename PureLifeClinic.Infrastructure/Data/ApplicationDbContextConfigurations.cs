@@ -1,8 +1,8 @@
-﻿using Project.Core.Entities.General;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using PureLifeClinic.Core.Entities.General;
 
-namespace Project.Infrastructure.Data
+namespace PureLifeClinic.Infrastructure.Data
 {
     public class ApplicationDbContextConfigurations
     {

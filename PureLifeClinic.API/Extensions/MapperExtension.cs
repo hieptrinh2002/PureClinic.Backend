@@ -1,12 +1,10 @@
 ﻿using AutoMapper;
-using Project.Core.Entities.Business;
-using Project.Core.Entities.General;
-using Project.Core.Interfaces.IMapper;
-using Project.Core.Mapper;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Entities.General;
+using PureLifeClinic.Core.Interfaces.IMapper;
+using PureLifeClinic.Core.Mapper;
 
-namespace Project.API.Extensions
+namespace PureLifeClinic.API.Extensions
 {
     public static class MapperExtension
     {
@@ -15,7 +13,7 @@ namespace Project.API.Extensions
 
             #region Mapper
 
-            services.AddSingleton<IMapper>(sp => new MapperConfiguration(cfg =>
+            services.AddSingleton(sp => new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<RefreshToken, RefreshTokenViewModel>().ReverseMap();
                 cfg.CreateMap<RefreshTokenCreateViewModel, RefreshToken>();
