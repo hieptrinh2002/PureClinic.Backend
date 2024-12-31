@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PureLifeClinic.Core.Entities.Business
 {
@@ -29,7 +30,7 @@ namespace PureLifeClinic.Core.Entities.Business
         [Required]
         public int RoleId { get; set; }
     }
-
+   
     public class UserUpdateViewModel
     {
         public int Id { get; set; }

@@ -2,7 +2,7 @@
 using MailKit.Security;
 using Microsoft.Extensions.Options;
 using MimeKit;
-using Project.Core.Common;
+using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Interfaces.IServices;
 
@@ -19,7 +19,7 @@ namespace Project.Core.Services
         public async Task SendEmailAsync(MailRequestViewModel mailRequest)
         {
             var email = new MimeMessage();
-            email.Sender = MailboxAddress.Parse(_appSettings.MailSettings.Mail);
+            email.Sender = MailboxAddress.Parse(_appSettings?.MailSettings.Mail);
             email.To.Add(MailboxAddress.Parse(mailRequest.ToEmail));
             email.Subject = mailRequest.Subject;
             var builder = new BodyBuilder();

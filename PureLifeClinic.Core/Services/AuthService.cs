@@ -77,7 +77,7 @@ namespace PureLifeClinic.Core.Services
                     Error = new ErrorViewModel
                     {
                         Code = "LOGIN_ERROR",
-                        Message = "Incorrect username or password. Please check your credentials and try again."
+                        Message = "Incorrect username or password or not confirm email. Please check your credentials and try again."
                     }
                 };
             }
@@ -86,6 +86,23 @@ namespace PureLifeClinic.Core.Services
         public async Task Logout()
         {
             await _authRepository.Logout();
+        }
+
+        public async Task<ResponseViewModel> ConfirmEmailAsync(string emailConfirmation, string activeToken, CancellationToken cancellationToken)
+        {
+            var result = await _authRepository.ConfirmEmail(emailConfirmation, activeToken, cancellationToken);
+            if (result.Success) {
+                return new ResponseViewModel
+                {
+                    Success = true,
+                    Message = "Confirm email successfully "
+                };
+            }
+            return  new ResponseViewModel
+            {
+                Success = false,
+                Message = "Confirm email failed "
+            };
         }
     }
 }

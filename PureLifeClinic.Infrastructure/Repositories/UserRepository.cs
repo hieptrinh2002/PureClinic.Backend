@@ -4,6 +4,7 @@ using PureLifeClinic.Core.Entities.General;
 using PureLifeClinic.Core.Interfaces.IRepositories;
 using PureLifeClinic.Core.Interfaces.IServices;
 using PureLifeClinic.Infrastructure.Data;
+using System.Runtime.CompilerServices;
 
 namespace PureLifeClinic.Infrastructure.Repositories
 {
@@ -118,6 +119,29 @@ namespace PureLifeClinic.Infrastructure.Repositories
             var result = await _userManager.ResetPasswordAsync(user, resetToken, model.NewPassword);
 
             return result;
+        }
+
+        public async Task<User> GetByEmail(string email, CancellationToken cancellationToken)
+        {
+            var user = await _userManager.FindByNameAsync(email);
+            return user;
+        }
+
+        public async Task<EmailActivationViewModel> GenerateEmailConfirmationTokenAsync(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+                return null;
+
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            if (token == null)
+                return null;
+
+            return new EmailActivationViewModel
+            {
+                UserId  = user.Id,
+                ActivationToken = token,
+            };   
         }
     }
 }

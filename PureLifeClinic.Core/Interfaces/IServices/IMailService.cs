@@ -1,10 +1,4 @@
-﻿using AutoMapper.Internal;
-using PureLifeClinic.Core.Entities.Business;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using PureLifeClinic.Core.Entities.Business;
 
 namespace PureLifeClinic.Core.Interfaces.IServices
 {

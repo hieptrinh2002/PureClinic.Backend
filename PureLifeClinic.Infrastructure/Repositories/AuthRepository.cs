@@ -25,7 +25,22 @@ namespace PureLifeClinic.Infrastructure.Repositories
             _signInManager = signInManager;
             _refreshTokenViewModelMapper = refreshTokenViewModelMapper;
         }
-     
+
+        public async Task<ResponseViewModel> ConfirmEmail(string emailConfirmation, string activeToken, CancellationToken cancellationToken)
+        {
+            var user = await _userManager.FindByEmailAsync(emailConfirmation);
+            if (user == null) {
+                return new ResponseViewModel { Success = false };   
+            }
+
+            var confirmReult = await _userManager.ConfirmEmailAsync(user, activeToken);
+            if (confirmReult.Succeeded)
+            {
+                return new ResponseViewModel { Success = true };
+            }
+            return new ResponseViewModel { Success = false };
+        }
+
         public async Task<ResponseViewModel<UserViewModel>> Login(string userName, string password)
         {
             var user = await _userManager.FindByNameAsync(userName);
@@ -34,6 +49,13 @@ namespace PureLifeClinic.Infrastructure.Repositories
                 return new ResponseViewModel<UserViewModel>
                 {
                     Success = false,
+                };
+            }
+            if (! await _userManager.IsEmailConfirmedAsync(user))
+            {
+                return new ResponseViewModel<UserViewModel>
+                {
+                    Success = false
                 };
             }
 

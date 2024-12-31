@@ -1,9 +1,8 @@
 ﻿using PureLifeClinic.Core.Entities.Business;
-using PureLifeClinic.Core.Interfaces.IRepositories;
-using PureLifeClinic.Core.Interfaces.IServices;
-using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Entities.General;
 using PureLifeClinic.Core.Interfaces.IMapper;
+using PureLifeClinic.Core.Interfaces.IRepositories;
+using PureLifeClinic.Core.Interfaces.IServices;
 using System.Linq.Expressions;
 
 namespace PureLifeClinic.Core.Services
@@ -47,6 +46,11 @@ namespace PureLifeClinic.Core.Services
             return _userViewModelMapper.MapModel(await _userRepository.GetById(includeList, id, cancellationToken));
         }
 
+        public Task<User> GetByEmail(string email, CancellationToken cancellationToken)
+        {
+            var user = _userRepository.GetByEmail(email, cancellationToken);   
+            return user;    
+        }
         public async Task<ResponseViewModel> Create(UserCreateViewModel model, CancellationToken cancellationToken)
         {
             var result = await _userRepository.Create(model);
@@ -117,6 +121,29 @@ namespace PureLifeClinic.Core.Services
         {
             var entity = await _userRepository.GetById(id, cancellationToken);
             await _userRepository.Delete(entity, cancellationToken);
+        }
+
+        public async Task<ResponseViewModel<EmailActivationViewModel>> GenerateEmailConfirmationTokenAsync(string email)
+        {
+            var result =  await _userRepository.GenerateEmailConfirmationTokenAsync(email);
+            if (result == null)
+            {
+                return new ResponseViewModel<EmailActivationViewModel>
+                {
+                    Success = false,
+                    Message= "User not found !",
+                    Data = null,
+                };
+            }
+            return new ResponseViewModel<EmailActivationViewModel>
+            {
+                Success = true,
+                Data = new EmailActivationViewModel
+                {
+                    UserId = result.UserId,
+                    ActivationToken = result.ActivationToken
+                }
+            };
         }
 
     }
