@@ -8,5 +8,6 @@ namespace PureLifeClinic.Core.Interfaces.IServices
         Task<ResponseViewModel<RefreshTokenViewModel>> RefreshTokenCheckAsync(string refreshToken);
         Task<ResponseViewModel<UserViewModel>> Login(string userName, string password);
         Task Logout();
+        Task<ResponseViewModel> ConfirmEmailAsync(string emailConfirmation, string activeToken, CancellationToken cancellationToken);
     }
 }

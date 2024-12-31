@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PureLifeClinic.API.Helpers;
 using PureLifeClinic.Core.Entities.Business;
+using PureLifeClinic.Core.Entities.General;
 using PureLifeClinic.Core.Interfaces.IServices;
 
 namespace PureLifeClinic.API.Controllers.V1
@@ -16,11 +17,13 @@ namespace PureLifeClinic.API.Controllers.V1
     {
         private readonly ILogger<UserController> _logger;
         private readonly IUserService _userService;
+        private IMailService _emailService;    
 
-        public UserController(ILogger<UserController> logger, IUserService userService)
+        public UserController(ILogger<UserController> logger, IUserService userService, IMailService emailService)
         {
             _logger = logger;
             _userService = userService;
+            _emailService = emailService;
         }
 
         [HttpGet("paginated")]
@@ -145,7 +148,7 @@ namespace PureLifeClinic.API.Controllers.V1
             }
         }
 
-        [HttpPost]
+        [HttpPost, AllowAnonymous]
         public async Task<IActionResult> Create(UserCreateViewModel model, CancellationToken cancellationToken)
         {
             if (ModelState.IsValid)
@@ -187,6 +190,26 @@ namespace PureLifeClinic.API.Controllers.V1
 
                     if (response.Success)
                     {
+                        // Create activate email token => return link activate
+
+                        var result = await _userService.GenerateEmailConfirmationTokenAsync(model.Email);
+                        if(!result.Success)
+                            throw new Exception(result.Message);    
+                        var confirmationLink = Url.Action("ConfirmEmail", "Register", new { result.Data.ActivationToken, email = model.Email }, Request.Scheme);
+
+                        var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Template", "MailTemplate.html");
+                        var emailBody = MailHelper.ReadAndProcessHtmlTemplate(filePath, confirmationLink, model.UserName);
+
+                        var mailRequestViewModel = new MailRequestViewModel
+                        {
+                            ToEmail = model.Email,
+                            Subject = "Activate Your Account",
+                            Body = emailBody,
+                        };
+
+                        await _emailService.SendEmailAsync(mailRequestViewModel);
+
+
                         return Ok(response);
                     }
                     else
@@ -365,7 +388,5 @@ namespace PureLifeClinic.API.Controllers.V1
                 return BadRequest(response);
             }
         }
-
     }
-
 }

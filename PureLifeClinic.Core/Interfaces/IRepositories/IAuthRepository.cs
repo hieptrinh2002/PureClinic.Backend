@@ -1,8 +1,5 @@
 ﻿using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Entities.General;
-using PureLifeClinic.Core.Interfaces.IRepositories;
-using PureLifeClinic.Core.Entities.Business;
-using PureLifeClinic.Core.Entities.General;
 
 namespace PureLifeClinic.Core.Interfaces.IRepositories
 {
@@ -13,5 +10,6 @@ namespace PureLifeClinic.Core.Interfaces.IRepositories
         Task<ResponseViewModel<UserViewModel>> Login(string userName, string password);
 
         Task Logout();
+        Task<ResponseViewModel> ConfirmEmail(string emailConfirmation, string activeToken, CancellationToken cancellationToken);
     }
 }
