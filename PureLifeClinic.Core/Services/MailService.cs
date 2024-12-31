@@ -2,7 +2,7 @@
 using MailKit.Security;
 using Microsoft.Extensions.Options;
 using MimeKit;
-using PureLifeClinic.Core.Common;
+using Project.Core.Common;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Interfaces.IServices;
 

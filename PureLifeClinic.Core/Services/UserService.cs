@@ -1,9 +1,12 @@
 ﻿using PureLifeClinic.Core.Entities.Business;
-using PureLifeClinic.Core.Entities.General;
-using PureLifeClinic.Core.Interfaces.IMapper;
 using PureLifeClinic.Core.Interfaces.IRepositories;
 using PureLifeClinic.Core.Interfaces.IServices;
+using PureLifeClinic.Core.Entities.Business;
+using PureLifeClinic.Core.Entities.General;
+using PureLifeClinic.Core.Interfaces.IMapper;
 using System.Linq.Expressions;
+using Org.BouncyCastle.Asn1.Ocsp;
+using System;
 
 namespace PureLifeClinic.Core.Services
 {

@@ -1,5 +1,7 @@
-﻿namespace PureLifeClinic.Core.Common
 
+using PureLifeClinic.Core.Common;
+
+namespace Project.Core.Common
 {
     public class AppSettings
     {
