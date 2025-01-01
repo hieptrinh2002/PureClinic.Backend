@@ -1,9 +1,8 @@
-﻿using PureLifeClinic.Core.Interfaces.IRepositories;
+﻿using PureLifeClinic.Core.Entities.General;
+using PureLifeClinic.Core.Interfaces.IRepositories;
 using PureLifeClinic.Infrastructure.Data;
-using PureLifeClinic.Core.Entities.General;
-using PureLifeClinic.Infrastructure.Repositories;
 
-namespace Project.Infrastructure.Repositories
+namespace PureLifeClinic.Infrastructure.Repositories
 {
     public class RoleRepository : BaseRepository<Role>, IRoleRepository
     {

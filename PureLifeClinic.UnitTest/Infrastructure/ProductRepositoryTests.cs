@@ -6,7 +6,7 @@ using PureLifeClinic.Core.Entities.General;
 using PureLifeClinic.Infrastructure.Data;
 using PureLifeClinic.Infrastructure.Repositories;
 
-namespace Project.UnitTest.Infrastructure
+namespace PureLifeClinic.UnitTest.Infrastructure
 {
     public class ProductRepositoryTests
     {

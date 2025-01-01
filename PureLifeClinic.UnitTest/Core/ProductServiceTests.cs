@@ -6,7 +6,7 @@ using PureLifeClinic.Core.Interfaces.IRepositories;
 using PureLifeClinic.Core.Interfaces.IServices;
 using PureLifeClinic.Core.Services;
 
-namespace Project.UnitTest
+namespace PureLifeClinic.UnitTest
 {
     public class ProductServiceTests
     {

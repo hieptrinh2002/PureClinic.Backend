@@ -2,7 +2,7 @@ using Asp.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
-using Project.Core.Common;
+using PureLifeClinic.Core.Common;
 using PureLifeClinic.API.Extensions;
 using PureLifeClinic.API.Middlewares;
 using PureLifeClinic.Infrastructure.Data;
