@@ -2,11 +2,11 @@
 using MailKit.Security;
 using Microsoft.Extensions.Options;
 using MimeKit;
-using Project.Core.Common;
+using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Interfaces.IServices;
 
-namespace Project.Core.Services
+namespace PureLifeClinic.Core.Services
 {
     public class MailService : IMailService
     {

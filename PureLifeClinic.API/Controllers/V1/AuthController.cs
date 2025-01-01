@@ -1,15 +1,12 @@
 ﻿using Asp.Versioning;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Project.Core.Common;
 using PureLifeClinic.API.Helpers;
 using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Entities.General;
 using PureLifeClinic.Core.Exceptions;
-using PureLifeClinic.Core.Interfaces.IMapper;
 using PureLifeClinic.Core.Interfaces.IServices;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -31,12 +28,11 @@ namespace PureLifeClinic.API.Controllers.V1
         private readonly IMailService _mailService;
         private readonly IUserService _userService;
         public AuthController(
-             IMailService mailService,
+            IMailService mailService,
             ILogger<AuthController> logger,
             IAuthService authService,
             IConfiguration configuration,
             IOptions<AppSettings> appSettings,
-            IBaseMapper<RefreshToken, RefreshTokenViewModel> refreshTokenViewModelMapper,
             IUserContext userContext,
             IUserService userService)
         {

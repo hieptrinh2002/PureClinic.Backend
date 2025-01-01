@@ -1,5 +1,3 @@
-using Project.Core.Services;
-using Project.Infrastructure.Repositories;
 using PureLifeClinic.Core.Interfaces.IRepositories;
 using PureLifeClinic.Core.Interfaces.IServices;
 using PureLifeClinic.Core.Services;
