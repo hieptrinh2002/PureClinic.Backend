@@ -17,6 +17,12 @@ namespace PureLifeClinic.API.Extensions
                 options.Password.RequireDigit = true;
                 options.Password.RequireLowercase = true;
                 options.Password.RequiredLength = 6;
+
+                // lock account 
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromHours(3);
+                options.Lockout.AllowedForNewUsers = true;                 
+
             }).AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 

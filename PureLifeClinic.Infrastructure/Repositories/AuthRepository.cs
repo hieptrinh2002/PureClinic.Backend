@@ -48,17 +48,26 @@ namespace PureLifeClinic.Infrastructure.Repositories
                 return new ResponseViewModel<UserViewModel>
                 {
                     Success = false,
+                    Message = "User is not active or username not found"
                 };
             }
             if (! await _userManager.IsEmailConfirmedAsync(user))
             {
                 return new ResponseViewModel<UserViewModel>
                 {
-                    Success = false
+                    Success = false,
+                    Message = "Email is not confirmed"
                 };
             }
 
-            var result = await _signInManager.PasswordSignInAsync(user, password, isPersistent: false, lockoutOnFailure: false);
+            if (await _userManager.IsLockedOutAsync(user))
+                return new ResponseViewModel<UserViewModel>
+                {
+                    Success = false,
+                    Message = "Account is locked. Please try again later."
+                };
+
+            var result = await _signInManager.PasswordSignInAsync(user, password, isPersistent: false, lockoutOnFailure: true);
 
             if (result.Succeeded)
             {
@@ -72,7 +81,8 @@ namespace PureLifeClinic.Infrastructure.Repositories
             {
                 return new ResponseViewModel<UserViewModel>
                 {
-                    Success = false
+                    Success = false,
+                    Message = "login failed"
                 };
             }
 

@@ -132,9 +132,9 @@ namespace PureLifeClinic.Infrastructure.Repositories
             return result;
         }
 
-        public async Task<IdentityResult> ResetPassword(ResetPasswordViewModel model)
+        public async Task<IdentityResult> ResetPassword(ResetPasswordRequest model)
         {
-            var user = await _userManager.FindByNameAsync(model.UserName);
+            var user = await _userManager.FindByEmailAsync(model.Email);
 
             if (user == null)
             {
@@ -168,6 +168,25 @@ namespace PureLifeClinic.Infrastructure.Repositories
                 UserId  = user.Id,
                 ActivationToken = token,
             };   
+        }
+
+        public async Task<bool> UnlockAccountAsync(User user)
+        {
+            var lockoutResult = await _userManager.SetLockoutEndDateAsync(user, null);
+            if (!lockoutResult.Succeeded) return false;
+
+            var resetResult = await _userManager.ResetAccessFailedCountAsync(user);
+            return resetResult.Succeeded;
+        }
+
+        public async Task<string> GeneratePasswordResetTokenAsync(User user) 
+        {
+            return await _userManager.GeneratePasswordResetTokenAsync(user);
+        }
+
+        public async Task<IdentityResult> ResetPasswordAsync(User user, string token, string newPassword)
+        {
+            return await _userManager.ResetPasswordAsync(user, token, newPassword);
         }
     }
 }

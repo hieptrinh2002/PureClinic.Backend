@@ -1,4 +1,6 @@
-﻿namespace PureLifeClinic.API.Helpers
+﻿using PureLifeClinic.Core.Entities.Business;
+
+namespace PureLifeClinic.API.Helpers
 {
     public class MailHelper
     {
@@ -17,5 +19,13 @@
 
             return htmlContent;
         }
+
+        public static string GenerateConfirmationLink(string userEmail, string ClientUrl, string activationToken)
+        {
+            var token = Uri.EscapeDataString(activationToken);
+            var email = Uri.EscapeDataString(userEmail);
+            return $"{ClientUrl}?token={token}&email={email}";
+        }
+
     }
 }

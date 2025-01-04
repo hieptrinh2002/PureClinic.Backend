@@ -1,4 +1,5 @@
-﻿using PureLifeClinic.Core.Entities.Business;
+﻿using Microsoft.AspNetCore.Identity;
+using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Entities.General;
 using PureLifeClinic.Core.Interfaces.IMapper;
 using PureLifeClinic.Core.Interfaces.IRepositories;
@@ -130,28 +131,6 @@ namespace PureLifeClinic.Core.Services
             }
         }
 
-        public async Task<ResponseViewModel> ResetPassword(ResetPasswordViewModel model)
-        {
-            var result = await _userRepository.ResetPassword(model);
-            if (result.Succeeded)
-            {
-                return new ResponseViewModel { Success = true, Message = "Password reset successfully" };
-            }
-            else
-            {
-                return new ResponseViewModel
-                {
-                    Success = false,
-                    Message = "Password reset failed",
-                    Error = new ErrorViewModel
-                    {
-                        Code = "PASSWORD_RESET_ERROR",
-                        Message = string.Join(", ", result.Errors.Select(e => e.Description))
-                    }
-                };
-            }
-        }
-
         public async Task Delete(int id, CancellationToken cancellationToken)
         {
             var entity = await _userRepository.GetById(id, cancellationToken);
@@ -179,6 +158,37 @@ namespace PureLifeClinic.Core.Services
                     ActivationToken = result.ActivationToken
                 }
             };
+        }
+
+        public async Task<bool> UnlockAccountAsync(int userId)
+        {
+            var user = await _userRepository.GetById(userId, default);
+            if (user == null)
+            {
+                throw new Exception("User not found.");
+            }
+            return await _userRepository.UnlockAccountAsync(user);
+        }
+
+        public Task<string> RequestPasswordResetAsync(string email)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<ResponseViewModel> ResetPasswordAsync(string email, string token, string newPassword)
+        {
+            var user = await _userRepository.GetByEmail(email, default);
+            if (user == null)
+            {
+                throw new Exception("User not found.");
+            }
+
+            var result = await _userRepository.ResetPasswordAsync(user, token, newPassword);
+            if (result.Succeeded)
+            {
+                return new ResponseViewModel { Success = true, Message = "Password reset successfully" };
+            }
+            return new ResponseViewModel { Success = false, Message = "Password reset failed" };
         }
     }
 }

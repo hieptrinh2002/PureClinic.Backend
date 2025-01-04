@@ -86,7 +86,7 @@ builder.Services.AddCors(options =>
         builder.WithOrigins("http://localhost:3000") // URL frontend
                .AllowAnyHeader()
                .AllowAnyMethod()
-               .AllowCredentials(); // Cho phép g?i cookie
+               .AllowCredentials(); 
     });
 });
 

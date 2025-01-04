@@ -77,7 +77,7 @@ namespace PureLifeClinic.Core.Services
                     Error = new ErrorViewModel
                     {
                         Code = "LOGIN_ERROR",
-                        Message = "Incorrect username or password or not confirm email. Please check your credentials and try again."
+                        Message = result.Message
                     }
                 };
             }

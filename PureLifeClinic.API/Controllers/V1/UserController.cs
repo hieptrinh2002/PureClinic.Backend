@@ -358,34 +358,5 @@ namespace PureLifeClinic.API.Controllers.V1
                 return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
             }
         }
-
-        [HttpPost("reset-password")]
-        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(new ResponseViewModel
-                {
-                    Success = false,
-                    Message = "Invalid input",
-                    Error = new ErrorViewModel
-                    {
-                        Code = "INVALID_INPUT",
-                        Message = ModelStateHelper.GetErrors(ModelState)
-                    }
-                });
-            }
-
-            var response = await _userService.ResetPassword(model);
-
-            if (response.Success)
-            {
-                return Ok(response);
-            }
-            else
-            {
-                return BadRequest(response);
-            }
-        }
     }
 }

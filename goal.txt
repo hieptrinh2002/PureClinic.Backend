@@ -116,8 +116,9 @@ plan:
 	+ authentication (jwt/ refresh Token)
 - 30/12/2024 - 05/01/2025: 
 	+ CRUD profile API (doctor, user) 
-	+ Send mail services => OPT/ confirm mails when register account
+	+ Send mail services => confirm mails when register account
 	+ Lock account when login failed more than 5 times
+	+ Append refresh token to client cookie
 - 6/01/2025 - 12/01/2025: 
 	+ (in progress)
 
