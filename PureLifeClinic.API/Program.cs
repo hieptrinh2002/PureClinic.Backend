@@ -78,6 +78,19 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactApp", builder =>
+    {
+        builder.WithOrigins("http://localhost:3000") // URL frontend
+               .AllowAnyHeader()
+               .AllowAnyMethod()
+               .AllowCredentials(); // Cho phép g?i cookie
+    });
+});
+
+
 var app = builder.Build();
 
 if(app.Environment.IsDevelopment())
@@ -129,6 +142,7 @@ app.UseRouting(); // Add this line to configure routing
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseCors("AllowReactApp");
 
 #region Custom Middleware
 app.UseMiddleware<RequestResponseLoggingMiddleware>();

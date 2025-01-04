@@ -209,7 +209,6 @@ namespace PureLifeClinic.API.Controllers.V1
 
                         await _emailService.SendEmailAsync(mailRequestViewModel);
 
-
                         return Ok(response);
                     }
                     else

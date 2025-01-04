@@ -11,5 +11,8 @@ namespace PureLifeClinic.Core.Interfaces.IRepositories
         Task<IdentityResult> ResetPassword(ResetPasswordViewModel model);
         Task<User> GetByEmail(string email, CancellationToken cancellationToken);
         Task<EmailActivationViewModel> GenerateEmailConfirmationTokenAsync(string email);
+        Task<IEnumerable<User>> GetAllDoctor(CancellationToken cancellationToken);
+        Task<IEnumerable<User>> GetAllPatient(CancellationToken cancellationToken);
+
     }
 }

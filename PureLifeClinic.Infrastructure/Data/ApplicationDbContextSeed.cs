@@ -49,6 +49,17 @@ namespace PureLifeClinic.Infrastructure.Data
                     }
                 }
 
+                // Adding Products
+                if (!appContext.Doctors.Any())
+                {
+                    using (var transaction = appContext.Database.BeginTransaction())
+                    {
+                        appContext.Doctors.AddRange(GenerateDoctors());
+                        await appContext.SaveChangesAsync();
+                        transaction.Commit();
+                    }
+                }
+
             }
             catch (Exception ex)
             {
@@ -68,8 +79,9 @@ namespace PureLifeClinic.Infrastructure.Data
         {
             return new List<Role>
             {
+                new Role {Code="PATIENT", Name = "Patient", NormalizedName= "PATIENT", IsActive = true, EntryDate= DateTime.Now },
                 new Role {Code="ADMIN", Name = "Admin", NormalizedName="ADMIN", IsActive = true, EntryDate= DateTime.Now },
-                new Role {Code="USER", Name = "User", NormalizedName= "USER", IsActive = true, EntryDate= DateTime.Now },
+                new Role {Code="DOCTOR", Name = "Doctor", NormalizedName= "DOCTOR", IsActive = true, EntryDate= DateTime.Now },
             };
         }
 
@@ -86,6 +98,26 @@ namespace PureLifeClinic.Infrastructure.Data
 
             return faker.Generate(100);
 
+        }
+
+        static IEnumerable<Doctor> GenerateDoctors()
+        {
+            var faker = new Faker<Doctor>()
+                .RuleFor(d => d.Specialty, f => f.PickRandom(new[]
+                {
+                    "Internal Medicine",
+                    "Pediatrics",
+                    "Cardiology",
+                    "Dermatology",
+                    "Neurology"
+                }))
+                .RuleFor(d => d.Qualification, f => $"{f.Name.Prefix()} in {f.Company.CatchPhrase()}")
+                .RuleFor(d => d.ExperienceYears, f => f.Random.Int(1, 40))
+                .RuleFor(d => d.Description, f => f.Lorem.Paragraphs(1, 3))
+                .RuleFor(d => d.RegistrationNumber, f => f.Random.String2(8, 12, "ABCDEFGHIJKLMNOPQR6789"))
+                .RuleFor(d => d.UserId, f => 34); // Assuming UserId references existing user IDs
+
+            return faker.Generate(1);
         }
 
     }

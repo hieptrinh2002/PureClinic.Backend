@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using PureLifeClinic.Core.Entities.General;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PureLifeClinic.Core.Entities.Business
@@ -10,6 +11,10 @@ namespace PureLifeClinic.Core.Entities.Business
         public string? UserName { get; set; }
         public string? Email { get; set; }
         public string? Role { get; set; }
+
+        public string? Address { get; set; }
+        public Gender? Gender { get; set; }
+        public DateTime? DateOfBirth { get; set; } // Ngày sinh.
     }
 
     public class UserCreateViewModel

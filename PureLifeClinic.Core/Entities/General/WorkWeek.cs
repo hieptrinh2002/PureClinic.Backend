@@ -3,11 +3,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PureLifeClinic.Core.Entities.General
 {
-    public class DoctorWorkWeek : Base<int>
+    public class WorkWeek : Base<int>
     {
-        public int DoctorId { get; set; }
-        [ForeignKey(nameof(DoctorId))]
-        public virtual Doctor Doctor { get; set; }
+        public int UserId { get; set; }
+        [ForeignKey(nameof(UserId))]
+        public virtual User User { get; set; }
 
         [Required]
         public DateTime WeekStartDate { get; set; }
@@ -20,9 +20,9 @@ namespace PureLifeClinic.Core.Entities.General
 
     public class WorkDay : Base<int>
     {
-        public int DoctorWorkWeekId { get; set; }
-        [ForeignKey(nameof(DoctorWorkWeekId))]
-        public virtual DoctorWorkWeek WorkWeek { get; set; }
+        public int WorkWeekId { get; set; }
+        [ForeignKey(nameof(WorkWeekId))]
+        public virtual WorkWeek WorkWeek { get; set; }
 
         public DayOfWeek DayOfWeek { get; set; } // weekday (VD: monday...)
 

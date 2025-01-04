@@ -22,7 +22,7 @@ namespace PureLifeClinic.Core.Entities.General
         [ForeignKey(nameof(DoctorId))]
         public virtual Doctor Doctor { get; set; }
 
-        public AppointmentStatus Status { get; set; } // Trạng thái cuộc hẹn (Pending, Completed, Canceled).
+        public AppointmentStatus Status { get; set; } = AppointmentStatus.Pending;// Trạng thái cuộc hẹn (Pending, Completed, Canceled).
 
         public virtual ICollection<MedicalReport> MedicalReports { get; set; } = new List<MedicalReport>(); // Các báo cáo y tế trong cuộc hẹn.
     }

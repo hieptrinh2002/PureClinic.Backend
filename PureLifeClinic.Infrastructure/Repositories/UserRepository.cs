@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Entities.General;
 using PureLifeClinic.Core.Interfaces.IRepositories;
 using PureLifeClinic.Core.Interfaces.IServices;
 using PureLifeClinic.Infrastructure.Data;
-using System.Runtime.CompilerServices;
 
 namespace PureLifeClinic.Infrastructure.Repositories
 {
@@ -24,6 +24,24 @@ namespace PureLifeClinic.Infrastructure.Repositories
             _userManager = userManager;
             _roleManager = roleManager;
             _userContext = userContext;
+        }
+
+        public async Task<IEnumerable<User>> GetAllDoctor(CancellationToken cancellationToken)
+        {
+            var user = await _dbContext.Users.Where(u => u.Doctor != null && u.Role.NormalizedName == "DOCTOR")          
+                                             .Include(r=>r.Role)
+                                             .Include(u => u.Doctor)
+                                             .ToListAsync();
+            return user;
+        }
+
+        public async Task<IEnumerable<User>> GetAllPatient(CancellationToken cancellationToken)
+        {
+            var user = await _dbContext.Users.Where(u => u.Patient != null && u.Role.NormalizedName == "PATIENT")
+                                             .Include(r => r.Role)
+                                             .Include(u => u.Patient)
+                                             .ToListAsync();
+            return user;
         }
 
         public async Task<IdentityResult> Create(UserCreateViewModel model)
@@ -58,6 +76,14 @@ namespace PureLifeClinic.Infrastructure.Repositories
                 await _userManager.AddToRoleAsync(user, role.Name);
             }
 
+            // handle doctor
+            if (role.Name.IndexOf("doctor", StringComparison.CurrentCultureIgnoreCase) > 0)
+                await _dbContext.Doctors.AddAsync(new Doctor { User = user });
+            // handle patient
+            if (role.Name.IndexOf("partient", StringComparison.CurrentCultureIgnoreCase) > 0)
+                await _dbContext.Patients.AddAsync(new Patient { User = user });
+
+            await _dbContext.SaveChangesAsync();
             return result;
         }
 

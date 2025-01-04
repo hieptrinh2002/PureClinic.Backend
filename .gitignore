@@ -477,3 +477,5 @@ $RECYCLE.BIN/
 *.lnk
 
 PureLifeClinic.Infrastructure/Migrations/
+
+.codegpt

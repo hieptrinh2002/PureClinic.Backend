@@ -13,7 +13,11 @@ namespace PureLifeClinic.Infrastructure.Data
         #region DbSet Section
         public DbSet<Product> Products { get; set; }
 
-        public DbSet<RefreshToken> RefreshTokens { get; set; }  
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<Doctor> Doctors { get; set; }
+
+        public DbSet<Patient> Patients { get; set; }
+
 
         #endregion
 
@@ -22,6 +26,7 @@ namespace PureLifeClinic.Infrastructure.Data
             base.OnModelCreating(builder);
 
             ApplicationDbContextConfigurations.Configure(builder);
+
         }
 
     }

@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PureLifeClinic.Core.Entities.Business;
-using PureLifeClinic.Infrastructure.Data;
-using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Entities.General;
 using PureLifeClinic.Core.Interfaces.IMapper;
 using PureLifeClinic.Core.Interfaces.IRepositories;
+using PureLifeClinic.Infrastructure.Data;
 
 namespace PureLifeClinic.Infrastructure.Repositories
 {

@@ -16,18 +16,18 @@ namespace PureLifeClinic.Core.Entities.General
         public string Findings { get; set; } // Kết luận.
 
         [StringLength(500)]
-        public string Recommendations { get; set; } // Khuyến nghị điều trị.
+        public string? Recommendations { get; set; } // Khuyến nghị điều trị.
 
         public string FilePath { get; set; } // Đường dẫn tệp báo cáo (nếu có).
 
         [StringLength(500)]
-        public string Diagnosis { get; set; } // Chẩn đoán.
+        public string? Diagnosis { get; set; } // Chẩn đoán.
 
         [StringLength(1000)]
-        public string Prescription { get; set; } // Đơn thuốc.
+        public string? Prescription { get; set; } // Đơn thuốc.
 
         [StringLength(200)]
-        public string DoctorNotes { get; set; } // Ghi chú của bác sĩ.
+        public string? DoctorNotes { get; set; } // Ghi chú của bác sĩ.
     }
 }
 

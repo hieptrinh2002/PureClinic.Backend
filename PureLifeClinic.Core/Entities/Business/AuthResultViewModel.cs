@@ -7,5 +7,8 @@ namespace PureLifeClinic.Core.Entities.Business
         public string? AccessToken { get; set; }
 
         public RefreshTokenViewModel RefreshToken { get; set; }
+
+        public int UserId { get; set; }
+        public string Role { get; set; }
     }
 }

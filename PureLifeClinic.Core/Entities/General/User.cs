@@ -15,12 +15,23 @@ namespace PureLifeClinic.Core.Entities.General
         public DateTime? EntryDate { get; set; }
         public int? UpdatedBy { get; set; }
         public DateTime? UpdatedDate { get; set; }
-
-        [StringLength(maximumLength: 13, MinimumLength = 10)]
-        public string? PhoneNumber { get; set; }
+        public string? Address { get; set; } 
+        public Gender? Gender { get; set; } 
+        public DateTime? DateOfBirth { get; set; } // Ngày sinh.
 
         [ForeignKey(nameof(RoleId))]
         public virtual Role Role { get; set; }
+        public virtual Doctor? Doctor { get; set; }
+        public virtual Patient? Patient { get; set; }
+
+        public virtual ICollection<WorkWeek> WorkWeeks { get; set; } = new List<WorkWeek>();
+
         public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
+    }
+
+    public enum Gender
+    {
+        Female,
+        Male
     }
 }

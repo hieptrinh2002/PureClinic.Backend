@@ -1,18 +1,17 @@
 ﻿using PureLifeClinic.Core.Entities.Business;
-using PureLifeClinic.Core.Interfaces.IRepositories;
-using PureLifeClinic.Core.Interfaces.IServices;
-using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Entities.General;
 using PureLifeClinic.Core.Interfaces.IMapper;
+using PureLifeClinic.Core.Interfaces.IRepositories;
+using PureLifeClinic.Core.Interfaces.IServices;
 using System.Linq.Expressions;
-using Org.BouncyCastle.Asn1.Ocsp;
-using System;
 
 namespace PureLifeClinic.Core.Services
 {
     public class UserService : BaseService<User, UserViewModel>, IUserService
     {
         private readonly IBaseMapper<User, UserViewModel> _userViewModelMapper;
+        private readonly IBaseMapper<User, PatientViewModel> _patientViewModelMapper;
+
         private readonly IUserRepository _userRepository;
 
         public UserService(
@@ -30,6 +29,38 @@ namespace PureLifeClinic.Core.Services
             var entities = await _userRepository.GetAll(includeList, cancellationToken);
 
             return _userViewModelMapper.MapList(entities);
+        }
+
+        public async Task<IEnumerable<DoctorViewModel>> GetAllDoctor(CancellationToken cancellationToken)
+        {
+            var entities = await _userRepository.GetAllDoctor(cancellationToken);
+            var doctorViewModels = new List<DoctorViewModel>();
+            entities.ToList().RemoveAll(item => item.Doctor == null);
+            foreach (var entity in entities)
+            {
+                doctorViewModels.Add(new DoctorViewModel
+                {
+                    Id = entity.Id,
+                    Role = entity.Role.Name,
+                    FullName = entity.FullName,
+                    UserName = entity.UserName,
+                    Email = entity.Email,
+                    Specialty = entity.Doctor.Specialty,
+                    Qualification = entity.Doctor.Qualification,
+                    ExperienceYears = entity.Doctor.ExperienceYears,
+                    Description = entity.Doctor.Description,
+                    RegistrationNumber = entity.Doctor.RegistrationNumber,
+                });
+            }
+
+            return doctorViewModels;
+        }
+
+        public async Task<IEnumerable<PatientViewModel>> GetAllPatient(CancellationToken cancellationToken)
+        {
+            var entities = await _userRepository.GetAllPatient(cancellationToken);
+            entities.ToList().RemoveAll(item => item.Doctor == null);
+            return _patientViewModelMapper.MapList(entities);
         }
 
         public new async Task<PaginatedDataViewModel<UserViewModel>> GetPaginatedData(int pageNumber, int pageSize, CancellationToken cancellationToken)
@@ -54,6 +85,7 @@ namespace PureLifeClinic.Core.Services
             var user = _userRepository.GetByEmail(email, cancellationToken);   
             return user;    
         }
+
         public async Task<ResponseViewModel> Create(UserCreateViewModel model, CancellationToken cancellationToken)
         {
             var result = await _userRepository.Create(model);
@@ -148,6 +180,5 @@ namespace PureLifeClinic.Core.Services
                 }
             };
         }
-
     }
 }
