@@ -5,6 +5,7 @@ using PureLifeClinic.Core.Interfaces.IMapper;
 using PureLifeClinic.Core.Interfaces.IRepositories;
 using PureLifeClinic.Core.Interfaces.IServices;
 using System.Linq.Expressions;
+using System.Net.WebSockets;
 
 namespace PureLifeClinic.Core.Services
 {
@@ -189,6 +190,43 @@ namespace PureLifeClinic.Core.Services
                 return new ResponseViewModel { Success = true, Message = "Password reset successfully" };
             }
             return new ResponseViewModel { Success = false, Message = "Password reset failed" };
+        }
+
+        public async Task<ResponseViewModel<ResetPasswordViewModel>> GenerateResetPasswordTokenAsync(ForgotPasswordRequestViewModel model)
+        {
+            var user = await _userRepository.GetByEmail(model.Email, default);
+            if (user == null) 
+                return new ResponseViewModel<ResetPasswordViewModel>
+                {
+                    Success = false,
+                    Message = "genarate reset password token failed"
+                };
+
+            var resetToken = await _userRepository.GenerateResetPasswordTokenAsync(user);
+            var _token = Uri.EscapeDataString(resetToken);
+            var email = Uri.EscapeDataString(model.Email);
+            var resetLink = $"{model.ClientUrl}?token={_token}&email={email}";
+
+            // get mail body
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Template", "ForgotPassword.html");
+            var emailBody = File.ReadAllText(filePath);
+            emailBody = emailBody
+                .Replace("{{UserName}}", user.UserName)
+                .Replace("{{ResetPasswordLink}}", resetLink)
+                .Replace("{{Year}}", DateTime.Now.Year.ToString())
+                .Replace("{{UserEmail}}", user.Email);
+
+            return new ResponseViewModel<ResetPasswordViewModel>
+            {
+                Success = true,
+                Message = "Genarate reset password token successfully",
+                Data = new ResetPasswordViewModel
+                {
+                    Token = resetToken,
+                    Url = resetLink,
+                    EmailBody = emailBody   
+                }
+            };
         }
     }
 }

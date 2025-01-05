@@ -149,7 +149,7 @@ namespace PureLifeClinic.Infrastructure.Repositories
 
         public async Task<User> GetByEmail(string email, CancellationToken cancellationToken)
         {
-            var user = await _userManager.FindByNameAsync(email);
+            var user = await _userManager.FindByEmailAsync(email);
             return user;
         }
 
@@ -179,14 +179,17 @@ namespace PureLifeClinic.Infrastructure.Repositories
             return resetResult.Succeeded;
         }
 
-        public async Task<string> GeneratePasswordResetTokenAsync(User user) 
-        {
-            return await _userManager.GeneratePasswordResetTokenAsync(user);
-        }
 
         public async Task<IdentityResult> ResetPasswordAsync(User user, string token, string newPassword)
         {
             return await _userManager.ResetPasswordAsync(user, token, newPassword);
+        }
+
+
+        public async Task<string> GenerateResetPasswordTokenAsync(User user)
+        {
+            var token  = await _userManager.GeneratePasswordResetTokenAsync(user);
+            return token;
         }
     }
 }

@@ -34,10 +34,6 @@
 	+ Xem danh sách bác sĩ, thông tin chi tiết...
 
 
-
-
-
-
 *****
 1. Quản lý lịch hẹn (Appointment Scheduling)
 Mô tả: Xây dựng tính năng quản lý lịch hẹn cho bệnh nhân và bác sĩ. Hệ thống sẽ giúp bệnh nhân đặt lịch và bác sĩ xem lịch làm việc của họ.
@@ -115,11 +111,20 @@ plan:
 	+ init project structure base 
 	+ authentication (jwt/ refresh Token)
 - 30/12/2024 - 05/01/2025: 
-	+ CRUD profile API (doctor, user) 
-	+ Send mail services => confirm mails when register account
+	+ CRUD profile API (user) 
+	+ Send mail services
+	+ Register accout => confirm mails when register account
 	+ Lock account when login failed more than 5 times
 	+ Append refresh token to client cookie
 - 6/01/2025 - 12/01/2025: 
-	+ (in progress)
-
-
+	- Using Bogus to seed data for system
+	- FE (reactjs)
+		+ Login / logout
+		+ Zustand for state management
+		+ show list doctor
+		+ show list partient
+	- BE: 
+		+ CRUD Appointment api
+		+ Update status appointment
+		+ CRUD Doctor
+		+ CRUD Partient

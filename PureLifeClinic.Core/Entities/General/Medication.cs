@@ -6,16 +6,16 @@ namespace PureLifeClinic.Core.Entities.General
     {
 
         [Required, StringLength(100)]
-        public string Name { get; set; } // Tên thuốc
+        public string Name { get; set; } 
 
         [StringLength(500)]
-        public string Description { get; set; } // Mô tả thuốc
+        public string Description { get; set; } 
 
-        public decimal Price { get; set; } // Giá thuốc
+        public double Price { get; set; } 
 
-        public int StockQuantity { get; set; } // Số lượng thuốc còn trong kho
+        public int StockQuantity { get; set; } 
 
         [StringLength(100)]
-        public string Manufacturer { get; set; } // Nhà sản xuất
+        public string Manufacturer { get; set; } 
     }
 }

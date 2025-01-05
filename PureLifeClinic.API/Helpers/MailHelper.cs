@@ -20,11 +20,11 @@ namespace PureLifeClinic.API.Helpers
             return htmlContent;
         }
 
-        public static string GenerateConfirmationLink(string userEmail, string ClientUrl, string activationToken)
+        public static string GenerateConfirmationLink(string userEmail, string ClientUrl, string token)
         {
-            var token = Uri.EscapeDataString(activationToken);
+            var _token = Uri.EscapeDataString(token);
             var email = Uri.EscapeDataString(userEmail);
-            return $"{ClientUrl}?token={token}&email={email}";
+            return $"{ClientUrl}?token={_token}&email={email}";
         }
 
     }

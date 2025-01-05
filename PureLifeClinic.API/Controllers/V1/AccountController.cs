@@ -21,7 +21,7 @@ namespace PureLifeClinic.API.Controllers.V1
         private readonly IMailService _mailService;
         private readonly ILogger<AuthController> _logger;
 
-        public AccountController(IAccountService accountService, ILogger<AuthController> logger, 
+        public AccountController(ILogger<AuthController> logger, 
             IUserService userService, IAuthService authService, IMailService mailService)
         {
             _logger = logger;
@@ -217,26 +217,55 @@ namespace PureLifeClinic.API.Controllers.V1
             {
                 if (!ModelState.IsValid)
                 {
-                    return StatusCode(StatusCodes.Status500InternalServerError, new ResponseViewModel
+                    return StatusCode(StatusCodes.Status400BadRequest, new ResponseViewModel
                     {
                         Success = false,
-                        Message = "forgot password request failed",
+                        Message = "Invalid input",
+                        Error = new ErrorViewModel
+                        {
+                            Code = "INPUT_VALIDATION_ERROR",
+                            Message = ModelStateHelper.GetErrors(ModelState)
+                        }
                     });
                 }
+
                 // get User by email
                 var user = await _userService.GetByEmail(model.Email, default);
 
                 if (user == null)
                     throw new NotFoundException("email not found");
 
+                // send email with refresh passwork link
+                var result = await _userService.GenerateResetPasswordTokenAsync(model);
+                if (!result.Success)
+                    throw new Exception(result.Message);
 
+                var mailRequest = new MailRequestViewModel()
+                {
+                    ToEmail = model.Email,
+                    Subject = "Forgot password",
+                    Body = result.Data.EmailBody
+                };
 
-                return Ok("Password changed successfully.");
+                await _mailService.SendEmailAsync(mailRequest);
+
+                return Ok(new ResponseViewModel
+                {
+                    Message = "Reset password mail was sent successfully.",
+                    Success = true
+                });
             }
             catch (Exception ex)
             {
-                // Log the exception here
-                return StatusCode(500, "An error occurred while changing the password.");
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseViewModel
+                {
+                    Success = false,
+                    Error = new ErrorViewModel
+                    {
+                        Code = "EMAIL_RESET_PASSWORD_ERROR",
+                        Message = ex.Message
+                    }
+                });
             }
         }
 

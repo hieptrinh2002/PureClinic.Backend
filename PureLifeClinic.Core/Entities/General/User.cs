@@ -19,6 +19,16 @@ namespace PureLifeClinic.Core.Entities.General
         public Gender? Gender { get; set; } 
         public DateTime? DateOfBirth { get; set; } // Ngày sinh.
 
+        public int? Age
+        {
+            get
+            {
+                if (DateOfBirth == null)
+                    return 0;
+                return DateTime.Now.Year - DateOfBirth?.Year;
+            }
+        }
+
         [ForeignKey(nameof(RoleId))]
         public virtual Role Role { get; set; }
         public virtual Doctor? Doctor { get; set; }

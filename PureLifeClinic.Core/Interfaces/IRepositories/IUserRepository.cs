@@ -14,5 +14,7 @@ namespace PureLifeClinic.Core.Interfaces.IRepositories
         Task<IEnumerable<User>> GetAllPatient(CancellationToken cancellationToken);
         Task<bool> UnlockAccountAsync(User user);
         Task<IdentityResult> ResetPasswordAsync(User user, string token, string newPassword);
+        Task<string> GenerateResetPasswordTokenAsync(User user);
+
     }
 }

@@ -8,11 +8,19 @@ namespace PureLifeClinic.Infrastructure.Data
 {
     public class ApplicationDbContextSeed
     {
+        private static string GenerateStrongPassword()
+        {
+            var faker = new Faker();
+            return "ROnaldo11nbk..";
+        }
+
         public static async Task SeedAsync(IServiceProvider serviceProvider, ILoggerFactory loggerFactory, int? retry = 0)
         {
             int retryForAvailability = retry ?? 0;
             var appContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
             var UserManager = serviceProvider.GetRequiredService<UserManager<User>>();
+
+
             try
             {
                 // Adding Roles
@@ -29,37 +37,90 @@ namespace PureLifeClinic.Infrastructure.Data
                 // Adding Users
                 if (!appContext.Users.Any())
                 {
-                    var defaultUser = new User { FullName = "Kawser Hamid", UserName = "hamid", RoleId = 1, Email = "kawser2133@gmail.com", EntryDate = DateTime.Now, IsActive = true };
+                    var r = appContext.Roles.FirstOrDefault(r => r.NormalizedName == "ADMIN");
+                    var defaultUser = new User { FullName = "Kawser Hamid", UserName = "hamid", RoleId = r.Id, Email = "kawser2133@gmail.com", EntryDate = DateTime.Now, IsActive = true };
                     IdentityResult userResult = await UserManager.CreateAsync(defaultUser, "Hamid@12");
                     if (userResult.Succeeded)
                     {
-                        // here we assign the new user role 
                         await UserManager.AddToRoleAsync(defaultUser, "ADMIN");
                     }
+                    var roles = appContext.Roles.ToList();
+                    var users = Users(appContext).ToList();
+                    foreach (var user in users)
+                    {
+                        
+                        var role = roles.FirstOrDefault(r => r.Id == user.RoleId);
+                        if (role == null) continue; 
+
+                        var defaultPassword = GenerateStrongPassword();
+                        IdentityResult result = await UserManager.CreateAsync(user, defaultPassword);
+
+                        if (result.Succeeded)
+                        {
+                            await UserManager.AddToRoleAsync(user, role.NormalizedName);
+
+                            if (role.NormalizedName == "DOCTOR")
+                            {
+                                var doctor = new Faker<Doctor>()
+                                           .RuleFor(d => d.Specialty, f => f.Name.JobTitle())
+                                           .RuleFor(d => d.Qualification, f => f.Name.JobDescriptor())
+                                           .RuleFor(d => d.ExperienceYears, f => f.Random.Int(1, 30))
+                                           .RuleFor(d => d.Description, f => f.Lorem.Paragraph())
+                                           .RuleFor(d => d.RegistrationNumber, f => f.Random.Guid().ToString())
+                                           .RuleFor(d => d.UserId, f => user.Id)
+                                           .RuleFor(d => d.EntryDate, f => DateTime.Now).Generate(1).FirstOrDefault();
+
+                                appContext.Doctors.Add(doctor);
+
+                            }
+                            else if (role.NormalizedName == "PATIENT")
+                            {
+                                var patient = new Faker<Patient>()
+                                           .RuleFor(p => p.MedicalHistory, f => f.Lorem.Sentence())
+                                           .RuleFor(p => p.Notes, f => f.Lorem.Paragraph())
+                                           .RuleFor(p => p.UserId, f => user.Id)
+                                           .RuleFor(p => p.EntryDate, f => DateTime.Now).Generate(1).FirstOrDefault();
+
+                                appContext.Patients.Add(patient);
+                            }
+                            else if (role.NormalizedName == "EMPLOYEE")
+                            {
+
+                            }
+                            else if (role.NormalizedName == "ADMIN")
+                            {
+
+                            }
+                        }
+                        else
+                        {
+                            var t = $"Failed to create user: {user.UserName}, Errors: {string.Join(", ", result.Errors.Select(e => e.Description))}";
+                            Console.WriteLine($"Failed to create user: {user.UserName}, Errors: {string.Join(", ", result.Errors.Select(e => e.Description))}");
+                        }
+                    }
                 }
 
-                // Adding Products
-                if (!appContext.Products.Any())
+                // Adding appoinments
+                if (!appContext.Appointments.Any())
                 {
                     using (var transaction = appContext.Database.BeginTransaction())
                     {
-                        appContext.Products.AddRange(Products());
+                        var t = Appointments(serviceProvider);
+
+                        appContext.Appointments.AddRange(Appointments(serviceProvider));
                         await appContext.SaveChangesAsync();
                         transaction.Commit();
                     }
                 }
-
-                // Adding Products
-                if (!appContext.Doctors.Any())
+                // Adding Schedule
+                if (!appContext.WorkWeeks.Any())
                 {
                     using (var transaction = appContext.Database.BeginTransaction())
                     {
-                        appContext.Doctors.AddRange(GenerateDoctors());
-                        await appContext.SaveChangesAsync();
+                      await WorkWeeks(appContext);
                         transaction.Commit();
                     }
                 }
-
             }
             catch (Exception ex)
             {
@@ -79,46 +140,101 @@ namespace PureLifeClinic.Infrastructure.Data
         {
             return new List<Role>
             {
-                new Role {Code="PATIENT", Name = "Patient", NormalizedName= "PATIENT", IsActive = true, EntryDate= DateTime.Now },
                 new Role {Code="ADMIN", Name = "Admin", NormalizedName="ADMIN", IsActive = true, EntryDate= DateTime.Now },
+                new Role {Code="EMPLOYEE", Name = "Employee", NormalizedName="EMPLOYEE", IsActive = true, EntryDate= DateTime.Now },
+                new Role {Code="PATIENT", Name = "Patient", NormalizedName= "PATIENT", IsActive = true, EntryDate= DateTime.Now },
                 new Role {Code="DOCTOR", Name = "Doctor", NormalizedName= "DOCTOR", IsActive = true, EntryDate= DateTime.Now },
             };
         }
 
-        static IEnumerable<Product> Products()
+        public static IEnumerable<User> Users(ApplicationDbContext appContext)
         {
-            var faker = new Faker<Product>()
-                .RuleFor(c => c.Code, f => f.Commerce.Product())
-                .RuleFor(c => c.Name, f => f.Commerce.ProductName())
-                .RuleFor(c => c.Description, f => f.Commerce.ProductDescription())
-                .RuleFor(c => c.Price, f => Convert.ToDouble(f.Commerce.Price(1, 1000, 0)))
-                .RuleFor(c => c.Quantity, f => f.Commerce.Random.Number(100))
-                .RuleFor(c => c.IsActive, f => f.Random.Bool())
-                .RuleFor(c => c.EntryDate, DateTime.Now);
-
-            return faker.Generate(100);
-
-        }
-
-        static IEnumerable<Doctor> GenerateDoctors()
-        {
-            var faker = new Faker<Doctor>()
-                .RuleFor(d => d.Specialty, f => f.PickRandom(new[]
+            var existingUsernames = new HashSet<string>();
+            var existingEmails = new HashSet<string>();
+                  
+            var roleIds = appContext.Roles.Select(r => r.Id).ToList();
+            var faker = new Faker<User>()
+                .CustomInstantiator(f => new User()) // Khởi tạo User
+                .RuleFor(u => u.FullName, f => f.Name.FullName())
+                .RuleFor(u => u.UserName, f =>
                 {
-                    "Internal Medicine",
-                    "Pediatrics",
-                    "Cardiology",
-                    "Dermatology",
-                    "Neurology"
-                }))
-                .RuleFor(d => d.Qualification, f => $"{f.Name.Prefix()} in {f.Company.CatchPhrase()}")
-                .RuleFor(d => d.ExperienceYears, f => f.Random.Int(1, 40))
-                .RuleFor(d => d.Description, f => f.Lorem.Paragraphs(1, 3))
-                .RuleFor(d => d.RegistrationNumber, f => f.Random.String2(8, 12, "ABCDEFGHIJKLMNOPQR6789"))
-                .RuleFor(d => d.UserId, f => 34); // Assuming UserId references existing user IDs
+                    string username;
+                    do
+                    {
+                        username = f.Internet.UserName();
+                    } while (existingUsernames.Contains(username));
+                    existingUsernames.Add(username);
+                    return username;
+                })
+                .RuleFor(u => u.Email, f =>
+                {
+                    string email;
+                    do
+                    {
+                        email = f.Internet.Email();
+                    } while (existingEmails.Contains(email));
+                    existingEmails.Add(email);
+                    return email;
+                })
+                .RuleFor(u => u.Address, f => f.Address.FullAddress())
+                .RuleFor(u => u.IsActive, f => f.Random.Bool())
+                .RuleFor(u => u.RoleId, f => roleIds[f.Random.Int(0, roleIds.Count -1)]) // Gắn roleId từ 1-4
+                .RuleFor(u => u.DateOfBirth, f => f.Date.Past(40, DateTime.Now.AddYears(-18)))
+                .RuleFor(u => u.Gender, f => f.PickRandom<Gender>())
+                .RuleFor(u => u.EntryDate, f => DateTime.Now);
 
-            return faker.Generate(1);
+            return faker.Generate(50);
+        }
+        public static IEnumerable<Appointment> Appointments(IServiceProvider serviceProvider)
+        {
+            var appContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
+            var doctors = appContext.Doctors.ToList(); // Giả định RoleId=3 là Patient
+            var patients = appContext.Patients.ToList();  // Giả định RoleId=4 là Doctor
+
+            var faker = new Faker<Appointment>()
+                .RuleFor(a => a.AppointmentDate, f => f.Date.Future())
+                .RuleFor(a => a.Reason, f => f.PickRandom<AppointmentReason>())
+                .RuleFor(a => a.OtherReason, f => f.Address.FullAddress())
+                .RuleFor(a => a.PatientId, f => patients[f.Random.Int(0, patients.Count - 1)].Id)  // Lấy ngẫu nhiên PatientId từ danh sách bệnh nhân
+                .RuleFor(a => a.DoctorId, f => doctors[f.Random.Int(0, doctors.Count - 1)].Id)  // Lấy ngẫu nhiên DoctorId từ danh sách bác sĩ
+                .RuleFor(a => a.Status, f => f.PickRandom<AppointmentStatus>())
+                .RuleFor(a => a.EntryDate, f => DateTime.Now);
+
+            return faker.Generate(15);
         }
 
+        public static async Task WorkWeeks(ApplicationDbContext appContext)
+        {
+            // just suport celander for doctor
+            var doctors = appContext.Doctors.ToList();
+            var faker = new Faker<WorkWeek>()
+                .RuleFor(w => w.UserId, f => doctors[f.Random.Int(0, doctors.Count - 1)].UserId)  
+                .RuleFor(w => w.WeekStartDate, f => f.Date.Past(1))
+                .RuleFor(w => w.WeekEndDate, (f, w) => w.WeekStartDate.AddDays(6))
+                .RuleFor(w => w.EntryDate, f => DateTime.Now);
+            for (int i = 0; i < 10; i++)  // create 10 WorkWeek
+            {
+                var workWeek = faker.Generate(1).First();
+
+                appContext.WorkWeeks.Add(workWeek);
+                await appContext.SaveChangesAsync(); 
+
+                for (int day = 0; day < 7; day++) 
+                {
+                    var workDay = new WorkDay
+                    {
+                        WorkWeekId = workWeek.Id,  
+                        DayOfWeek = (DayOfWeek)((int)workWeek.WeekStartDate.DayOfWeek + day % 7),
+                        StartTime = new TimeSpan(new Random().Next(8, 10), 0, 0),  // 8-10 AM
+                        EndTime = new TimeSpan(new Random().Next(16, 18), 0, 0),  //  4-6 PM
+                        Notes = new Faker().Lorem.Sentence(),
+                        EntryDate = DateTime.Now
+                    };
+
+                    appContext.WorkDays.Add(workDay);
+                }
+            }
+            await appContext.SaveChangesAsync(); 
+        }
     }
 }

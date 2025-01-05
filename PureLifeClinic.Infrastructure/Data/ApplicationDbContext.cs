@@ -12,11 +12,15 @@ namespace PureLifeClinic.Infrastructure.Data
 
         #region DbSet Section
         public DbSet<Product> Products { get; set; }
-
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<Doctor> Doctors { get; set; }
-
         public DbSet<Patient> Patients { get; set; }
+        public DbSet<Appointment> Appointments { get; set; }
+        public DbSet<MedicalReport> MedicalReports { get; set; }
+        public DbSet<Medication> Medications { get; set; }
+        public DbSet<WorkWeek> WorkWeeks { get; set; } 
+
+        public DbSet<WorkDay> WorkDays { get; set;}
 
 
         #endregion

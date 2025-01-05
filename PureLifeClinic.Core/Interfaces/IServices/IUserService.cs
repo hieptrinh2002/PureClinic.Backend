@@ -16,11 +16,11 @@ namespace PureLifeClinic.Core.Interfaces.IServices
         Task<string> RequestPasswordResetAsync(string email);
         Task<ResponseViewModel> ResetPasswordAsync(string email, string token, string newPassword);
 
-        // doctor
         Task<IEnumerable<DoctorViewModel>> GetAllDoctor(CancellationToken cancellationToken);
         Task<IEnumerable<PatientViewModel>> GetAllPatient(CancellationToken cancellationToken);
 
         Task<ResponseViewModel<EmailActivationViewModel>> GenerateEmailConfirmationTokenAsync(string email);
         Task<bool> UnlockAccountAsync(int userId);
+        Task <ResponseViewModel<ResetPasswordViewModel>>GenerateResetPasswordTokenAsync(ForgotPasswordRequestViewModel model);
     }
 }
