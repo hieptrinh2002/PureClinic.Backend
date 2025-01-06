@@ -38,7 +38,17 @@ namespace PureLifeClinic.Infrastructure.Data
                 if (!appContext.Users.Any())
                 {
                     var r = appContext.Roles.FirstOrDefault(r => r.NormalizedName == "ADMIN");
-                    var defaultUser = new User { FullName = "Kawser Hamid", UserName = "hamid", RoleId = r.Id, Email = "kawser2133@gmail.com", EntryDate = DateTime.Now, IsActive = true };
+                    var defaultUser = new User
+                    {
+                        FullName =
+                        "Kawser Hamid",
+                        UserName = "hamid",
+                        RoleId = r.Id,
+                        Email = "kawser2133@gmail.com",
+                        EntryDate = DateTime.Now,
+                        IsActive = true
+                    };
+
                     IdentityResult userResult = await UserManager.CreateAsync(defaultUser, "Hamid@12");
                     if (userResult.Succeeded)
                     {
@@ -112,6 +122,7 @@ namespace PureLifeClinic.Infrastructure.Data
                         transaction.Commit();
                     }
                 }
+
                 // Adding Schedule
                 if (!appContext.WorkWeeks.Any())
                 {
@@ -188,15 +199,15 @@ namespace PureLifeClinic.Infrastructure.Data
         public static IEnumerable<Appointment> Appointments(IServiceProvider serviceProvider)
         {
             var appContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
-            var doctors = appContext.Doctors.ToList(); // Giả định RoleId=3 là Patient
-            var patients = appContext.Patients.ToList();  // Giả định RoleId=4 là Doctor
+            var doctors = appContext.Doctors.ToList(); 
+            var patients = appContext.Patients.ToList();  
 
             var faker = new Faker<Appointment>()
                 .RuleFor(a => a.AppointmentDate, f => f.Date.Future())
                 .RuleFor(a => a.Reason, f => f.PickRandom<AppointmentReason>())
                 .RuleFor(a => a.OtherReason, f => f.Address.FullAddress())
-                .RuleFor(a => a.PatientId, f => patients[f.Random.Int(0, patients.Count - 1)].Id)  // Lấy ngẫu nhiên PatientId từ danh sách bệnh nhân
-                .RuleFor(a => a.DoctorId, f => doctors[f.Random.Int(0, doctors.Count - 1)].Id)  // Lấy ngẫu nhiên DoctorId từ danh sách bác sĩ
+                .RuleFor(a => a.PatientId, f => patients[f.Random.Int(0, patients.Count - 1)].Id)  
+                .RuleFor(a => a.DoctorId, f => doctors[f.Random.Int(0, doctors.Count - 1)].Id) 
                 .RuleFor(a => a.Status, f => f.PickRandom<AppointmentStatus>())
                 .RuleFor(a => a.EntryDate, f => DateTime.Now);
 

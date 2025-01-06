@@ -78,7 +78,6 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactApp", builder =>
@@ -89,7 +88,6 @@ builder.Services.AddCors(options =>
                .AllowCredentials(); 
     });
 });
-
 
 var app = builder.Build();
 

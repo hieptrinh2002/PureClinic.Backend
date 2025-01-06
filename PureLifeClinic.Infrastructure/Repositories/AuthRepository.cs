@@ -48,7 +48,7 @@ namespace PureLifeClinic.Infrastructure.Repositories
                 return new ResponseViewModel<UserViewModel>
                 {
                     Success = false,
-                    Message = "User is not active or username not found"
+                    Message = "Username not found"
                 };
             }
             if (! await _userManager.IsEmailConfirmedAsync(user))
@@ -56,7 +56,7 @@ namespace PureLifeClinic.Infrastructure.Repositories
                 return new ResponseViewModel<UserViewModel>
                 {
                     Success = false,
-                    Message = "Email is not confirmed"
+                    Message = "Email is not confirmed, please check and activate your account !"
                 };
             }
 

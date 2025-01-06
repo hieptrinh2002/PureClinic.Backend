@@ -84,7 +84,7 @@ namespace PureLifeClinic.API.Controllers.V1
                         });
                     }
 
-                    return BadRequest(result);
+                    return Ok(result);
                 }
                 catch (Exception ex)
                 {
