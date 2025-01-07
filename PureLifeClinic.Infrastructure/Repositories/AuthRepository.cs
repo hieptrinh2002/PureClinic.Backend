@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Entities.General;
-using PureLifeClinic.Core.Interfaces.IMapper;
 using PureLifeClinic.Core.Interfaces.IRepositories;
 using PureLifeClinic.Infrastructure.Data;
 
@@ -12,17 +11,14 @@ namespace PureLifeClinic.Infrastructure.Repositories
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
-        private readonly IBaseMapper<RefreshToken, RefreshTokenViewModel> _refreshTokenViewModelMapper;
 
         public AuthRepository(
             UserManager<User> userManager,
             SignInManager<User> signInManager,
-            IBaseMapper<RefreshToken, RefreshTokenViewModel> refreshTokenViewModelMapper,
             ApplicationDbContext dbContext) : base(dbContext)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _refreshTokenViewModelMapper = refreshTokenViewModelMapper;
         }
 
         public async Task<ResponseViewModel> ConfirmEmail(string emailConfirmation, string activeToken, CancellationToken cancellationToken)
@@ -71,10 +67,19 @@ namespace PureLifeClinic.Infrastructure.Repositories
 
             if (result.Succeeded)
             {
+                var role = await _dbContext.Roles.FirstOrDefaultAsync(r => r.Id == user.RoleId);
+                if (role != null)
+                {
+                    return new ResponseViewModel<UserViewModel>
+                    {
+                        Success = true,
+                        Data = new UserViewModel { Id = user.Id, UserName = user.UserName, Email = user.Email, Role = role.Name },
+                    };
+                }
                 return new ResponseViewModel<UserViewModel>
                 {
-                    Success = true,
-                    Data = new UserViewModel { Id = user.Id, UserName = user.UserName },
+                    Success = false,
+                    Message = "user role is not found"
                 };
             }
             else
@@ -90,53 +95,6 @@ namespace PureLifeClinic.Infrastructure.Repositories
         public async Task Logout()
         {
             await _signInManager.SignOutAsync();
-        }
-
-        public async Task<ResponseViewModel<RefreshTokenViewModel>> ValidateRefreshToken(string refreshToken)
-        {
-            var users = _userManager.Users;
-
-            //lazy loading => refreshToken will not be loaded
-            //var user = await _userManager.Users.FirstOrDefaultAsync(u => u.RefreshTokens.Any(r => r.Token == refreshToken));
-
-            //eager loading 
-            var user = await _userManager.Users.Include(token => token.RefreshTokens).FirstOrDefaultAsync(u => u.RefreshTokens.Any(r => r.Token == refreshToken));
-
-            if (user == null)
-            {
-                return new ResponseViewModel<RefreshTokenViewModel>
-                {
-                    Success = false,
-                };
-            }
-            try
-            {
-                var rfToken = user.RefreshTokens?.Single(t => t.Token == refreshToken);
-
-                if (rfToken == null || !rfToken.IsActive)
-                {
-                    return new ResponseViewModel<RefreshTokenViewModel>
-                    {
-                        Success = false,
-                    };
-                }
-
-                rfToken.RevokedOn = DateTime.UtcNow;
-                _dbContext.SaveChanges();
-
-                return new ResponseViewModel<RefreshTokenViewModel>
-                {
-                    Success = true,
-                    Data = _refreshTokenViewModelMapper.MapModel(rfToken)
-                };
-            }
-            catch (Exception ex)
-            {
-                return new ResponseViewModel<RefreshTokenViewModel>
-                {
-                    Success = false,
-                };
-            }
         }
     }
 }

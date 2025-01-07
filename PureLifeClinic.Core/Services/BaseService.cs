@@ -1,9 +1,8 @@
 ﻿using PureLifeClinic.Core.Interfaces.IServices;
 using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Entities.Business;
-using PureLifeClinic.Core.Interfaces.IMapper;
 using PureLifeClinic.Core.Interfaces.IRepositories;
-using System.Linq.Expressions;
+using AutoMapper;
 
 namespace PureLifeClinic.Core.Services
 {
@@ -11,49 +10,46 @@ namespace PureLifeClinic.Core.Services
         where T : class
         where TViewModel : class
     {
-        private readonly IBaseMapper<T, TViewModel> _viewModelMapper;
+        private readonly IMapper _mapper;
         private readonly IBaseRepository<T> _repository;
 
         public BaseService(
-            IBaseMapper<T, TViewModel> viewModelMapper,
+            IMapper mapper,
             IBaseRepository<T> repository)
         {
-            _viewModelMapper = viewModelMapper;
+            _mapper = mapper;
             _repository = repository;
         }
 
         public virtual async Task<IEnumerable<TViewModel>> GetAll(CancellationToken cancellationToken)
         {
-            return _viewModelMapper.MapList(await _repository.GetAll(cancellationToken));
+            return _mapper.Map<List<TViewModel>>(await _repository.GetAll(cancellationToken));
         }
 
         public virtual async Task<PaginatedDataViewModel<TViewModel>> GetPaginatedData(int pageNumber, int pageSize, CancellationToken cancellationToken)
         {
             var paginatedData = await _repository.GetPaginatedData(pageNumber, pageSize, cancellationToken);
-            var mappedData = _viewModelMapper.MapList(paginatedData.Data);
-            var paginatedDataViewModel = new PaginatedDataViewModel<TViewModel>(mappedData.ToList(), paginatedData.TotalCount);
-            return paginatedDataViewModel;
+            var mappedData = _mapper.Map<IEnumerable<TViewModel>>(paginatedData.Data);
+            return new PaginatedDataViewModel<TViewModel>(mappedData, paginatedData.TotalCount);
         }
 
         public virtual async Task<PaginatedDataViewModel<TViewModel>> GetPaginatedData(int pageNumber, int pageSize, List<ExpressionFilter> filters, CancellationToken cancellationToken)
         {
             var paginatedData = await _repository.GetPaginatedData(pageNumber, pageSize, filters, cancellationToken);
-            var mappedData = _viewModelMapper.MapList(paginatedData.Data);
-            var paginatedDataViewModel = new PaginatedDataViewModel<TViewModel>(mappedData.ToList(), paginatedData.TotalCount);
-            return paginatedDataViewModel;
+            var mappedData = _mapper.Map<IEnumerable<TViewModel>>(paginatedData.Data);
+            return new PaginatedDataViewModel<TViewModel>(mappedData, paginatedData.TotalCount);
         }
 
         public virtual async Task<PaginatedDataViewModel<TViewModel>> GetPaginatedData(int pageNumber, int pageSize, List<ExpressionFilter> filters, string sortBy, string sortOrder, CancellationToken cancellationToken)
         {
             var paginatedData = await _repository.GetPaginatedData(pageNumber, pageSize, filters, sortBy, sortOrder, cancellationToken);
-            var mappedData = _viewModelMapper.MapList(paginatedData.Data);
-            var paginatedDataViewModel = new PaginatedDataViewModel<TViewModel>(mappedData.ToList(), paginatedData.TotalCount);
-            return paginatedDataViewModel;
+            var mappedData = _mapper.Map<IEnumerable<TViewModel>>(paginatedData.Data);
+            return new PaginatedDataViewModel<TViewModel>(mappedData, paginatedData.TotalCount);
         }
 
         public virtual async Task<TViewModel> GetById<Tid>(Tid id, CancellationToken cancellationToken)
         {
-            return _viewModelMapper.MapModel(await _repository.GetById(id, cancellationToken));
+            return _mapper.Map<TViewModel>(await _repository.GetById(id, cancellationToken));
         }
 
         public virtual async Task<bool> IsExists<Tvalue>(string key, Tvalue value, CancellationToken cancellationToken)

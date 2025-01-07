@@ -1,59 +1,25 @@
-﻿using PureLifeClinic.Core.Entities.Business;
-using PureLifeClinic.Core.Entities.General;
+﻿using AutoMapper;
+using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Exceptions;
-using PureLifeClinic.Core.Interfaces.IMapper;
 using PureLifeClinic.Core.Interfaces.IRepositories;
 using PureLifeClinic.Core.Interfaces.IServices;
 
 namespace PureLifeClinic.Core.Services
 {
-    public class AuthService : BaseService<RefreshToken, RefreshTokenViewModel>, IAuthService
+    public class AuthService : IAuthService
     {
         private readonly IAuthRepository _authRepository;
-        private readonly IUserRepository _userRepository;
-
-        private readonly IUserContext _userContext;
-        private readonly IBaseMapper<RefreshTokenCreateViewModel, RefreshToken> _refreshTokenCreateMapper;
-        private readonly IBaseMapper<RefreshToken, RefreshTokenViewModel> _refreshTokenViewModelMapper;
+        private readonly IRefreshTokenRepository _refreshTokenRepository;
+        private readonly IMapper _mapper;
 
         public AuthService(
             IAuthRepository authRepository,
-            IUserRepository userRepository,
-            IUserContext userContext,
-            IBaseMapper<RefreshTokenCreateViewModel, RefreshToken> refreshTokenCreateMapper,
-            IBaseMapper<RefreshToken, RefreshTokenViewModel> refreshTokenViewModelMapper) : base(refreshTokenViewModelMapper,authRepository)
+            IRefreshTokenRepository refreshTokenRepository,
+            IMapper mapper)
         {
             _authRepository = authRepository;
-            _userRepository = userRepository;
-            _userContext = userContext;
-            _refreshTokenCreateMapper = refreshTokenCreateMapper;
-            _refreshTokenViewModelMapper = refreshTokenViewModelMapper;
-        }
-
-        public async Task<ResponseViewModel<RefreshTokenViewModel>> InsertRefreshToken(int userId, RefreshTokenCreateViewModel refreshTokenModel, CancellationToken cancellationToken)
-        {
-            var refreshToken = _refreshTokenCreateMapper.MapModel(refreshTokenModel);
-            refreshToken.UserId = userId;
-
-            await _authRepository.Create(refreshToken, cancellationToken);
-
-            return new ResponseViewModel<RefreshTokenViewModel>
-            {
-                Success = true,
-                Message = "create refresh token successful",
-                Data = _refreshTokenViewModelMapper.MapModel(refreshToken)
-            };
-        }
-
-        public async Task<ResponseViewModel<RefreshTokenViewModel>> RefreshTokenCheckAsync(string refreshToken)
-        {
-            //find the user that match the sent refresh token
-            var result = await _authRepository.ValidateRefreshToken(refreshToken);
-            if (!result.Success)
-            {
-                throw new NotFoundException("Invalid refresh token");
-            }
-            return result;  
+            _refreshTokenRepository = refreshTokenRepository;
+            _mapper = mapper;
         }
 
         public async Task<ResponseViewModel<UserViewModel>> Login(string userName, string password)

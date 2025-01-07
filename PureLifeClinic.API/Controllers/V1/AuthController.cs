@@ -21,25 +21,22 @@ namespace PureLifeClinic.API.Controllers.V1
     {
         private readonly ILogger<AuthController> _logger;
         private readonly IAuthService _authService;
+        private readonly IRefreshTokenService _refreshTokenService;
         private readonly AppSettings _appSettings;
         private readonly IUserContext _userContext;
-        private readonly IMailService _mailService;
-        private readonly IUserService _userService;
+  
         public AuthController(
-            IMailService mailService,
             ILogger<AuthController> logger,
             IAuthService authService,
-            IConfiguration configuration,
             IOptions<AppSettings> appSettings,
-            IUserContext userContext,
-            IUserService userService)
+            IRefreshTokenService refreshTokenService,
+            IUserContext userContext)
         {
-            _mailService = mailService; 
             _logger = logger;
             _authService = authService;
+            _refreshTokenService = refreshTokenService; 
             _appSettings = appSettings.Value;
             _userContext = userContext;
-            _userService = userService;
         }
 
 
@@ -67,7 +64,7 @@ namespace PureLifeClinic.API.Controllers.V1
                             AccessTokenId = tokenData.Data.AccessTokenId,
                         };
 
-                        var createdTokenResult = await _authService.InsertRefreshToken(result.Data.Id, refreshTokenModel, default);
+                        var createdTokenResult = await _refreshTokenService.InsertRefreshToken(result.Data.Id, refreshTokenModel, default);
                         SetRefreshTokenInCookies(createdTokenResult.Data.Token, createdTokenResult.Data.ExpireOn);
 
                         return Ok(new ResponseViewModel<AuthResultViewModel>
@@ -78,6 +75,7 @@ namespace PureLifeClinic.API.Controllers.V1
                                 AccessToken = tokenData.Data.AccessToken,
                                 RefreshToken = createdTokenResult.Data,
                                 Role = result.Data.Role,
+                                UserEmail = result.Data.Email,
                                 UserId = result.Data.Id
                             },
                             Message = "Login successful"
@@ -187,7 +185,7 @@ namespace PureLifeClinic.API.Controllers.V1
                 {
                     if (Request.Cookies.TryGetValue("refreshTokenKey", out var refreshToken))
                     {
-                        var result = await _authService.RefreshTokenCheckAsync(refreshToken);
+                        var result = await _refreshTokenService.RefreshTokenCheckAsync(refreshToken);
 
                         if (!result.Success)
                         {
@@ -218,7 +216,7 @@ namespace PureLifeClinic.API.Controllers.V1
                         };
 
                         // insert refreshToken to db
-                        var createdTokenResult = await _authService.InsertRefreshToken(Convert.ToInt32(_userContext.UserId), refreshTokenCreateModel, default);
+                        var createdTokenResult = await _refreshTokenService.InsertRefreshToken(Convert.ToInt32(_userContext.UserId), refreshTokenCreateModel, default);
                         if (!createdTokenResult.Success || createdTokenResult.Data == null)
                         {
                             throw new Exception("Token was genarated failed");

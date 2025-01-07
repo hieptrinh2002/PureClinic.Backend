@@ -86,7 +86,7 @@ namespace PureLifeClinic.Infrastructure.Data
                             else if (role.NormalizedName == "PATIENT")
                             {
                                 var patient = new Faker<Patient>()
-                                           .RuleFor(p => p.MedicalHistory, f => f.Lorem.Sentence())
+                                           //.RuleFor(p => p.MedicalHistory, f => f.Lorem.Sentence())
                                            .RuleFor(p => p.Notes, f => f.Lorem.Paragraph())
                                            .RuleFor(p => p.UserId, f => user.Id)
                                            .RuleFor(p => p.EntryDate, f => DateTime.Now).Generate(1).FirstOrDefault();

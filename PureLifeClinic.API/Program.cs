@@ -1,4 +1,4 @@
-using Asp.Versioning;
+﻿using Asp.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
@@ -7,6 +7,7 @@ using PureLifeClinic.API.Extensions;
 using PureLifeClinic.API.Middlewares;
 using PureLifeClinic.Infrastructure.Data;
 using Swashbuckle.AspNetCore.SwaggerGen;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,7 +28,9 @@ builder.Services.AddLogging(loggingBuilder =>
 // Register Services
 builder.Services.RegisterSecurityService(builder.Configuration);
 builder.Services.RegisterService();
-builder.Services.RegisterMapperService();
+//builder.Services.RegisterMapperService();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 builder.Services.AddAuthorization();
 builder.Services.AddSwaggerGen();
 
