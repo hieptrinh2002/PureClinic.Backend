@@ -10,25 +10,25 @@ namespace PureLifeClinic.Core.Services
     public class UserService : BaseService<User, UserViewModel>, IUserService
     {
         private readonly IMapper _mapper;
-        private readonly IUserRepository _userRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public UserService(IMapper mapper, IUserRepository userRepository) : base(mapper, userRepository)
+        public UserService(IMapper mapper, IUnitOfWork unitOfWork) : base(mapper, unitOfWork.Users)
         {
             _mapper = mapper;
-            _userRepository = userRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public new async Task<IEnumerable<UserViewModel>> GetAll(CancellationToken cancellationToken)
         {
             var includeList = new List<Expression<Func<User, object>>> { x => x.Role };
-            var entities = await _userRepository.GetAll(includeList, cancellationToken);
+            var entities = await _unitOfWork.Users.GetAll(includeList, cancellationToken);
 
             return _mapper.Map<IEnumerable<UserViewModel>>(entities);
         }
 
         public async Task<IEnumerable<DoctorViewModel>> GetAllDoctor(CancellationToken cancellationToken)
         {
-            var entities = await _userRepository.GetAllDoctor(cancellationToken);
+            var entities = await _unitOfWork.Users.GetAllDoctor(cancellationToken);
             var doctorViewModels = new List<DoctorViewModel>();
             entities.ToList().RemoveAll(item => item.Doctor == null);
             foreach (var entity in entities)
@@ -53,7 +53,7 @@ namespace PureLifeClinic.Core.Services
 
         public async Task<IEnumerable<PatientViewModel>> GetAllPatient(CancellationToken cancellationToken)
         {
-            var entities = await _userRepository.GetAllPatient(cancellationToken);
+            var entities = await _unitOfWork.Users.GetAllPatient(cancellationToken);
             entities.ToList().RemoveAll(item => item.Doctor == null);
             return _mapper.Map<IEnumerable<PatientViewModel>>(entities);
         }
@@ -62,7 +62,7 @@ namespace PureLifeClinic.Core.Services
         {
             var includeList = new List<Expression<Func<User, object>>> { x => x.Role };
 
-            var paginatedData = await _userRepository.GetPaginatedData(includeList, pageNumber, pageSize, cancellationToken);
+            var paginatedData = await _unitOfWork.Users.GetPaginatedData(includeList, pageNumber, pageSize, cancellationToken);
             var mappedData = _mapper.Map<IEnumerable<UserViewModel>>(paginatedData.Data);
             var paginatedDataViewModel = new PaginatedDataViewModel<UserViewModel>(mappedData.ToList(), paginatedData.TotalCount);
             return paginatedDataViewModel;
@@ -72,20 +72,21 @@ namespace PureLifeClinic.Core.Services
         {
             var includeList = new List<Expression<Func<User, object>>> { x => x.Role };
 
-            return _mapper.Map<UserViewModel>(await _userRepository.GetById(includeList, id, cancellationToken));
+            return _mapper.Map<UserViewModel>(await _unitOfWork.Users.GetById(includeList, id, cancellationToken));
         }
 
         public Task<User> GetByEmail(string email, CancellationToken cancellationToken)
         {
-            var user = _userRepository.GetByEmail(email, cancellationToken);   
+            var user = _unitOfWork.Users.GetByEmail(email, cancellationToken);   
             return user;    
         }
 
         public async Task<ResponseViewModel> Create(UserCreateViewModel model, CancellationToken cancellationToken)
         {
-            var result = await _userRepository.Create(model);
+            var result = await _unitOfWork.Users.Create(model);
             if (result.Succeeded)
             {
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
                 return new ResponseViewModel { Success = true, Message = "User created successfully" };
             }
             else
@@ -105,9 +106,10 @@ namespace PureLifeClinic.Core.Services
 
         public async Task<ResponseViewModel> Update(UserUpdateViewModel model, CancellationToken cancellationToken)
         {
-            var result = await _userRepository.Update(model);
+            var result = await _unitOfWork.Users.Update(model);
             if (result.Succeeded)
             {
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
                 return new ResponseViewModel { Success = true, Message = "User updated successfully" };
             }
             else
@@ -127,13 +129,14 @@ namespace PureLifeClinic.Core.Services
 
         public async Task Delete(int id, CancellationToken cancellationToken)
         {
-            var entity = await _userRepository.GetById(id, cancellationToken);
-            await _userRepository.Delete(entity, cancellationToken);
+            var entity = await _unitOfWork.Users.GetById(id, cancellationToken);
+            await _unitOfWork.Users.Delete(entity, cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken); 
         }
 
         public async Task<ResponseViewModel<EmailActivationViewModel>> GenerateEmailConfirmationTokenAsync(string email)
         {
-            var result =  await _userRepository.GenerateEmailConfirmationTokenAsync(email);
+            var result =  await _unitOfWork.Users.GenerateEmailConfirmationTokenAsync(email);
             if (result == null)
             {
                 return new ResponseViewModel<EmailActivationViewModel>
@@ -156,30 +159,26 @@ namespace PureLifeClinic.Core.Services
 
         public async Task<bool> UnlockAccountAsync(int userId)
         {
-            var user = await _userRepository.GetById(userId, default);
+            var user = await _unitOfWork.Users.GetById(userId, default);
             if (user == null)
             {
                 throw new Exception("User not found.");
             }
-            return await _userRepository.UnlockAccountAsync(user);
-        }
-
-        public Task<string> RequestPasswordResetAsync(string email)
-        {
-            throw new NotImplementedException();
+            return await _unitOfWork.Users.UnlockAccountAsync(user);
         }
 
         public async Task<ResponseViewModel> ResetPasswordAsync(string email, string token, string newPassword)
         {
-            var user = await _userRepository.GetByEmail(email, default);
+            var user = await _unitOfWork.Users.GetByEmail(email, default);
             if (user == null)
             {
                 throw new Exception("User not found.");
             }
 
-            var result = await _userRepository.ResetPasswordAsync(user, token, newPassword);
+            var result = await _unitOfWork.Users.ResetPasswordAsync(user, token, newPassword);
             if (result.Succeeded)
             {
+                await _unitOfWork.SaveChangesAsync();
                 return new ResponseViewModel { Success = true, Message = "Password reset successfully" };
             }
             return new ResponseViewModel { Success = false, Message = "Password reset failed" };
@@ -187,7 +186,7 @@ namespace PureLifeClinic.Core.Services
 
         public async Task<ResponseViewModel<ResetPasswordViewModel>> GenerateResetPasswordTokenAsync(ForgotPasswordRequestViewModel model)
         {
-            var user = await _userRepository.GetByEmail(model.Email, default);
+            var user = await _unitOfWork.Users.GetByEmail(model.Email, default);
             if (user == null) 
                 return new ResponseViewModel<ResetPasswordViewModel>
                 {
@@ -195,7 +194,7 @@ namespace PureLifeClinic.Core.Services
                     Message = "genarate reset password token failed"
                 };
 
-            var resetToken = await _userRepository.GenerateResetPasswordTokenAsync(user);
+            var resetToken = await _unitOfWork.Users.GenerateResetPasswordTokenAsync(user);
             var _token = Uri.EscapeDataString(resetToken);
             var email = Uri.EscapeDataString(model.Email);
             var resetLink = $"{model.ClientUrl}?token={_token}&email={email}";

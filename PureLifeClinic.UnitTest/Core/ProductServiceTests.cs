@@ -14,17 +14,16 @@ namespace PureLifeClinic.UnitTest.Core
         private readonly Mock<IProductRepository> _mockProductRepository;
         private readonly Mock<IUserContext> _mockUserContext;
         private readonly ProductService _productService;
-
+        private readonly IUnitOfWork _unitOfWork;
         public ProductServiceTests()
         {
             _mockMapper = new Mock<IMapper>();
             _mockProductRepository = new Mock<IProductRepository>();
             _mockUserContext = new Mock<IUserContext>();
-
             _productService = new ProductService(
                 _mockMapper.Object,
-                _mockProductRepository.Object,
-                _mockUserContext.Object
+                _mockUserContext.Object,
+                _unitOfWork
             );
         }
 
