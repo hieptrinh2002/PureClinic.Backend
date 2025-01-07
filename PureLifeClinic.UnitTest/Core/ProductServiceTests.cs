@@ -1,34 +1,28 @@
+using AutoMapper;
 using Moq;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Entities.General;
-using PureLifeClinic.Core.Interfaces.IMapper;
 using PureLifeClinic.Core.Interfaces.IRepositories;
 using PureLifeClinic.Core.Interfaces.IServices;
 using PureLifeClinic.Core.Services;
 
-namespace PureLifeClinic.UnitTest
+namespace PureLifeClinic.UnitTest.Core
 {
     public class ProductServiceTests
     {
-        private readonly Mock<IBaseMapper<Product, ProductViewModel>> _mockProductViewModelMapper;
-        private readonly Mock<IBaseMapper<ProductCreateViewModel, Product>> _mockProductCreateMapper;
-        private readonly Mock<IBaseMapper<ProductUpdateViewModel, Product>> _mockProductUpdateMapper;
+        private readonly Mock<IMapper> _mockMapper;
         private readonly Mock<IProductRepository> _mockProductRepository;
         private readonly Mock<IUserContext> _mockUserContext;
         private readonly ProductService _productService;
 
         public ProductServiceTests()
         {
-            _mockProductViewModelMapper = new Mock<IBaseMapper<Product, ProductViewModel>>();
-            _mockProductCreateMapper = new Mock<IBaseMapper<ProductCreateViewModel, Product>>();
-            _mockProductUpdateMapper = new Mock<IBaseMapper<ProductUpdateViewModel, Product>>();
+            _mockMapper = new Mock<IMapper>();
             _mockProductRepository = new Mock<IProductRepository>();
             _mockUserContext = new Mock<IUserContext>();
 
             _productService = new ProductService(
-                _mockProductViewModelMapper.Object,
-                _mockProductCreateMapper.Object,
-                _mockProductUpdateMapper.Object,
+                _mockMapper.Object,
                 _mockProductRepository.Object,
                 _mockUserContext.Object
             );
@@ -72,20 +66,20 @@ namespace PureLifeClinic.UnitTest
             var productEntity = CreateProductEntity();
             var productViewModel = CreateProductViewModel();
 
-            _mockProductCreateMapper.Setup(m => m.MapModel(It.IsAny<ProductCreateViewModel>())).Returns(productEntity);
+            _mockMapper.Setup(mapper => mapper.Map<Product>(model)).Returns(productEntity);
             _mockProductRepository.Setup(repo => repo.Create(It.IsAny<Product>(), It.IsAny<CancellationToken>())).ReturnsAsync(productEntity);
-            _mockProductViewModelMapper.Setup(m => m.MapModel(It.IsAny<Product>())).Returns(productViewModel);
+            _mockMapper.Setup(mapper => mapper.Map<ProductViewModel>(productEntity)).Returns(productViewModel);
             _mockUserContext.Setup(u => u.UserId).Returns("1");
 
             // Act
             var result = await _productService.Create(model, CancellationToken.None);
 
             // Assert
-            _mockProductCreateMapper.Verify(m => m.MapModel(It.IsAny<ProductCreateViewModel>()), Times.Once);
+            _mockMapper.Verify(mapper => mapper.Map<Product>(model), Times.Once);
             _mockProductRepository.Verify(repo => repo.Create(It.IsAny<Product>(), It.IsAny<CancellationToken>()), Times.Once);
-            _mockProductViewModelMapper.Verify(m => m.MapModel(It.IsAny<Product>()), Times.Once);
+            _mockMapper.Verify(mapper => mapper.Map<ProductViewModel>(productEntity), Times.Once);
             Assert.NotNull(result);
-            Assert.Equal(productViewModel.Id, result.Id);
+            Assert.Equal(productViewModel.Code, result.Code);
         }
 
         [Fact]
@@ -96,7 +90,7 @@ namespace PureLifeClinic.UnitTest
             var existingProduct = new Product { Id = 1, Name = "Old Product" };
 
             _mockProductRepository.Setup(repo => repo.GetById(It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync(existingProduct);
-            _mockProductUpdateMapper.Setup(m => m.MapModel(It.IsAny<ProductUpdateViewModel>(), It.IsAny<Product>())).Verifiable();
+            _mockMapper.Setup(mapper => mapper.Map(model, existingProduct)).Verifiable();
             _mockUserContext.Setup(u => u.UserId).Returns("123");
 
             // Act
@@ -104,7 +98,7 @@ namespace PureLifeClinic.UnitTest
 
             // Assert
             _mockProductRepository.Verify(repo => repo.Update(It.IsAny<Product>(), It.IsAny<CancellationToken>()), Times.Once);
-            _mockProductUpdateMapper.Verify(m => m.MapModel(It.IsAny<ProductUpdateViewModel>(), It.IsAny<Product>()), Times.Once);
+            _mockMapper.Verify(mapper => mapper.Map(model, existingProduct), Times.Once);
         }
 
         [Fact]

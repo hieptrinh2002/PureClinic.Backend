@@ -3,28 +3,23 @@ using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Entities.General;
 using PureLifeClinic.Core.Interfaces.IMapper;
 using PureLifeClinic.Core.Interfaces.IRepositories;
+using AutoMapper;
 
 namespace PureLifeClinic.Core.Services
 {
     public class ProductService : BaseService<Product, ProductViewModel>, IProductService
     {
-        private readonly IBaseMapper<Product, ProductViewModel> _productViewModelMapper;
-        private readonly IBaseMapper<ProductCreateViewModel, Product> _productCreateMapper;
-        private readonly IBaseMapper<ProductUpdateViewModel, Product> _productUpdateMapper;
+        private readonly IMapper _mapper;
         private readonly IProductRepository _productRepository;
         private readonly IUserContext _userContext;
 
         public ProductService(
-            IBaseMapper<Product, ProductViewModel> productViewModelMapper,
-            IBaseMapper<ProductCreateViewModel, Product> productCreateMapper,
-            IBaseMapper<ProductUpdateViewModel, Product> productUpdateMapper,
+            IMapper mapper,
             IProductRepository productRepository,
             IUserContext userContext)
-            : base(productViewModelMapper, productRepository)
+            : base(mapper, productRepository)
         {
-            _productCreateMapper = productCreateMapper;
-            _productUpdateMapper = productUpdateMapper;
-            _productViewModelMapper = productViewModelMapper;
+            _mapper = mapper;
             _productRepository = productRepository;
             _userContext = userContext;
         }
@@ -32,24 +27,19 @@ namespace PureLifeClinic.Core.Services
         public async Task<ProductViewModel> Create(ProductCreateViewModel model, CancellationToken cancellationToken)
         {
             //Mapping through AutoMapper
-            var entity = _productCreateMapper.MapModel(model);
+            var entity = _mapper.Map<Product>(model);
             entity.EntryDate = DateTime.Now;
             entity.EntryBy = Convert.ToInt32(_userContext.UserId);
 
-            return _productViewModelMapper.MapModel(await _productRepository.Create(entity, cancellationToken));
+            return _mapper.Map<ProductViewModel>(await _productRepository.Create(entity, cancellationToken));
         }
 
         public async Task Update(ProductUpdateViewModel model, CancellationToken cancellationToken)
         {
-            var existingData = await _productRepository.GetById(model.Id, cancellationToken);
-
-            //Mapping through AutoMapper
-            _productUpdateMapper.MapModel(model, existingData);
-
-            // Set additional properties or perform other logic as needed
+            var existingData = await _productRepository.GetById(model.Id, cancellationToken) ?? throw new KeyNotFoundException($"Product with ID {model.Id} not found.");
+            _mapper.Map(model, existingData);
             existingData.UpdatedDate = DateTime.Now;
             existingData.UpdatedBy = Convert.ToInt32(_userContext.UserId);
-
             await _productRepository.Update(existingData, cancellationToken);
         }
 

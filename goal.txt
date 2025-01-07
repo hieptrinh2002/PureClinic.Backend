@@ -16,6 +16,18 @@
 	+ Rabbit MQ (phức tạp?)
 	+ SqlServer + MongoDB + Redis
 	+ Unit test
+	+ Mongodb config
+
+- Dữ liệu phi cấu trúc hoặc dữ liệu cần mở rộng linh hoạt: 
+Như hình ảnh X-quang, kết quả xét nghiệm, hoặc các thông tin khám bệnh không tuân theo một cấu trúc cố định.
+Lưu trữ khối lượng lớn dữ liệu mà không cần quan tâm đến việc thay đổi cấu trúc bảng
+Ví dụ, hình ảnh X-quang có thể có nhiều độ phân giải hoặc các kết quả xét nghiệm có thể thay đổi theo từng lần khám.
+
+- Dữ liệu có cấu trúc cố định và cần tính toàn vẹn cao: 
+Thông tin bệnh nhân như tên, địa chỉ, số điện thoại, các thông tin liên quan đến lịch sử bệnh án có thể lưu trữ tốt trong SQL Server.
+Các mối quan hệ phức tạp hoặc dữ liệu cần tham chiếu chặt chẽ: Các bảng liên quan đến bệnh nhân, bác sĩ, lịch hẹn có thể được quản lý tốt hơn trong SQL Server.
+
+(kiểu với các loại bệnh sẽ có những trường riêng, những loại thuốc riêng => linh hoạt)
 
   - Employee:
 	+ Tiếp nhận yêu cầu khám bệnh và lên lịch khám

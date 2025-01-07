@@ -3,28 +3,23 @@ using PureLifeClinic.Core.Interfaces.IServices;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Entities.General;
 using PureLifeClinic.Core.Interfaces.IMapper;
+using AutoMapper;
 
 namespace PureLifeClinic.Core.Services
 {
     public class RoleService : BaseService<Role, RoleViewModel>, IRoleService
     {
-        private readonly IBaseMapper<Role, RoleViewModel> _roleViewModelMapper;
-        private readonly IBaseMapper<RoleCreateViewModel, Role> _roleCreateMapper;
-        private readonly IBaseMapper<RoleUpdateViewModel, Role> _roleUpdateMapper;
+        private readonly IMapper _mapper;
         private readonly IRoleRepository _roleRepository;
         private readonly IUserContext _userContext;
 
         public RoleService(
-            IBaseMapper<Role, RoleViewModel> roleViewModelMapper,
-            IBaseMapper<RoleCreateViewModel, Role> roleCreateMapper,
-            IBaseMapper<RoleUpdateViewModel, Role> roleUpdateMapper,
+            IMapper mapper,
             IRoleRepository roleRepository,
             IUserContext userContext)
-            : base(roleViewModelMapper, roleRepository)
+            : base(mapper, roleRepository)
         {
-            _roleCreateMapper = roleCreateMapper;
-            _roleUpdateMapper = roleUpdateMapper;
-            _roleViewModelMapper = roleViewModelMapper;
+            _mapper = mapper;
             _roleRepository = roleRepository;
             _userContext = userContext;
         }
@@ -32,22 +27,21 @@ namespace PureLifeClinic.Core.Services
         public async Task<RoleViewModel> Create(RoleCreateViewModel model, CancellationToken cancellationToken)
         {
             //Mapping through AutoMapper
-            var entity = _roleCreateMapper.MapModel(model);
+            var entity = _mapper.Map<Role>(model);
 
             // Set additional properties or perform other logic as needed
             entity.NormalizedName = model.Name.ToUpper();
             entity.EntryDate = DateTime.Now;
             entity.EntryBy = Convert.ToInt32(_userContext.UserId);
 
-            return _roleViewModelMapper.MapModel(await _roleRepository.Create(entity, cancellationToken));
+            return _mapper.Map<RoleViewModel>(await _roleRepository.Create(entity, cancellationToken));
         }
 
         public async Task Update(RoleUpdateViewModel model, CancellationToken cancellationToken)
         {
             var existingData = await _roleRepository.GetById(model.Id, cancellationToken);
-
             //Mapping through AutoMapper
-            _roleUpdateMapper.MapModel(model, existingData);
+            _mapper.Map(model, existingData);
 
             // Set additional properties or perform other logic as needed
             existingData.UpdatedDate = DateTime.Now;
@@ -61,6 +55,5 @@ namespace PureLifeClinic.Core.Services
             var entity = await _roleRepository.GetById(id, cancellationToken);
             await _roleRepository.Delete(entity, cancellationToken);
         }
-
     }
 }

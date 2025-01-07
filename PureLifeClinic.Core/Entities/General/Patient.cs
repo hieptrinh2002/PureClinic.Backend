@@ -17,6 +17,22 @@ namespace PureLifeClinic.Core.Entities.General
         public int UserId { get; set; }
 
         [ForeignKey(nameof(UserId))]
-        public virtual User User { get; set; }  
+        public virtual User User { get; set; }
+
+        //// new 
+        //public PatientStatus Status { get; set; }
+        //public List<string> Tags { get; set; }
+        //public ICollection<MedicalHistory> MedicalHistory { get; set; }
+        //public ICollection<PatientImaging> Imaging { get; set; }
+        //public ICollection<LabResult> LabResults { get; set; }
+        //public ICollection<MedicationInteraction> Interactions { get; set; }
+        //public ICollection<Allergy> Allergies { get; set; }
+    }
+    public enum PatientStatus
+    {
+        UnderTreatment,
+        Stable,
+        Discharged,
+        Referred
     }
 }

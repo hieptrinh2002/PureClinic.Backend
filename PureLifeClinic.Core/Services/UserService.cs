@@ -1,27 +1,20 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Entities.General;
-using PureLifeClinic.Core.Interfaces.IMapper;
 using PureLifeClinic.Core.Interfaces.IRepositories;
 using PureLifeClinic.Core.Interfaces.IServices;
 using System.Linq.Expressions;
-using System.Net.WebSockets;
 
 namespace PureLifeClinic.Core.Services
 {
     public class UserService : BaseService<User, UserViewModel>, IUserService
     {
-        private readonly IBaseMapper<User, UserViewModel> _userViewModelMapper;
-        private readonly IBaseMapper<User, PatientViewModel> _patientViewModelMapper;
-
+        private readonly IMapper _mapper;
         private readonly IUserRepository _userRepository;
 
-        public UserService(
-            IBaseMapper<User, UserViewModel> userViewModelMapper,
-            IUserRepository userRepository)
-            : base(userViewModelMapper, userRepository)
+        public UserService(IMapper mapper, IUserRepository userRepository) : base(mapper, userRepository)
         {
-            _userViewModelMapper = userViewModelMapper;
+            _mapper = mapper;
             _userRepository = userRepository;
         }
 
@@ -30,7 +23,7 @@ namespace PureLifeClinic.Core.Services
             var includeList = new List<Expression<Func<User, object>>> { x => x.Role };
             var entities = await _userRepository.GetAll(includeList, cancellationToken);
 
-            return _userViewModelMapper.MapList(entities);
+            return _mapper.Map<IEnumerable<UserViewModel>>(entities);
         }
 
         public async Task<IEnumerable<DoctorViewModel>> GetAllDoctor(CancellationToken cancellationToken)
@@ -62,7 +55,7 @@ namespace PureLifeClinic.Core.Services
         {
             var entities = await _userRepository.GetAllPatient(cancellationToken);
             entities.ToList().RemoveAll(item => item.Doctor == null);
-            return _patientViewModelMapper.MapList(entities);
+            return _mapper.Map<IEnumerable<PatientViewModel>>(entities);
         }
 
         public new async Task<PaginatedDataViewModel<UserViewModel>> GetPaginatedData(int pageNumber, int pageSize, CancellationToken cancellationToken)
@@ -70,7 +63,7 @@ namespace PureLifeClinic.Core.Services
             var includeList = new List<Expression<Func<User, object>>> { x => x.Role };
 
             var paginatedData = await _userRepository.GetPaginatedData(includeList, pageNumber, pageSize, cancellationToken);
-            var mappedData = _userViewModelMapper.MapList(paginatedData.Data);
+            var mappedData = _mapper.Map<IEnumerable<UserViewModel>>(paginatedData.Data);
             var paginatedDataViewModel = new PaginatedDataViewModel<UserViewModel>(mappedData.ToList(), paginatedData.TotalCount);
             return paginatedDataViewModel;
         }
@@ -79,7 +72,7 @@ namespace PureLifeClinic.Core.Services
         {
             var includeList = new List<Expression<Func<User, object>>> { x => x.Role };
 
-            return _userViewModelMapper.MapModel(await _userRepository.GetById(includeList, id, cancellationToken));
+            return _mapper.Map<UserViewModel>(await _userRepository.GetById(includeList, id, cancellationToken));
         }
 
         public Task<User> GetByEmail(string email, CancellationToken cancellationToken)
