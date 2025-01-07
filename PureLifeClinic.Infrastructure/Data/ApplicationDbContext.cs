@@ -22,7 +22,6 @@ namespace PureLifeClinic.Infrastructure.Data
 
         public DbSet<WorkDay> WorkDays { get; set;}
 
-
         #endregion
 
         protected override void OnModelCreating(ModelBuilder builder)

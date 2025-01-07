@@ -1,6 +1,4 @@
-﻿using AutoMapper;
-using PureLifeClinic.Core.Entities.Business;
-using PureLifeClinic.Core.Exceptions;
+﻿using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Interfaces.IRepositories;
 using PureLifeClinic.Core.Interfaces.IServices;
 
@@ -8,23 +6,16 @@ namespace PureLifeClinic.Core.Services
 {
     public class AuthService : IAuthService
     {
-        private readonly IAuthRepository _authRepository;
-        private readonly IRefreshTokenRepository _refreshTokenRepository;
-        private readonly IMapper _mapper;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public AuthService(
-            IAuthRepository authRepository,
-            IRefreshTokenRepository refreshTokenRepository,
-            IMapper mapper)
+        public AuthService(IUnitOfWork unitOfWork)
         {
-            _authRepository = authRepository;
-            _refreshTokenRepository = refreshTokenRepository;
-            _mapper = mapper;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<ResponseViewModel<UserViewModel>> Login(string userName, string password)
         {
-            var result = await _authRepository.Login(userName, password);
+            var result = await _unitOfWork.Auth.Login(userName, password);
             if (result.Success)
             {
                 return new ResponseViewModel<UserViewModel>
@@ -51,12 +42,12 @@ namespace PureLifeClinic.Core.Services
 
         public async Task Logout()
         {
-            await _authRepository.Logout();
+            await _unitOfWork.Auth.Logout();
         }
 
         public async Task<ResponseViewModel> ConfirmEmailAsync(string emailConfirmation, string activeToken, CancellationToken cancellationToken)
         {
-            var result = await _authRepository.ConfirmEmail(emailConfirmation, activeToken, cancellationToken);
+            var result = await _unitOfWork.Auth.ConfirmEmail(emailConfirmation, activeToken, cancellationToken);
             if (result.Success) {
                 return new ResponseViewModel
                 {

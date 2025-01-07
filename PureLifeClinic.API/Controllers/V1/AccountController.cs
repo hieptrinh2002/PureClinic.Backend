@@ -12,7 +12,7 @@ namespace PureLifeClinic.API.Controllers.V1
     [ApiVersion("1.0")] 
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 
     public class AccountController : ControllerBase
     {
@@ -58,7 +58,7 @@ namespace PureLifeClinic.API.Controllers.V1
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> SendActivationEmail(UserCreateViewModel model, string clientUrl, CancellationToken cancellationToken)
+        public async Task<IActionResult> SendActivationEmail([FromBody] UserCreateViewModel model, string clientUrl, CancellationToken cancellationToken)
         {
             if (ModelState.IsValid)
             {

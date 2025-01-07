@@ -30,6 +30,7 @@ namespace PureLifeClinic.API.Extensions
 
             #endregion
 
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
             return services;
         }
     }

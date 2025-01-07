@@ -28,7 +28,7 @@ namespace PureLifeClinic.Infrastructure.Repositories
 
         public async Task<IEnumerable<User>> GetAllDoctor(CancellationToken cancellationToken)
         {
-            var user = await _dbContext.Users.Where(u => u.Doctor != null && u.Role.NormalizedName == "DOCTOR")          
+            var user = await _dbContext.Users.Where(u => u.Doctor != null && u.Role.NormalizedName == "DOCTOR")
                                              .Include(r=>r.Role)
                                              .Include(u => u.Doctor)
                                              .ToListAsync();
@@ -77,13 +77,12 @@ namespace PureLifeClinic.Infrastructure.Repositories
             }
 
             // handle doctor
-            if (role.Name.IndexOf("doctor", StringComparison.CurrentCultureIgnoreCase) > 0)
-                await _dbContext.Doctors.AddAsync(new Doctor { User = user });
+            if (role.Name.ToLower().Contains("doctor"))
+                await _dbContext.Doctors.AddAsync(new Doctor { User = user, UserId = user.Id, Specialty = "polyclinic" });
             // handle patient
-            if (role.Name.IndexOf("partient", StringComparison.CurrentCultureIgnoreCase) > 0)
-                await _dbContext.Patients.AddAsync(new Patient { User = user });
+            if (role.Name.ToLower().Contains("partient"))
+                await _dbContext.Patients.AddAsync(new Patient { User = user, UserId = user.Id });
 
-            await _dbContext.SaveChangesAsync();
             return result;
         }
 
@@ -184,7 +183,6 @@ namespace PureLifeClinic.Infrastructure.Repositories
         {
             return await _userManager.ResetPasswordAsync(user, token, newPassword);
         }
-
 
         public async Task<string> GenerateResetPasswordTokenAsync(User user)
         {

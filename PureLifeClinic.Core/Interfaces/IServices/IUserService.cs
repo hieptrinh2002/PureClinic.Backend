@@ -12,8 +12,6 @@ namespace PureLifeClinic.Core.Interfaces.IServices
         Task<ResponseViewModel> Create(UserCreateViewModel model, CancellationToken cancellationToken);
         Task<ResponseViewModel> Update(UserUpdateViewModel model, CancellationToken cancellationToken);
         Task Delete(int id, CancellationToken cancellationToken);
-
-        Task<string> RequestPasswordResetAsync(string email);
         Task<ResponseViewModel> ResetPasswordAsync(string email, string token, string newPassword);
 
         Task<IEnumerable<DoctorViewModel>> GetAllDoctor(CancellationToken cancellationToken);

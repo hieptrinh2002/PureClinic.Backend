@@ -21,6 +21,5 @@ namespace PureLifeClinic.Core.Interfaces.IRepositories
         Task CreateRange(List<T> model, CancellationToken cancellationToken);
         Task Update(T model, CancellationToken cancellationToken);
         Task Delete(T model, CancellationToken cancellationToken);
-        Task SaveChangeAsync(CancellationToken cancellationToken);
     }
 }

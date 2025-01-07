@@ -190,31 +190,26 @@ namespace PureLifeClinic.Infrastructure.Repositories
         public async Task<T> Create(T model, CancellationToken cancellationToken = default)
         {
             await _dbContext.Set<T>().AddAsync(model, cancellationToken);
-            await _dbContext.SaveChangesAsync(cancellationToken);
+            //await _dbContext.SaveChangesAsync(cancellationToken);
             return model;
         }
 
         public async Task CreateRange(List<T> model, CancellationToken cancellationToken = default)
         {
             await _dbContext.Set<T>().AddRangeAsync(model, cancellationToken);
-            await _dbContext.SaveChangesAsync(cancellationToken);
+            //await _dbContext.SaveChangesAsync(cancellationToken);
         }
 
         public async Task Update(T model, CancellationToken cancellationToken = default)
         {
             _dbContext.Set<T>().Update(model);
-            await _dbContext.SaveChangesAsync(cancellationToken);
+            //await _dbContext.SaveChangesAsync(cancellationToken);
         }
 
         public async Task Delete(T model, CancellationToken cancellationToken = default)
         {
             _dbContext.Set<T>().Remove(model);
-            await _dbContext.SaveChangesAsync(cancellationToken);
-        }
-
-        public async Task SaveChangeAsync(CancellationToken cancellationToken = default)
-        {
-            await _dbContext.SaveChangesAsync(cancellationToken);
+            //await _dbContext.SaveChangesAsync(cancellationToken);
         }
     }
 }
