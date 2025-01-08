@@ -19,6 +19,7 @@ namespace PureLifeClinic.Core.Entities.General
         public Gender? Gender { get; set; } 
         public DateTime? DateOfBirth { get; set; } // Ngày sinh.
 
+        //public string? ImagePath { get; set; }    
         public int? Age
         {
             get
@@ -30,7 +31,7 @@ namespace PureLifeClinic.Core.Entities.General
         }
 
         [ForeignKey(nameof(RoleId))]
-        public virtual Role Role { get; set; }
+        public Role Role { get; set; }
         public virtual Doctor? Doctor { get; set; }
         public virtual Patient? Patient { get; set; }
 

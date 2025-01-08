@@ -21,6 +21,7 @@ namespace PureLifeClinic.Infrastructure.Repositories
         public IRefreshTokenRepository RefreshTokens { get; private set; }
         public IRoleRepository Roles { get; private set; }
         public IUserRepository Users { get; private set; }
+        public IWorkWeekScheduleRepository WorkWeeks { get; private set; }
 
         public UnitOfWork(
             ApplicationDbContext dbContext,
@@ -41,11 +42,12 @@ namespace PureLifeClinic.Infrastructure.Repositories
             Products = new ProductRepository(_dbContext);
             Roles = new RoleRepository(_dbContext);
             Users = new UserRepository(_dbContext, _userManager, _roleManager, _userContext);
-            RefreshTokens = new RefreshTokenRepository(_dbContext, _userManager, _signInManager, _mapper); 
+            RefreshTokens = new RefreshTokenRepository(_dbContext, _userManager, _signInManager, _mapper);
+            WorkWeeks = new WorkWeekScheduleRepository(_dbContext, _userManager, _mapper);
         }
         public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            return await _dbContext.SaveChangesAsync();
+            return await _dbContext.SaveChangesAsync(cancellationToken);
         }
 
         public void Dispose()

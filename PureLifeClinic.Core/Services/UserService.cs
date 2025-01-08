@@ -54,7 +54,6 @@ namespace PureLifeClinic.Core.Services
         public async Task<IEnumerable<PatientViewModel>> GetAllPatient(CancellationToken cancellationToken)
         {
             var entities = await _unitOfWork.Users.GetAllPatient(cancellationToken);
-            entities.ToList().RemoveAll(item => item.Doctor == null);
             return _mapper.Map<IEnumerable<PatientViewModel>>(entities);
         }
 

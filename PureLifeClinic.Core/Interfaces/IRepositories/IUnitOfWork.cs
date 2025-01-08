@@ -7,6 +7,7 @@
         IRefreshTokenRepository RefreshTokens { get; }
         IRoleRepository Roles { get; }
         IUserRepository Users { get; }
+        IWorkWeekScheduleRepository WorkWeeks { get; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     } 
 }
