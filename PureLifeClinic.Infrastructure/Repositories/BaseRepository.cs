@@ -146,9 +146,7 @@ namespace PureLifeClinic.Infrastructure.Repositories
         public virtual async Task<T> GetById<Tid>(Tid id, CancellationToken cancellationToken = default)
         {
             var data = await _dbContext.Set<T>().FindAsync(new object?[] { id, cancellationToken }, cancellationToken: cancellationToken);
-            if (data == null)
-                throw new NotFoundException("No data found");
-            return data;
+            return data == null ? throw new NotFoundException("No data found") : data;
         }
 
         public virtual async Task<T> GetById<Tid>(List<Expression<Func<T, object>>> includeExpressions, Tid id, CancellationToken cancellationToken = default)
@@ -162,12 +160,7 @@ namespace PureLifeClinic.Infrastructure.Repositories
 
             var data = await query.SingleOrDefaultAsync(x => EF.Property<Tid>(x, "Id").Equals(id), cancellationToken);
 
-            if (data == null)
-            {
-                throw new NotFoundException("No data found");
-            }
-
-            return data;
+            return data ?? throw new NotFoundException("No data found");
         }
 
         public async Task<bool> IsExists<Tvalue>(string key, Tvalue value, CancellationToken cancellationToken = default)
