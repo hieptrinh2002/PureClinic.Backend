@@ -18,6 +18,8 @@ namespace PureLifeClinic.API.Extensions
             services.AddScoped<IAuthService, AuthService>();
             services.AddTransient<IMailService, MailService>();
             services.AddTransient<IRefreshTokenService, RefreshTokenService>();
+            services.AddTransient<IWorkWeekScheduleService, WorkWeekScheduleService>();
+
 
             #endregion
 
@@ -27,6 +29,8 @@ namespace PureLifeClinic.API.Extensions
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IAuthRepository, AuthRepository>();
             services.AddTransient<IRefreshTokenRepository, RefreshTokenRepository>();
+            services.AddTransient<IWorkWeekScheduleRepository, WorkWeekScheduleRepository>();
+
 
             #endregion
 

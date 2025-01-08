@@ -21,5 +21,7 @@ namespace PureLifeClinic.Core.Entities.General
 
         [ForeignKey(nameof(UserId))]
         public virtual User User { get; set; }
+
+        public virtual ICollection<Patient> Patients { get; set; } = new List<Patient>(); // Bệnh nhân chịu trách nhiệm
     }
 }

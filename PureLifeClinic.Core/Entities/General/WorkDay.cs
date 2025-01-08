@@ -7,7 +7,7 @@ namespace PureLifeClinic.Core.Entities.General
     {
         public int WorkWeekId { get; set; }
         [ForeignKey(nameof(WorkWeekId))]
-        public virtual WorkWeek WorkWeek { get; set; }
+        public WorkWeek WorkWeek { get; set; }
 
         public DayOfWeek DayOfWeek { get; set; } // weekday (VD: monday...)
 

@@ -7,17 +7,22 @@ namespace PureLifeClinic.Core.Entities.General
     public class Patient: Base<int>
     {
         [Required, StringLength(100)]
-        public string? MedicalHistory { get; set; } // Lịch sử bệnh án tổng quát.
+        public string? MedicalHistory { get; set; }
 
         [StringLength(1000)]
-        public string? Notes { get; set; } // Ghi chú thêm của bác sĩ hoặc hệ thống.
+        public string? Notes { get; set; } 
 
-        public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>(); // Cuộc hẹn khám.
+        public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>(); 
 
         public int UserId { get; set; }
 
-        [ForeignKey(nameof(UserId))]
-        public virtual User User { get; set; }
+        [Required, ForeignKey(nameof(UserId))]
+        public required User User { get; set; }
+
+        public int? PrimaryDoctorId { get; set; }
+
+        [ForeignKey(nameof(PrimaryDoctorId))]
+        public  Doctor? PrimaryDoctor { get; set; }
 
         //// new 
         //public PatientStatus Status { get; set; }
