@@ -1,3 +1,6 @@
+using CloudinaryDotNet;
+using Microsoft.Extensions.Options;
+using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Interfaces.IRepositories;
 using PureLifeClinic.Core.Interfaces.IServices;
 using PureLifeClinic.Core.Services;
@@ -12,6 +15,7 @@ namespace PureLifeClinic.API.Extensions
         {
             #region Services
             services.AddSingleton<IUserContext, UserContext>();
+            services.AddSingleton<ICloudinaryService, CloudinaryService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IUserService, UserService>();
@@ -19,6 +23,18 @@ namespace PureLifeClinic.API.Extensions
             services.AddTransient<IMailService, MailService>();
             services.AddTransient<IRefreshTokenService, RefreshTokenService>();
             services.AddTransient<IWorkWeekScheduleService, WorkWeekScheduleService>();
+
+            //Cloudinary
+            services.AddSingleton<Cloudinary>(serviceProvider =>
+            {
+                var options = serviceProvider.GetRequiredService<IOptions<AppSettings>>().Value;
+                var account = new Account(
+                    options.CloudinaryConfig.CloudName,
+                    options.CloudinaryConfig.ApiKey,
+                    options.CloudinaryConfig.ApiSecret
+                );
+                return new Cloudinary(account);
+            });
 
 
             #endregion

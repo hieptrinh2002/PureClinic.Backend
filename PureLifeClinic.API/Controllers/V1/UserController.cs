@@ -16,7 +16,7 @@ namespace PureLifeClinic.API.Controllers.V1
     {
         private readonly ILogger<UserController> _logger;
         private readonly IUserService _userService;
-        private IMailService _emailService;    
+        private readonly IMailService _emailService;    
 
         public UserController(ILogger<UserController> logger, IUserService userService, IMailService emailService)
         {
@@ -190,7 +190,6 @@ namespace PureLifeClinic.API.Controllers.V1
                     if (response.Success)
                     {
                         // Create activate email token => return link activate
-
                         var result = await _userService.GenerateEmailConfirmationTokenAsync(model.Email);
                         if(!result.Success)
                             throw new Exception(result.Message);    

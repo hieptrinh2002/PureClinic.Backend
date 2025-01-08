@@ -6,13 +6,13 @@ namespace PureLifeClinic.Core.Entities.General
     public class Doctor : Base<int>
     {
         [Required, MaxLength(100)]
-        public string? Specialty { get; set; } // Chuyên môn của bác sĩ (VD: Nội khoa, Nhi khoa).
+        public string? Specialty { get; set; } 
 
         public string? Qualification { get; set; } // Bằng cấp và chứng chỉ (VD: MD, PhD).
 
-        public int? ExperienceYears { get; set; } // Số năm kinh nghiệm.
+        public int? ExperienceYears { get; set; }
 
-        public string? Description { get; set; } // Mô tả hoặc tiểu sử bác sĩ.
+        public string? Description { get; set; } 
 
         public string? RegistrationNumber { get; set; } // Số đăng ký y tế (VD: do bộ y tế cấp).
 

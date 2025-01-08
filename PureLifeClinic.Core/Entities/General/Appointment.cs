@@ -6,25 +6,25 @@ namespace PureLifeClinic.Core.Entities.General
     public class Appointment : Base<int>
     {
         [Required]
-        public DateTime AppointmentDate { get; set; } // Ngày giờ hẹn.
+        public DateTime AppointmentDate { get; set; }
 
         [Required]
-        public AppointmentReason Reason { get; set; } // Lý do khám (enum).
+        public AppointmentReason Reason { get; set; }
 
         [StringLength(500)]
-        public string? OtherReason { get; set; } // Ghi chú lý do khác (nếu lý do không nằm trong enum).
+        public string? OtherReason { get; set; }
 
-        public int PatientId { get; set; } // FK tới bệnh nhân.
+        public int PatientId { get; set; }
         [ForeignKey(nameof(PatientId))]
-        public virtual Patient Patient { get; set; }
+        public Patient Patient { get; set; }
 
-        public int DoctorId { get; set; } // FK tới bác sĩ.
+        public int DoctorId { get; set; }
         [ForeignKey(nameof(DoctorId))]
-        public virtual Doctor Doctor { get; set; }
+        public Doctor Doctor { get; set; }
 
-        public AppointmentStatus Status { get; set; } = AppointmentStatus.Pending;// Trạng thái cuộc hẹn (Pending, Completed, Canceled).
+        public AppointmentStatus Status { get; set; } = AppointmentStatus.Pending;
 
-        public virtual ICollection<MedicalReport> MedicalReports { get; set; } = new List<MedicalReport>(); // Các báo cáo y tế trong cuộc hẹn.
+        public ICollection<MedicalReport> MedicalReports { get; set; } = new List<MedicalReport>();
     }
 
     public enum AppointmentStatus
@@ -40,6 +40,7 @@ namespace PureLifeClinic.Core.Entities.General
         Headache, // Đau đầu
         Checkup, // Khám định kỳ
         Vaccination, // Tiêm phòng
+        ReExamination,// tái khám
         Other // Lý do khác
     }
 }
