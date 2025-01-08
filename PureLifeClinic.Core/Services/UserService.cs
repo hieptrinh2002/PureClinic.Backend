@@ -26,31 +26,7 @@ namespace PureLifeClinic.Core.Services
             return _mapper.Map<IEnumerable<UserViewModel>>(entities);
         }
 
-        public async Task<IEnumerable<DoctorViewModel>> GetAllDoctor(CancellationToken cancellationToken)
-        {
-            var entities = await _unitOfWork.Users.GetAllDoctor(cancellationToken);
-            var doctorViewModels = new List<DoctorViewModel>();
-            entities.ToList().RemoveAll(item => item.Doctor == null);
-            foreach (var entity in entities)
-            {
-                doctorViewModels.Add(new DoctorViewModel
-                {
-                    Id = entity.Id,
-                    Role = entity.Role.Name,
-                    FullName = entity.FullName,
-                    UserName = entity.UserName,
-                    Email = entity.Email,
-                    Specialty = entity.Doctor.Specialty,
-                    Qualification = entity.Doctor.Qualification,
-                    ExperienceYears = entity.Doctor.ExperienceYears,
-                    Description = entity.Doctor.Description,
-                    RegistrationNumber = entity.Doctor.RegistrationNumber,
-                });
-            }
-
-            return doctorViewModels;
-        }
-
+       
         public async Task<IEnumerable<PatientViewModel>> GetAllPatient(CancellationToken cancellationToken)
         {
             var entities = await _unitOfWork.Users.GetAllPatient(cancellationToken);

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Entities.General;
+using PureLifeClinic.Core.Exceptions;
 using PureLifeClinic.Core.Interfaces.IRepositories;
 using PureLifeClinic.Core.Interfaces.IServices;
 using PureLifeClinic.Infrastructure.Data;
@@ -188,6 +189,17 @@ namespace PureLifeClinic.Infrastructure.Repositories
         {
             var token  = await _userManager.GeneratePasswordResetTokenAsync(user);
             return token;
+        }
+
+        public async Task<User> GetDoctorById(int userId, CancellationToken cancellationToken)
+        {
+            var user = await _dbContext.Users
+                .Include(u => u.Role)
+                .Include(u => u.Doctor)
+                .FirstOrDefaultAsync(u => u.Id == userId && u.Role.NormalizedName == "DOCTOR", cancellationToken);
+            if (user == null)
+                throw new NotFoundException("No data found");
+            return user; 
         }
     }
 }

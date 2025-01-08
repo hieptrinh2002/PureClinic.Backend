@@ -6,7 +6,6 @@ using PureLifeClinic.Core.Interfaces.IServices;
 using PureLifeClinic.Core.Services;
 using PureLifeClinic.Infrastructure.Repositories;
 
-
 namespace PureLifeClinic.API.Extensions
 {
     public static class ServiceExtension
@@ -19,6 +18,7 @@ namespace PureLifeClinic.API.Extensions
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IDoctorService, DoctorService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddTransient<IMailService, MailService>();
             services.AddTransient<IRefreshTokenService, RefreshTokenService>();
@@ -35,8 +35,6 @@ namespace PureLifeClinic.API.Extensions
                 );
                 return new Cloudinary(account);
             });
-
-
             #endregion
 
             #region Repositories
@@ -46,7 +44,6 @@ namespace PureLifeClinic.API.Extensions
             services.AddTransient<IAuthRepository, AuthRepository>();
             services.AddTransient<IRefreshTokenRepository, RefreshTokenRepository>();
             services.AddTransient<IWorkWeekScheduleRepository, WorkWeekScheduleRepository>();
-
 
             #endregion
 

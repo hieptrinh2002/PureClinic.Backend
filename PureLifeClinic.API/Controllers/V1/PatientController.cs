@@ -14,7 +14,7 @@ namespace PureLifeClinic.API.Controllers.V1
         private readonly ILogger<DoctorController> _logger;
         private readonly IUserService _userService;
 
-        public PatientController(ILogger<DoctorController> logger, IUserService userService, Cloudinary cloudinary)
+        public PatientController(ILogger<DoctorController> logger, IUserService userService)
         {
             _logger = logger;
             _userService = userService;

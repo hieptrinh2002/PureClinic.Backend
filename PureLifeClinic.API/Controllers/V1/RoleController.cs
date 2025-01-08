@@ -349,5 +349,4 @@ namespace PureLifeClinic.API.Controllers.V1
             }
         }
     }
-
 }
