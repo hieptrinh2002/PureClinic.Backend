@@ -34,19 +34,95 @@ Các mối quan hệ phức tạp hoặc dữ liệu cần tham chiếu chặt c
 	+ Quản lý/ xem được trạng thái của bác sĩ 
 	+ Quản lý trạng thái lịch hẹn: chờ xác nhận, đã hoàn tất.
 	+ CRUD ....
+	+ Quản lí bệnh nhân và feedback
+	+ Quản lí, lênh lịch ( cuộc hẹn với bác sĩ ), tái khám nếu có cho bệnh nhân.
+	+ Request đặt lịch khám bệnh với bác sĩ mong muốn? hệ thống báo nếu bác sĩ đã có cuộc hẹn vào lúc đó và đề nghị chọn đặt lịch giờ khác
 
   - Doctor: 
     + Quản lý bệnh án/ bệnh nhân đã khám 
+	+ Quản lý bệnh nhân được chính bác sĩ đó theo dõi, lênh lộ trình, giai đoạn...., quản lý được thông tin chi tiết 
 	+ Xem lịch sử khám bệnh của các bệnh nhân đã khám
 	+ Xem các đơn thuốc đã kê khai
 	+ Tiếp nhận cuộc hẹn khám bệnh
 
   - Customer
+    + Hệ thống tạo tài khoản mặc định cho người dùng  
     + Xem danh sách dịch vụ phòng khám
 	+ Xem danh sách bác sĩ, thông tin chi tiết...
 
-
+***** API Design 
+** Profile
+- Lấy thông tin 1 bác sĩ
+   + (tt chung, kinh nghiệm, chuyên ngành .....) => profile
+   + Đăng kí lịch làm việc cho bác sĩ
+   + Lấy lịch làm việc của một bác sĩ (optinal)
+   + Lấy tất cả thông tin cuộc hẹn khám bệnh của 1 bác sĩ  (lấy tất cả cuộc hẹn vào ngày hôm nay, tuần này, tháng này) + các filter khác (optinal)
+   + Lấy danh sách bệnh nhân đang được chính mình điều trị chính
+- Lấy thông tin 1 bệnh nhân:
+   + Lấy thông tin chung của 1 bệnh nhân
+   + Lấy tất cả lịch sử khám bệnh của 1 bệnh nhân ( bao gồm hồ sơ bệnh, kết quả các lần trc, lời khuyên bs, )
+   + Lấy được tất cả các bệnh án, các file bệnh án, ảnh của 1 bệnh nhân trong các lần khám
+   + 
+ ** 
+- Thêm các cuộc hẹn khám bệnh giữa khách hàng và bác sĩ  (bac sĩ, khách hàng, thời gian , trạng thái, loại cuộc hẹn (tái khám, tổng quát, chung chung ...))
+- 
 *****
+plan: 
+- 23/12/2024 - 19/12/2024: 
+	✅+ init project structure base 
+	✅+ authentication (jwt/ refresh Token)
+- 30/12/2024 - 05/01/2025: 
+	✅+ CRUD profile API (user) 
+	✅+ Send mail services
+	✅+ Register accout => confirm mails when register account
+	✅+ Lock account when login failed more than 5 times
+	✅+ Append refresh token to client cookie
+- 6/01/2025 - 12/01/2025: 
+	✅- Using Bogus to seed data for system
+	- FE (reactjs)
+		✅+ Login / logout 
+		✅+ Zustand for state management
+		+ show list doctor
+		+ show list partient
+	- BE: 
+		+ CRUD Appointment api 
+		+ Update status appointment
+		✅+ CRUD Doctor
+		✅+ CRUD Partient
+		+ Save uploaded file using Azure Blob Storage
+		✅+ Api for work schedule, register schedule, get schedule of user 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+***** NOTE
 1. Quản lý lịch hẹn (Appointment Scheduling)
 Mô tả: Xây dựng tính năng quản lý lịch hẹn cho bệnh nhân và bác sĩ. Hệ thống sẽ giúp bệnh nhân đặt lịch và bác sĩ xem lịch làm việc của họ.
 Tính năng chính:
@@ -116,27 +192,3 @@ Tính năng chính:
 Bệnh nhân có thể đánh giá bác sĩ theo các tiêu chí như chất lượng, thái độ phục vụ.
 Hiển thị các đánh giá trên trang của bác sĩ hoặc dịch vụ.
 Công nghệ có thể dùng: React Star Rating, tích hợp hệ thống đánh giá và lưu trữ vào cơ sở dữ liệu.
-
-*****
-plan: 
-- 23/12/2024 - 19/12/2024: 
-	+ init project structure base 
-	+ authentication (jwt/ refresh Token)
-- 30/12/2024 - 05/01/2025: 
-	+ CRUD profile API (user) 
-	+ Send mail services
-	+ Register accout => confirm mails when register account
-	+ Lock account when login failed more than 5 times
-	+ Append refresh token to client cookie
-- 6/01/2025 - 12/01/2025: 
-	- Using Bogus to seed data for system
-	- FE (reactjs)
-		+ Login / logout
-		+ Zustand for state management
-		+ show list doctor
-		+ show list partient
-	- BE: 
-		+ CRUD Appointment api
-		+ Update status appointment
-		+ CRUD Doctor
-		+ CRUD Partient

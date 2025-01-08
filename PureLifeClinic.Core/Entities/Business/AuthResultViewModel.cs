@@ -1,6 +1,4 @@
-﻿using PureLifeClinic.Core.Entities.General;
-
-namespace PureLifeClinic.Core.Entities.Business
+﻿namespace PureLifeClinic.Core.Entities.Business
 {
     public class AuthResultViewModel
     {

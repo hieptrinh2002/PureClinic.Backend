@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using PureLifeClinic.Core.Entities.Business;
+using PureLifeClinic.Core.Entities.Business.Schedule;
 using PureLifeClinic.Core.Entities.General;
 
 namespace PureLifeClinic.API.Extensions
@@ -24,6 +25,10 @@ namespace PureLifeClinic.API.Extensions
 
             // User mappings
             CreateMap<User, UserViewModel>().ReverseMap();
+            CreateMap<User, PatientViewModel>().ReverseMap();
+
+            //Schedule
+            CreateMap<WorkWeek, WorkWeekScheduleViewModel>().ReverseMap();
 
             //// Paginated data mappings (if needed)
             //CreateMap<PaginatedDataViewModel<Product>, PaginatedDataViewModel<ProductViewModel>>();
