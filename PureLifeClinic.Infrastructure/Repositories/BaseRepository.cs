@@ -75,20 +75,31 @@ namespace PureLifeClinic.Infrastructure.Repositories
 
             return new PaginatedDataViewModel<T>(data, totalCount);
         }
-        
-        public virtual async Task<PaginatedDataViewModel<T>> GetPaginatedData(List<Expression<Func<T, object>>> includeExpressions, int pageNumber, int pageSize, CancellationToken cancellationToken = default)
-        {
-            var query = _dbContext.Set<T>()
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .AsQueryable();
 
-            if (includeExpressions != null)
+        public virtual async Task<PaginatedDataViewModel<T>> GetPaginatedData(List<Expression<Func<T, object>>> includeExpressions, int pageNumber, int pageSize, CancellationToken cancellationToken, List<ExpressionFilter>? filters = null)
+        {
+            var query = _dbContext.Set<T>().AsQueryable();
+
+            if (filters != null && filters.Any())
+            {
+                var filterExpression = ExpressionBuilder.ConstructAndExpressionTree<T>(filters);
+                if (filterExpression != null)
+                {
+                    query = query.Where(filterExpression);
+                }
+            }
+
+            if (includeExpressions != null && includeExpressions.Any())
             {
                 query = includeExpressions.Aggregate(query, (current, includeExpression) => current.Include(includeExpression));
             }
 
-            var data = await query.AsNoTracking().ToListAsync(cancellationToken);
+            var data = await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .AsNoTracking()
+                .ToListAsync(cancellationToken);
+
             var totalCount = await _dbContext.Set<T>().CountAsync(cancellationToken);
 
             return new PaginatedDataViewModel<T>(data, totalCount);
@@ -134,7 +145,7 @@ namespace PureLifeClinic.Infrastructure.Repositories
 
         public virtual async Task<T> GetById<Tid>(Tid id, CancellationToken cancellationToken = default)
         {
-            var data = await _dbContext.Set<T>().FindAsync(id, cancellationToken);
+            var data = await _dbContext.Set<T>().FindAsync(new object?[] { id, cancellationToken }, cancellationToken: cancellationToken);
             if (data == null)
                 throw new NotFoundException("No data found");
             return data;
