@@ -31,7 +31,7 @@ namespace PureLifeClinic.API.Controllers.V1
         }
 
         [HttpPost("unlock-account")]
-        public async Task<IActionResult> UnlockAccount([FromBody] UnlockAccountRequest model)
+        public async Task<IActionResult> UnlockAccount([FromBody] UnlockAccountRequestViewModel model)
         {
             if (ModelState.IsValid)
             {

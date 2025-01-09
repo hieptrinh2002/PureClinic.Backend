@@ -50,6 +50,10 @@ Các mối quan hệ phức tạp hoặc dữ liệu cần tham chiếu chặt c
     + Xem danh sách dịch vụ phòng khám
 	+ Xem danh sách bác sĩ, thông tin chi tiết...
 
+
+
+***** Viewer design
+- Từ danh sách patient => chọn tạo lịch hẹn, chọn xem thông tin cá nhân, update status, quản lí hồ sơ patient
 ***** API Design 
 ** Profile
 - Lấy thông tin 1 bác sĩ

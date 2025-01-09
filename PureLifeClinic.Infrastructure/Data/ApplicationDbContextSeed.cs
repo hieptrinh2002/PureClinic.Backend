@@ -206,8 +206,7 @@ namespace PureLifeClinic.Infrastructure.Data
 
             var faker = new Faker<Appointment>()
                 .RuleFor(a => a.AppointmentDate, f => f.Date.Future())
-                .RuleFor(a => a.Reason, f => f.PickRandom<AppointmentReason>())
-                .RuleFor(a => a.OtherReason, f => f.Address.FullAddress())
+                .RuleFor(a => a.Reason, f => f.Lorem.Sentence(8))
                 .RuleFor(a => a.PatientId, f => patients[f.Random.Int(0, patients.Count - 1)].Id)
                 .RuleFor(a => a.DoctorId, f => doctors[f.Random.Int(0, doctors.Count - 1)].Id)
                 .RuleFor(a => a.Status, f => f.PickRandom<AppointmentStatus>())

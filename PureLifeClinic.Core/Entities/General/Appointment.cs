@@ -9,22 +9,22 @@ namespace PureLifeClinic.Core.Entities.General
         public DateTime AppointmentDate { get; set; }
 
         [Required]
-        public AppointmentReason Reason { get; set; }
-
-        [StringLength(500)]
-        public string? OtherReason { get; set; }
+        public string Reason { get; set; } = "Anual health check";
 
         public int PatientId { get; set; }
+
+        public string? ReferredPerson {  get; set; } // ng giới thiệu
+
         [ForeignKey(nameof(PatientId))]
         public Patient Patient { get; set; }
 
-        public int DoctorId { get; set; }
+        public int? DoctorId { get; set; }
         [ForeignKey(nameof(DoctorId))]
-        public Doctor Doctor { get; set; }
+        public Doctor? Doctor { get; set; }
 
         public AppointmentStatus Status { get; set; } = AppointmentStatus.Pending;
 
-        public ICollection<MedicalReport> MedicalReports { get; set; } = new List<MedicalReport>();
+        public ICollection<MedicalReport>? MedicalReports { get; set; } = new List<MedicalReport>();
     }
 
     public enum AppointmentStatus
@@ -32,15 +32,5 @@ namespace PureLifeClinic.Core.Entities.General
         Pending,
         Completed,
         Canceled
-    }
-
-    public enum AppointmentReason
-    {
-        Fever, // Sốt
-        Headache, // Đau đầu
-        Checkup, // Khám định kỳ
-        Vaccination, // Tiêm phòng
-        ReExamination,// tái khám
-        Other // Lý do khác
     }
 }

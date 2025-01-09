@@ -2,7 +2,7 @@
 
 namespace PureLifeClinic.Core.Entities.Business
 {
-    public class UnlockAccountRequest
+    public class UnlockAccountRequestViewModel
     {
         [Required]
         public int UserId { get; set; }

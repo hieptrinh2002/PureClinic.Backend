@@ -34,6 +34,9 @@ namespace PureLifeClinic.Infrastructure.Data
 
             ApplicationDbContextConfigurations.Configure(builder);
 
+            builder.Entity<User>()
+               .HasIndex(e => e.PhoneNumber)
+               .IsUnique();
         }
     }
 }
