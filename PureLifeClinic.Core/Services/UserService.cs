@@ -25,7 +25,6 @@ namespace PureLifeClinic.Core.Services
 
             return _mapper.Map<IEnumerable<UserViewModel>>(entities);
         }
-
        
         public async Task<IEnumerable<PatientViewModel>> GetAllPatient(CancellationToken cancellationToken)
         {
@@ -176,7 +175,7 @@ namespace PureLifeClinic.Core.Services
 
             // get mail body
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Template", "ForgotPassword.html");
-            var emailBody = File.ReadAllText(filePath);
+            var emailBody = System.IO.File.ReadAllText(filePath);
             emailBody = emailBody
                 .Replace("{{UserName}}", user.UserName)
                 .Replace("{{ResetPasswordLink}}", resetLink)

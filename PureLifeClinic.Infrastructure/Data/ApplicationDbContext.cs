@@ -18,9 +18,13 @@ namespace PureLifeClinic.Infrastructure.Data
         public DbSet<Appointment> Appointments { get; set; }
         public DbSet<MedicalReport> MedicalReports { get; set; }
         public DbSet<Medication> Medications { get; set; }
-        public DbSet<WorkWeek> WorkWeeks { get; set; } 
-
-        public DbSet<WorkDay> WorkDays { get; set;}
+        public DbSet<WorkWeek> WorkWeeks { get; set; }
+        public DbSet<WorkDay> WorkDays { get; set; }
+        public DbSet<Allergy> Allergies { get; set; }
+        public DbSet<LabResult> LabResults { get; set; }
+        public DbSet<MedicationInteraction> MedicationInteractions { get; set; }
+        public DbSet<MedicalFile> MedicalFiles { get; set; }
+        public DbSet<PrescriptionDetail> PrescriptionDetails { get; set; }
 
         #endregion
 
@@ -31,6 +35,5 @@ namespace PureLifeClinic.Infrastructure.Data
             ApplicationDbContextConfigurations.Configure(builder);
 
         }
-
     }
 }

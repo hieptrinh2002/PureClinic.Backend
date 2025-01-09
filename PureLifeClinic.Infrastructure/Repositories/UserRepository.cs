@@ -32,7 +32,8 @@ namespace PureLifeClinic.Infrastructure.Repositories
             var user = await _dbContext.Users.Where(u => u.Doctor != null && u.Role.NormalizedName == "DOCTOR")
                                              .Include(r=>r.Role)
                                              .Include(u => u.Doctor)
-                                             .ToListAsync();
+                                             .AsNoTracking()    
+                                             .ToListAsync(cancellationToken);
             return user;
         }
 
@@ -41,7 +42,8 @@ namespace PureLifeClinic.Infrastructure.Repositories
             var user = await _dbContext.Users.Where(u => u.Patient != null && u.Role.NormalizedName == "PATIENT")
                                              .Include(r => r.Role)
                                              .Include(u => u.Patient)
-                                             .ToListAsync();
+                                             .AsNoTracking()
+                                             .ToListAsync(cancellationToken);
             return user;
         }
 
@@ -197,9 +199,7 @@ namespace PureLifeClinic.Infrastructure.Repositories
                 .Include(u => u.Role)
                 .Include(u => u.Doctor)
                 .FirstOrDefaultAsync(u => u.Id == userId && u.Role.NormalizedName == "DOCTOR", cancellationToken);
-            if (user == null)
-                throw new NotFoundException("No data found");
-            return user; 
+            return user ?? throw new NotFoundException("No data found");
         }
     }
 }

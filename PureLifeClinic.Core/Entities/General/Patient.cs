@@ -5,8 +5,8 @@ namespace PureLifeClinic.Core.Entities.General
 {
     public class Patient: Base<int>
     {
-        [Required, StringLength(100)]
-        public string? MedicalHistory { get; set; }
+        //[Required, StringLength(100)]
+        //public string? MedicalHistory { get; set; }
 
         [StringLength(1000)]
         public string? Notes { get; set; } 
@@ -23,20 +23,18 @@ namespace PureLifeClinic.Core.Entities.General
         [ForeignKey(nameof(PrimaryDoctorId))]
         public  Doctor? PrimaryDoctor { get; set; }
 
-        //// new 
-        //public PatientStatus Status { get; set; }
-        //public List<string> Tags { get; set; }
-        //public ICollection<MedicalHistory> MedicalHistory { get; set; }
-        //public ICollection<PatientImaging> Imaging { get; set; }
-        //public ICollection<LabResult> LabResults { get; set; }
-        //public ICollection<MedicationInteraction> Interactions { get; set; }
-        //public ICollection<Allergy> Allergies { get; set; }
+        // new 
+        public PatientStatus Status { get; set; } = PatientStatus.New;
+        public ICollection<LabResult>? LabResults { get; set; }
+        public ICollection<MedicationInteraction>? Interactions { get; set; }
+        public ICollection<Allergy>? Allergies { get; set; }
     }
     public enum PatientStatus
     {
-        UnderTreatment,
-        Stable,
-        Discharged,
-        Referred
+        New,
+        UnderTreatment, 
+        Stable,        
+        Discharged,     
+        Referred        
     }
 }

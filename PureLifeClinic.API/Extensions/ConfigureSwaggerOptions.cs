@@ -25,7 +25,7 @@ namespace PureLifeClinic.API.Extensions
             {
                 Title = "Web API Project",
                 Version = description.ApiVersion.ToString(),
-                Contact = new OpenApiContact { Name = "Kawser Hamid", Email = "kawser2133@gmail.com" },
+                Contact = new OpenApiContact { Name = "Trinh Hiep", Email = "hieptrinh2002@gmail.com" },
             };
 
             if (description.IsDeprecated)

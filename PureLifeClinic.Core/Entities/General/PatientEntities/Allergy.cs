@@ -1,7 +1,7 @@
 ﻿namespace PureLifeClinic.Core.Entities.General
 {
     // thông tin về dị ứng của bệnh nhân, bao gồm chất gây dị ứng, phản ứng và mức độ nghiêm trọng.
-    public class Allergy
+    public class Allergy : Base<int>
     {
         public string Substance { get; set; }
         public string Reaction { get; set; }
