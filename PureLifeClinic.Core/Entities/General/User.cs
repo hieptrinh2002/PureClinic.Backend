@@ -17,9 +17,9 @@ namespace PureLifeClinic.Core.Entities.General
         public DateTime? UpdatedDate { get; set; }
         public string? Address { get; set; } 
         public Gender? Gender { get; set; } 
-        public DateTime? DateOfBirth { get; set; } // Ngày sinh.
+        public DateTime? DateOfBirth { get; set; }
+        public string? ImagePath { get; set; }
 
-        //public string? ImagePath { get; set; }    
         public int? Age
         {
             get

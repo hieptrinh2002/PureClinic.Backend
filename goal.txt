@@ -53,9 +53,9 @@ Các mối quan hệ phức tạp hoặc dữ liệu cần tham chiếu chặt c
 ***** API Design 
 ** Profile
 - Lấy thông tin 1 bác sĩ
-   + (tt chung, kinh nghiệm, chuyên ngành .....) => profile
-   + Đăng kí lịch làm việc cho bác sĩ
-   + Lấy lịch làm việc của một bác sĩ (optinal)
+  ✅ + (tt chung, kinh nghiệm, chuyên ngành .....) => profile
+  ✅ + Đăng kí lịch làm việc cho bác sĩ
+  ✅ + Lấy lịch làm việc của một bác sĩ (optinal)
    + Lấy tất cả thông tin cuộc hẹn khám bệnh của 1 bác sĩ  (lấy tất cả cuộc hẹn vào ngày hôm nay, tuần này, tháng này) + các filter khác (optinal)
    + Lấy danh sách bệnh nhân đang được chính mình điều trị chính
 - Lấy thông tin 1 bệnh nhân:
@@ -91,7 +91,9 @@ plan:
 		✅+ CRUD Partient
 		+ Save uploaded file using Azure Blob Storage
 		✅+ Api for work schedule, register schedule, get schedule of user 
-
+		✅ + (tt chung, kinh nghiệm, chuyên ngành .....) => profile
+		✅ + API Đăng kí lịch làm việc cho bác sĩ
+		✅ + API Lấy lịch làm việc của một bác sĩ (optinal)
 
 
 

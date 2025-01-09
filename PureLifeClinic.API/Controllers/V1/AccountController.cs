@@ -12,7 +12,7 @@ namespace PureLifeClinic.API.Controllers.V1
     [ApiVersion("1.0")] 
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 
     public class AccountController : ControllerBase
     {
