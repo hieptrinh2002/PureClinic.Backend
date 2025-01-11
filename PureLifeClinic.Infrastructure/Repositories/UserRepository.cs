@@ -201,5 +201,15 @@ namespace PureLifeClinic.Infrastructure.Repositories
                 .FirstOrDefaultAsync(u => u.Id == userId && u.Role.NormalizedName == "DOCTOR", cancellationToken);
             return user ?? throw new NotFoundException("No data found");
         }
+
+        public Task<IdentityResult> CreateDoctor(DoctorCreateViewModel model)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<IdentityResult> CreatePatient(PatientCreateViewModel model)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

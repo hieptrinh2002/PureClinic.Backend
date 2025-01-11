@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using PureLifeClinic.Core.Entities.General;
 using PureLifeClinic.Core.Interfaces.IRepositories;
 using PureLifeClinic.Core.Interfaces.IServices;
@@ -9,6 +11,7 @@ namespace PureLifeClinic.Infrastructure.Repositories
 {
     public class UnitOfWork : IUnitOfWork
     {
+        private IDbContextTransaction? _transaction;
         private readonly ApplicationDbContext _dbContext;
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
@@ -22,6 +25,9 @@ namespace PureLifeClinic.Infrastructure.Repositories
         public IRoleRepository Roles { get; private set; }
         public IUserRepository Users { get; private set; }
         public IWorkWeekScheduleRepository WorkWeeks { get; private set; }
+        public IAppointmentRepository Appointments { get; private set; }
+        public IPatientRepository Patients { get; private set; }
+
 
         public UnitOfWork(
             ApplicationDbContext dbContext,
@@ -44,6 +50,8 @@ namespace PureLifeClinic.Infrastructure.Repositories
             Users = new UserRepository(_dbContext, _userManager, _roleManager, _userContext);
             RefreshTokens = new RefreshTokenRepository(_dbContext, _userManager, _signInManager, _mapper);
             WorkWeeks = new WorkWeekScheduleRepository(_dbContext, _userManager, _mapper);
+            Appointments = new AppointmentRepository(_dbContext);
+            Patients = new PatientRepository(_dbContext);
         }
         public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
@@ -53,6 +61,50 @@ namespace PureLifeClinic.Infrastructure.Repositories
         public void Dispose()
         {
             _dbContext.Dispose();
+        }
+
+        public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)
+        {
+            if (_transaction != null)
+                throw new InvalidOperationException("Transction is already in process");
+            _transaction = await _dbContext.Database.BeginTransactionAsync(cancellationToken);
+        }
+
+        public async Task CommitTransactionAsync(CancellationToken cancellationToken = default)
+        {
+            if(_transaction == null)
+                throw new InvalidOperationException("No transction in process");
+            try
+            {
+                await _transaction.CommitAsync(cancellationToken);
+            }
+            catch
+            {
+                await RollbackTransactionAsync(cancellationToken);
+                throw;
+            }
+            finally
+            {
+                await DisposeTransactionAsync();
+            }
+        }
+
+        public async Task RollbackTransactionAsync(CancellationToken cancellationToken = default)
+        {
+            if (_transaction == null)
+                throw new InvalidOperationException("No transaction in progress.");
+
+            await _transaction.RollbackAsync(cancellationToken);
+            await DisposeTransactionAsync();
+        }
+
+        private async Task DisposeTransactionAsync()
+        {
+            if (_transaction != null)
+            {
+                await _transaction.DisposeAsync();
+                _transaction = null;
+            }
         }
     }
 }

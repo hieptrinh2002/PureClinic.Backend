@@ -9,14 +9,14 @@ namespace PureLifeClinic.Core.Entities.General
         //public string? MedicalHistory { get; set; }
 
         [StringLength(1000)]
-        public string? Notes { get; set; } 
+        public string? Notes { get; set; } = string.Empty;
 
-        public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>(); 
+        public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>(); 
 
         public int UserId { get; set; }
 
         [Required, ForeignKey(nameof(UserId))]
-        public required User User { get; set; }
+        public User User { get; set; }
 
         public int? PrimaryDoctorId { get; set; }
 

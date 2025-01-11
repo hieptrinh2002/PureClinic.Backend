@@ -2,8 +2,7 @@
 
 namespace PureLifeClinic.Core.Interfaces.IRepositories
 {
-    public interface IRoleRepository : IBaseRepository<Role>
+    public interface IPatientRepository : IBaseRepository<Patient>
     {
-        Role GetPatientRole();
     }
 }

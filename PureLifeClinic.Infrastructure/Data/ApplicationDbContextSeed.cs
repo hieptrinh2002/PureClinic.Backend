@@ -151,10 +151,10 @@ namespace PureLifeClinic.Infrastructure.Data
         {
             return new List<Role>
             {
-                new Role {Code="ADMIN", Name = "Admin", NormalizedName="ADMIN", IsActive = true, EntryDate= DateTime.Now },
-                new Role {Code="EMPLOYEE", Name = "Employee", NormalizedName="EMPLOYEE", IsActive = true, EntryDate= DateTime.Now },
-                new Role {Code="PATIENT", Name = "Patient", NormalizedName= "PATIENT", IsActive = true, EntryDate= DateTime.Now },
-                new Role {Code="DOCTOR", Name = "Doctor", NormalizedName= "DOCTOR", IsActive = true, EntryDate= DateTime.Now },
+                new() {Code="ADMIN", Name = "Admin", NormalizedName="ADMIN", IsActive = true, EntryDate= DateTime.Now },
+                new() {Code="EMPLOYEE", Name = "Employee", NormalizedName="EMPLOYEE", IsActive = true, EntryDate= DateTime.Now },
+                new() {Code="PATIENT", Name = "Patient", NormalizedName= "PATIENT", IsActive = true, EntryDate= DateTime.Now },
+                new() {Code="DOCTOR", Name = "Doctor", NormalizedName= "DOCTOR", IsActive = true, EntryDate= DateTime.Now },
             };
         }
 
@@ -241,7 +241,6 @@ namespace PureLifeClinic.Infrastructure.Data
                 .RuleFor(pd => pd.Instructions, f => f.Lorem.Sentence(5))
                 .RuleFor(pd => pd.MedicationId, f => medications[f.Random.Int(0, medications.Count - 1)].Id)
                 .RuleFor(u => u.EntryDate, f => DateTime.Now)
-
                 .Generate(faker.Random.Int(1, 5));
         }
 

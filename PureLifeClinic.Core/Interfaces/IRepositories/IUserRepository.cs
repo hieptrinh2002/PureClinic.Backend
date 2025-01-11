@@ -11,6 +11,8 @@ namespace PureLifeClinic.Core.Interfaces.IRepositories
         Task<User> GetByEmail(string email, CancellationToken cancellationToken);
         Task<EmailActivationViewModel> GenerateEmailConfirmationTokenAsync(string email);
         Task<IEnumerable<User>> GetAllDoctor(CancellationToken cancellationToken);
+        Task<IdentityResult> CreateDoctor(DoctorCreateViewModel model);
+        Task<IdentityResult> CreatePatient(PatientCreateViewModel model);
 
         Task<User> GetDoctorById(int userId, CancellationToken cancellationToken);
         Task<IEnumerable<User>> GetAllPatient(CancellationToken cancellationToken);

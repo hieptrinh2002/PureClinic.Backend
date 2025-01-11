@@ -23,6 +23,8 @@ namespace PureLifeClinic.API.Extensions
             services.AddTransient<IMailService, MailService>();
             services.AddTransient<IRefreshTokenService, RefreshTokenService>();
             services.AddTransient<IWorkWeekScheduleService, WorkWeekScheduleService>();
+            services.AddTransient<IAppointmentService, AppointmentService>();
+
 
             //Cloudinary
             services.AddSingleton<Cloudinary>(serviceProvider =>
@@ -44,6 +46,7 @@ namespace PureLifeClinic.API.Extensions
             services.AddTransient<IAuthRepository, AuthRepository>();
             services.AddTransient<IRefreshTokenRepository, RefreshTokenRepository>();
             services.AddTransient<IWorkWeekScheduleRepository, WorkWeekScheduleRepository>();
+            services.AddTransient<IAppointmentRepository, AppointmentRepository>();
 
             #endregion
 

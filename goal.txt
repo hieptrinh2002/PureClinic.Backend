@@ -94,10 +94,12 @@ plan:
 		✅+ CRUD Doctor
 		✅+ CRUD Partient
 		+ Save uploaded file using Azure Blob Storage
-		✅+ Api for work schedule, register schedule, get schedule of user 
+		✅ + Api for work schedule, register schedule, get schedule of user 
 		✅ + (tt chung, kinh nghiệm, chuyên ngành .....) => profile
 		✅ + API Đăng kí lịch làm việc cho bác sĩ
 		✅ + API Lấy lịch làm việc của một bác sĩ (optinal)
+		✅ + API Tạo mới và	
+
 
 
 
