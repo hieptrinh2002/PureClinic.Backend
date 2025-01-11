@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Asp.Versioning;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PureLifeClinic.Core.Entities.Business;
@@ -7,6 +8,7 @@ using PureLifeClinic.Core.Interfaces.IServices;
 namespace PureLifeClinic.API.Controllers.V1
 {
     [ApiController]
+    [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class DoctorController : ControllerBase

@@ -30,7 +30,7 @@ builder.Services.RegisterSecurityService(builder.Configuration);
 builder.Services.RegisterService();
 //builder.Services.RegisterMapperService();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
+builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddAuthorization();
 builder.Services.AddSwaggerGen();
 

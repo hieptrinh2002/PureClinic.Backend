@@ -9,9 +9,9 @@ using PureLifeClinic.Core.Interfaces.IServices;
 namespace PureLifeClinic.API.Controllers.V1
 {
     [ApiVersion("1.0")]
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class AppointmentController : ControllerBase
     {
         private readonly IAppointmentService _appointmentService;
@@ -22,6 +22,81 @@ namespace PureLifeClinic.API.Controllers.V1
             _appointmentService = appointmentService;
             _logger = logger;
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Get(CancellationToken cancellationToken)
+        {
+            try
+            {
+                var appointments = await _appointmentService.GetAll(cancellationToken);
+
+                var response = new ResponseViewModel<IEnumerable<AppointmentViewModel>>
+                {
+                    Success = true,
+                    Message = "Appointment retrieved successfully",
+                    Data = appointments
+                };
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while retrieving appointment");
+
+                var errorResponse = new ResponseViewModel<IEnumerable<AppointmentViewModel>>
+                {
+                    Success = false,
+                    Message = "Error retrieving appointments",
+                    Error = new ErrorViewModel
+                    {
+                        Code = "ERROR_CODE",
+                        Message = ex.Message
+                    }
+                };
+
+                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
+            }
+        }
+
+        [HttpGet("doctor/{doctorId}")]
+        public async Task<IActionResult> GetAppointmentsByDoctor(int doctorId, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var appointments = await _appointmentService.GetAllAppointmentsByDoctorIdAsync(doctorId, cancellationToken);
+
+                var response = new ResponseViewModel<IEnumerable<DoctorAppointmentViewModel>>
+                {
+                    Success = true,
+                    Message = "Appointment retrieved successfully",
+                    Data = appointments
+                };
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while retrieving appointment");
+
+                var errorResponse = new ResponseViewModel<IEnumerable<DoctorAppointmentViewModel>>
+                {
+                    Success = false,
+                    Message = "Error retrieving appointments",
+                    Error = new ErrorViewModel
+                    {
+                        Code = "ERROR_CODE",
+                        Message = ex.Message
+                    }
+                };
+
+                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
+            }
+        }
+
+        //[HttpGet("patient/{patientId}")]
+        //public async Task<IActionResult> GetAppointmentsByPatient(int patientId, CancellationToken cancellationToken)
+        //{ }
+        
 
         // add new appointment
         [HttpPost("app/create")]
@@ -55,7 +130,7 @@ namespace PureLifeClinic.API.Controllers.V1
                         Message = message,
                         Error = new ErrorViewModel
                         {
-                            Code = "ADD_ROLE_ERROR",
+                            Code = "ADD_APPOINTMENT_ERROR",
                             Message = message
                         }
                     });
@@ -119,7 +194,7 @@ namespace PureLifeClinic.API.Controllers.V1
                         Message = message,
                         Error = new ErrorViewModel
                         {
-                            Code = "ADD_ROLE_ERROR",
+                            Code = "ADD_APPOINTMENT_ERROR",
                             Message = message
                         }
                     });
@@ -127,6 +202,112 @@ namespace PureLifeClinic.API.Controllers.V1
             }
 
             return StatusCode(StatusCodes.Status400BadRequest, new ResponseViewModel<ProductViewModel>
+            {
+                Success = false,
+                Message = "Invalid input",
+                Error = new ErrorViewModel
+                {
+                    Code = "INPUT_VALIDATION_ERROR",
+                    Message = ModelStateHelper.GetErrors(ModelState)
+                }
+            });
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateAppointment(int id, [FromBody] AppointmentUpdateViewModel model, CancellationToken cancellationToken)
+        {
+            if (ModelState.IsValid)
+            {
+                string message = string.Empty;
+
+                try
+                {
+                    var result = await _appointmentService.UpdateAppointmentAsync(id, model, cancellationToken);
+
+                    if (!result.Success)
+                    {
+                        return Ok(new ResponseViewModel
+                        {
+                            Success = false,
+                            Message = result.Message,
+                        });
+                    }
+
+                    return Ok(new ResponseViewModel
+                    {
+                        Success = true,
+                        Message = "Appointment updated successfully",
+                    });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, $"An error occurred while updating the appointment");
+                    message = $"An error occurred while updating the appointment- " + ex.Message;
+
+                    return StatusCode(StatusCodes.Status500InternalServerError, new ResponseViewModel<AppointmentViewModel>
+                    {
+                        Success = false,
+                        Message = message,
+                        Error = new ErrorViewModel
+                        {
+                            Code = "UPDATE_APPOINTMENT_ERROR",
+                            Message = message
+                        }
+                    });
+                }
+            }
+            return StatusCode(StatusCodes.Status400BadRequest, new ResponseViewModel<AppointmentViewModel>
+            {
+                Success = false,
+                Message = "Invalid input",
+                Error = new ErrorViewModel
+                {
+                    Code = "INPUT_VALIDATION_ERROR",
+                    Message = ModelStateHelper.GetErrors(ModelState)
+                }
+            });
+        }
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> UpdateAppointmentStatus(int id, [FromBody] AppointmentStatusUpdateViewModel model, CancellationToken cancellationToken)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var result = await _appointmentService.UpdateAppointmentStatusAsync(id, model.Status, cancellationToken);
+
+                    if (!result.Success)
+                    {
+                        return Ok(new ResponseViewModel
+                        {
+                            Success = false,
+                            Message = result.Message,
+                        });
+                    }
+
+                    return Ok(new ResponseViewModel
+                    {
+                        Success = true,
+                        Message = "Appointment status updated successfully",
+                    });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, $"An error occurred while updating the appointment status");
+                    return StatusCode(StatusCodes.Status500InternalServerError, new ResponseViewModel
+                    {
+                        Success = false,
+                        Message = $"An error occurred while updating the appointment status - {ex.Message}",
+                        Error = new ErrorViewModel
+                        {
+                            Code = "UPDATE_APPOINTMENT_STATUS_ERROR",
+                            Message = ex.Message
+                        }
+                    });
+                }
+            }
+
+            return BadRequest(new ResponseViewModel
             {
                 Success = false,
                 Message = "Invalid input",

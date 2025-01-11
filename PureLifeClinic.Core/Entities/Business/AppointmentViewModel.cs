@@ -5,15 +5,27 @@ namespace PureLifeClinic.Core.Entities.Business
 {
     public class AppointmentViewModel
     {
-        public DateTime? AppointmentDate { get; set; }
+        public int Id { get; set; }
 
-        public string? Reason { get; set; }
+        public DateTime AppointmentDate { get; set; }
 
-        public AppointmentStatus Status { get; set; } 
+        public string Reason { get; set; } 
+
+        public AppointmentStatus Status { get; set; }
 
         public PatientViewModel? Patient { get; set; }
 
         public DoctorViewModel? Doctor { get; set; }
+    }
+    public class DoctorAppointmentViewModel
+    {
+        public DateTime AppointmentDate { get; set; }
+
+        public string Reason { get; set; }
+
+        public AppointmentStatus Status { get; set; }
+
+        public PatientViewModel Patient { get; set; }
     }
 
     public class AppointmentCreateViewModel
@@ -57,9 +69,26 @@ namespace PureLifeClinic.Core.Entities.Business
         public int DoctorId { get; set; }
     }
 
-    public class AppointmentUpdateStatusViewModel
+    public class AppointmentUpdateViewModel
     {
         [Required]
-        public AppointmentStatus AppointmentDate { get; set; }
+        public DateTime AppointmentDate { get; set; }
+
+        [Required]
+        [StringLength(255)]
+        public string? Reason { get; set; }
+
+        public int? DoctorId { get; set; }
+
+        [Required]
+        public AppointmentStatus Status { get; set; }
+
+        public string? ReferredPerson { get; set; }
+    }
+
+    public class AppointmentStatusUpdateViewModel
+    {
+        [Required]
+        public AppointmentStatus Status { get; set; }
     }
 }

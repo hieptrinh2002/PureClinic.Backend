@@ -18,9 +18,9 @@ namespace PureLifeClinic.Core.Entities.General
         [ForeignKey(nameof(PatientId))]
         public Patient Patient { get; set; }
 
-        public int? DoctorId { get; set; }
+        public int DoctorId { get; set; }
         [ForeignKey(nameof(DoctorId))]
-        public Doctor? Doctor { get; set; }
+        public Doctor Doctor { get; set; }
 
         public AppointmentStatus Status { get; set; } = AppointmentStatus.Pending;
 

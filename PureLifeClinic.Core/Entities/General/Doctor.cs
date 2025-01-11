@@ -20,7 +20,7 @@ namespace PureLifeClinic.Core.Entities.General
         public int UserId { get; set; }
 
         [ForeignKey(nameof(UserId))]
-        public User User { get; set; }
+        public required User User { get; set; }
 
         public ICollection<Patient> PrimaryPatients { get; set; } = new List<Patient>(); // Bệnh nhân chịu trách nhiệm chính
     }

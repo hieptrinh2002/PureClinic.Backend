@@ -89,8 +89,8 @@ plan:
 		+ show list doctor
 		+ show list partient
 	- BE: 
-		+ CRUD Appointment api 
-		+ Update status appointment
+		✅+ CRUD Appointment api (thêm, update status, )
+		✅+ Update status appointment
 		✅+ CRUD Doctor
 		✅+ CRUD Partient
 		+ Save uploaded file using Azure Blob Storage
@@ -99,7 +99,7 @@ plan:
 		✅ + API Đăng kí lịch làm việc cho bác sĩ
 		✅ + API Lấy lịch làm việc của một bác sĩ (optinal)
 		✅ + API Tạo mới và	
-
+		   + Lấy tất cả cuộc hẹn của 1 bác sỹ/ 1 patient order by appointmentDate, by status
 
 
 

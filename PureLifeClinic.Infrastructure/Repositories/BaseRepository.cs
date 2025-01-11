@@ -5,6 +5,7 @@ using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Interfaces.IRepositories;
 using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace PureLifeClinic.Infrastructure.Repositories
 {
@@ -40,6 +41,48 @@ namespace PureLifeClinic.Infrastructure.Repositories
             var entities = await query.AsNoTracking().ToListAsync(cancellationToken);
             return entities;
         }
+
+        public async Task<IEnumerable<T>> GetAll(List<Expression<Func<T, object>>> includeExpressions, List<ExpressionFilter> filters, CancellationToken cancellationToken = default)
+        {
+            var query = _dbContext.Set<T>().AsQueryable();
+            if (includeExpressions != null)
+            {
+                query = includeExpressions.Aggregate(query, (current, includeExpression) => current.Include(includeExpression));
+            }
+            if (filters != null && filters.Any())
+            {
+                var expressionTree = ExpressionBuilder.ConstructAndExpressionTree<T>(filters);
+                query = query.Where(expressionTree);
+            }
+            var entities = await query.AsNoTracking().ToListAsync(cancellationToken);
+            return entities;
+        }
+
+        public async Task<IEnumerable<T>> GetAll(
+            List<Func<IQueryable<T>, IIncludableQueryable<T, object>>> includeExpressions,
+            List<ExpressionFilter>? filters,
+            CancellationToken cancellationToken = default)
+        {
+            var query = _dbContext.Set<T>().AsQueryable();
+
+            if (includeExpressions != null && includeExpressions.Any())
+            {
+                foreach (var includeExpression in includeExpressions)
+                {
+                    query = includeExpression(query);
+                }
+            }
+
+            if (filters != null && filters.Any())
+            {
+                var expressionTree = ExpressionBuilder.ConstructAndExpressionTree<T>(filters);
+                query = query.Where(expressionTree);
+            }
+
+            var entities = await query.AsNoTracking().ToListAsync(cancellationToken);
+            return entities;
+        }
+
 
         public virtual async Task<PaginatedDataViewModel<T>> GetPaginatedData(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
         {
@@ -163,33 +206,33 @@ namespace PureLifeClinic.Infrastructure.Repositories
             return data ?? throw new NotFoundException("No data found");
         }
 
-        public async Task<bool> IsExists<Tvalue>(string key, Tvalue value, CancellationToken cancellationToken = default)
-        {
-            var parameter = Expression.Parameter(typeof(T), "x");
-            var property = Expression.Property(parameter, key);
-            var constant = Expression.Constant(value);
-            var equality = Expression.Equal(property, constant);
-            var lambda = Expression.Lambda<Func<T, bool>>(equality, parameter);
+            public async Task<bool> IsExists<Tvalue>(string key, Tvalue value, CancellationToken cancellationToken = default)
+            {
+                var parameter = Expression.Parameter(typeof(T), "x");
+                var property = Expression.Property(parameter, key);
+                var constant = Expression.Constant(value);
+                var equality = Expression.Equal(property, constant);
+                var lambda = Expression.Lambda<Func<T, bool>>(equality, parameter);
 
-            return await _dbContext.Set<T>().AnyAsync(lambda, cancellationToken);
-        }
+                return await _dbContext.Set<T>().AnyAsync(lambda, cancellationToken);
+            }
 
-        //Before update existence check
-        public async Task<bool> IsExistsForUpdate<Tid>(Tid id, string key, string value, CancellationToken cancellationToken = default)
-        {
-            var parameter = Expression.Parameter(typeof(T), "x");
-            var property = Expression.Property(parameter, key);
-            var constant = Expression.Constant(value);
-            var equality = Expression.Equal(property, constant);
+            //Before update existence check
+            public async Task<bool> IsExistsForUpdate<Tid>(Tid id, string key, string value, CancellationToken cancellationToken = default)
+            {
+                var parameter = Expression.Parameter(typeof(T), "x");
+                var property = Expression.Property(parameter, key);
+                var constant = Expression.Constant(value);
+                var equality = Expression.Equal(property, constant);
 
-            var idProperty = Expression.Property(parameter, "Id");
-            var idEquality = Expression.NotEqual(idProperty, Expression.Constant(id));
+                var idProperty = Expression.Property(parameter, "Id");
+                var idEquality = Expression.NotEqual(idProperty, Expression.Constant(id));
 
-            var combinedExpression = Expression.AndAlso(equality, idEquality);
-            var lambda = Expression.Lambda<Func<T, bool>>(combinedExpression, parameter);
+                var combinedExpression = Expression.AndAlso(equality, idEquality);
+                var lambda = Expression.Lambda<Func<T, bool>>(combinedExpression, parameter);
 
-            return await _dbContext.Set<T>().AnyAsync(lambda, cancellationToken);
-        }
+                return await _dbContext.Set<T>().AnyAsync(lambda, cancellationToken);
+            }
 
         public async Task<T> Create(T model, CancellationToken cancellationToken = default)
         {
