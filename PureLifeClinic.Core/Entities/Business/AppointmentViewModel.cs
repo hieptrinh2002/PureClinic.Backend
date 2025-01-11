@@ -40,6 +40,9 @@ namespace PureLifeClinic.Core.Entities.Business
         [Required]
         public string PhoneNumber { get; set; }
 
+        [EmailAddress]
+        public string? Email { get; set; }
+
         [Required]
         public Gender? Gender { get; set; }
         public DateTime? DateOfBirth { get; set; }
@@ -48,7 +51,7 @@ namespace PureLifeClinic.Core.Entities.Business
         public DateTime AppointmentDate { get; set; }
 
         [Required]
-        public string? Reason { get; set; }
+        public string Reason { get; set; } = "Anual health check";
         public string? ReferredPerson { get; set; }
 
         public int DoctorId { get; set; }

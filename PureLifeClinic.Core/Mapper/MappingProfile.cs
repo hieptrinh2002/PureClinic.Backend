@@ -36,6 +36,13 @@ namespace PureLifeClinic.API.Extensions
              .ForMember(dest => dest.ExperienceYears, opt => opt.MapFrom(src => src.Doctor != null ? src.Doctor.ExperienceYears : null))
              .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Doctor != null ? src.Doctor.Description : null))
              .ForMember(dest => dest.RegistrationNumber, opt => opt.MapFrom(src => src.Doctor != null ? src.Doctor.RegistrationNumber : null));
-            }
+
+            //Appointment
+            CreateMap<Appointment, AppointmentCreateViewModel>().ReverseMap();
+            CreateMap<Appointment, AppointmentViewModel>().ReverseMap();
+
+        }
+
+
     }
 }
