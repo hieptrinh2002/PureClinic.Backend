@@ -109,7 +109,7 @@ namespace PureLifeClinic.Core.Services
 
         public async Task<ResponseViewModel> UpdateAppointmentAsync(int id, AppointmentUpdateViewModel model, CancellationToken cancellationToken)
         {
-            var existingData = await _unitOfWork.Appointments.GetById(id, cancellationToken) 
+            var existingData = await _unitOfWork.Appointments.GetById(id, cancellationToken)
                 ?? throw new KeyNotFoundException($"Appointment with ID {id} not found.");
 
             _mapper.Map(model, existingData);
@@ -124,10 +124,9 @@ namespace PureLifeClinic.Core.Services
                 Message = "Update apointment sucessfully !"
             };
         }
-
         public async Task<ResponseViewModel> UpdateAppointmentStatusAsync(int id, AppointmentStatus status, CancellationToken cancellationToken)
         {
-            var appointment = await _unitOfWork.Appointments.GetById(id, cancellationToken) 
+            var appointment = await _unitOfWork.Appointments.GetById(id, cancellationToken)
                 ?? throw new KeyNotFoundException($"Appointment with ID {id} not found.");
             appointment.Status = status;
             await _unitOfWork.Appointments.Update(appointment, cancellationToken);
@@ -140,12 +139,15 @@ namespace PureLifeClinic.Core.Services
             };
         }
 
-        public async Task<IEnumerable<DoctorAppointmentViewModel>> GetAllAppointmentsByDoctorIdAsync(int doctorId, CancellationToken cancellationToken)
+        public async Task<ResponseViewModel<IEnumerable<DoctorAppointmentViewModel>>> GetAllAppointmentsByDoctorIdAsync(int doctorId, CancellationToken cancellationToken)
         {
             //var includeList = new List<Expression<Func<Appointment, object>>> { x => x.Doctor, x => x.Patient };
+
+            var patient = await _unitOfWork.Doctors.GetById(doctorId, cancellationToken) ?? throw new Exception("Doctor not found");
+
             var filters = new List<ExpressionFilter>
             {
-                new ExpressionFilter()
+                new ()
                 {
                     PropertyName = "DoctorId",
                     Value = doctorId,
@@ -154,21 +156,47 @@ namespace PureLifeClinic.Core.Services
             };
             var includeExpressions = new List<Func<IQueryable<Appointment>, IIncludableQueryable<Appointment, object>>>
             {
-                query => query.Include(a => a.Doctor),  // Include và ThenInclude cho Doctor
-                query => query.Include(a => a.Patient).ThenInclude(p => p.User)  // Include cho Patient
+                query => query.Include(a => a.Doctor),
+                query => query.Include(a => a.Patient).ThenInclude(p => p.User)
             };
 
-            try
+            var entities = (await _unitOfWork.Appointments.GetAll(includeExpressions, filters, cancellationToken))
+                      .OrderBy(e => e.Status).ThenBy(e => e.AppointmentDate).ToList();
+
+            return new ResponseViewModel<IEnumerable<DoctorAppointmentViewModel>>
             {
-                var entities = (await _unitOfWork.Appointments.GetAll(includeExpressions, filters, cancellationToken))
-                          .OrderBy(e => e.Status).ThenBy(e => e.AppointmentDate).ToList();
-   
-                return _mapper.Map<List<DoctorAppointmentViewModel>>(entities);
-            }
-            catch (Exception ex)
+                Success = true,
+                Data = _mapper.Map<List<DoctorAppointmentViewModel>>(entities),
+            };
+        }
+
+        public async Task<ResponseViewModel<IEnumerable<PatientAppointmentViewModel>>> GetAllAppointmentsByPatientIdAsync(int patientId, CancellationToken cancellationToken)
+        {
+            var patient = await _unitOfWork.Patients.GetById(patientId, cancellationToken) ?? throw new Exception("Patient not found");
+
+            var filters = new List<ExpressionFilter>
             {
-                throw;
-            }
+                new()
+                {
+                    PropertyName = "PatientId",
+                    Value = patientId,
+                    Comparison = Comparison.Equal,
+                }
+            };
+            var includeExpressions = new List<Func<IQueryable<Appointment>, IIncludableQueryable<Appointment, object>>>
+            {
+                query => query.Include(a => a.Doctor).ThenInclude(p => p.User),
+                query => query.Include(a => a.Patient)
+            };
+
+            var entities = (await _unitOfWork.Appointments.GetAll(includeExpressions, filters, cancellationToken))
+                      .OrderBy(e => e.Status).ThenBy(e => e.AppointmentDate).ToList();
+
+            return new ResponseViewModel<IEnumerable<PatientAppointmentViewModel>>
+            {
+                Success = true,
+                Data = _mapper.Map<List<PatientAppointmentViewModel>>(entities),
+            };
         }
     }
 }

@@ -11,6 +11,7 @@ namespace PureLifeClinic.Core.Interfaces.IServices
         Task<bool> IsExists(int doctorId, DateTime date, CancellationToken cancellationToken);
         Task<ResponseViewModel> UpdateAppointmentAsync(int id, AppointmentUpdateViewModel model, CancellationToken cancellationToken);
         Task<ResponseViewModel> UpdateAppointmentStatusAsync(int id, AppointmentStatus status, CancellationToken cancellationToken);
-        Task<IEnumerable<DoctorAppointmentViewModel>> GetAllAppointmentsByDoctorIdAsync(int doctorId, CancellationToken cancellationToken);
+        Task<ResponseViewModel<IEnumerable<DoctorAppointmentViewModel>>> GetAllAppointmentsByDoctorIdAsync(int doctorId, CancellationToken cancellationToken);
+        Task<ResponseViewModel<IEnumerable<PatientAppointmentViewModel>>> GetAllAppointmentsByPatientIdAsync(int patientId, CancellationToken cancellationToken);
     }
 }

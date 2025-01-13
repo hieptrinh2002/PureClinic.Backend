@@ -63,16 +63,8 @@ namespace PureLifeClinic.API.Controllers.V1
         {
             try
             {
-                var appointments = await _appointmentService.GetAllAppointmentsByDoctorIdAsync(doctorId, cancellationToken);
-
-                var response = new ResponseViewModel<IEnumerable<DoctorAppointmentViewModel>>
-                {
-                    Success = true,
-                    Message = "Appointment retrieved successfully",
-                    Data = appointments
-                };
-
-                return Ok(response);
+                var result = await _appointmentService.GetAllAppointmentsByDoctorIdAsync(doctorId, cancellationToken);
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -93,10 +85,32 @@ namespace PureLifeClinic.API.Controllers.V1
             }
         }
 
-        //[HttpGet("patient/{patientId}")]
-        //public async Task<IActionResult> GetAppointmentsByPatient(int patientId, CancellationToken cancellationToken)
-        //{ }
-        
+        [HttpGet("patient/{patientId}")]
+        public async Task<IActionResult> GetAppointmentsByPatient(int patientId, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var result = await _appointmentService.GetAllAppointmentsByPatientIdAsync(patientId, cancellationToken);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while retrieving appointment");
+
+                var errorResponse = new ResponseViewModel<IEnumerable<PatientAppointmentViewModel>>
+                {
+                    Success = false,
+                    Message = "Error retrieving appointments",
+                    Error = new ErrorViewModel
+                    {
+                        Code = "ERROR_CODE",
+                        Message = ex.Message
+                    }
+                };
+
+                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
+            }
+        }
 
         // add new appointment
         [HttpPost("app/create")]

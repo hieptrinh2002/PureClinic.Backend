@@ -41,9 +41,8 @@ namespace PureLifeClinic.API.Extensions
             //Appointment
             CreateMap<Appointment, AppointmentCreateViewModel>().ReverseMap();
             CreateMap<Appointment, AppointmentUpdateViewModel>().ReverseMap();
-
             CreateMap<Appointment, DoctorAppointmentViewModel>().ForMember(dest => dest.Patient, opt => opt.MapFrom(src => src.Patient.User)).ReverseMap();
-
+            CreateMap<Appointment, PatientAppointmentViewModel>().ForMember(dest => dest.Doctor, opt => opt.MapFrom(src => src.Doctor.User)).ReverseMap();
             CreateMap<Appointment, AppointmentViewModel>()
               .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
               .ForMember(dest => dest.Patient, opt => opt.MapFrom(src => src.Patient.User))
