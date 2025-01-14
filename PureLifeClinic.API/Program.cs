@@ -7,6 +7,8 @@ using PureLifeClinic.API.Extensions;
 using PureLifeClinic.API.Middlewares;
 using PureLifeClinic.Infrastructure.Data;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using PureLifeClinic.Core.Services;
+using PureLifeClinic.Core.Interfaces.IServices;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +20,18 @@ builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSet
 
 // Add caching services
 builder.Services.AddMemoryCache();
+builder.Services.AddSingleton<MemoryCacheService>();
+builder.Services.AddSingleton<RedisCacheService>(sp =>
+{
+    var connectionString = builder.Configuration.GetConnectionString("RedisConnection");
+    if (string.IsNullOrEmpty(connectionString))
+    {
+        throw new InvalidOperationException("Redis connection string is missing or empty.");
+    }
+    return new RedisCacheService(connectionString);
+});
+// Add CacheServiceFactory
+builder.Services.AddSingleton<ICacheServiceFactory, CacheServiceFactory>();
 
 // Register ILogger service
 builder.Services.AddLogging(loggingBuilder =>

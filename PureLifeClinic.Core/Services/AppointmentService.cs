@@ -14,13 +14,14 @@ namespace PureLifeClinic.Core.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IUserContext _userContext;
-
-        public AppointmentService(IMapper mapper, IUserContext userContext, IUnitOfWork unitOfWork)
+        private readonly ICacheServiceFactory _cacheServiceFactory;
+        public AppointmentService(IMapper mapper, IUserContext userContext, ICacheServiceFactory cacheServiceFactory, IUnitOfWork unitOfWork)
             : base(mapper, unitOfWork.Appointments)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _userContext = userContext;
+            _cacheServiceFactory = cacheServiceFactory;
         }
 
         public new async Task<IEnumerable<AppointmentViewModel>> GetAll(CancellationToken cancellationToken)
@@ -172,6 +173,14 @@ namespace PureLifeClinic.Core.Services
 
         public async Task<ResponseViewModel<IEnumerable<PatientAppointmentViewModel>>> GetAllAppointmentsByPatientIdAsync(int patientId, CancellationToken cancellationToken)
         {
+            var cacheKey = $"patient-{patientId}";
+            var _cacheService = _cacheServiceFactory.GetCacheService(CacheType.Redis);
+            var cachedData = await _cacheService.GetAsync<ResponseViewModel<IEnumerable<PatientAppointmentViewModel>>>(cacheKey);
+            if (cachedData != null)
+            {
+                return cachedData;
+            }
+
             var patient = await _unitOfWork.Patients.GetById(patientId, cancellationToken) ?? throw new Exception("Patient not found");
 
             var filters = new List<ExpressionFilter>
@@ -192,11 +201,15 @@ namespace PureLifeClinic.Core.Services
             var entities = (await _unitOfWork.Appointments.GetAll(includeExpressions, filters, cancellationToken))
                       .OrderBy(e => e.Status).ThenBy(e => e.AppointmentDate).ToList();
 
-            return new ResponseViewModel<IEnumerable<PatientAppointmentViewModel>>
+            var response = new ResponseViewModel<IEnumerable<PatientAppointmentViewModel>>
             {
                 Success = true,
                 Data = _mapper.Map<List<PatientAppointmentViewModel>>(entities),
             };
+
+            await _cacheService.SetAsync(cacheKey, response, TimeSpan.FromMinutes(30));
+
+            return response;
         }
     }
 }
