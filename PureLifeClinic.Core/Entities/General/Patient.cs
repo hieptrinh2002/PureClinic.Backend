@@ -5,9 +5,6 @@ namespace PureLifeClinic.Core.Entities.General
 {
     public class Patient: Base<int>
     {
-        //[Required, StringLength(100)]
-        //public string? MedicalHistory { get; set; }
-
         [StringLength(1000)]
         public string? Notes { get; set; } = string.Empty;
 

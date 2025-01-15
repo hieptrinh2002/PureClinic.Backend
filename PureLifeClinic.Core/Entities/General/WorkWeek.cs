@@ -15,7 +15,8 @@ namespace PureLifeClinic.Core.Entities.General
 
         [Required]
         public DateTime WeekEndDate { get; set; }
-
+         
+        public WorkWeekStatus WorkWeekStatus { get; set; } = WorkWeekStatus.Pending;
         public ICollection<WorkDay> WorkDays { get; set; } = new List<WorkDay>();
     }
  
@@ -48,6 +49,12 @@ namespace PureLifeClinic.Core.Entities.General
             }
             return ValidationResult.Success;
         }
+    }
+
+    public enum WorkWeekStatus {
+        Pending,
+        Completed,
+        Canceled
     }
 }
 

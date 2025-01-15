@@ -69,7 +69,8 @@ Các mối quan hệ phức tạp hoặc dữ liệu cần tham chiếu chặt c
    + 
  ** 
 - Thêm các cuộc hẹn khám bệnh giữa khách hàng và bác sĩ  (bac sĩ, khách hàng, thời gian , trạng thái, loại cuộc hẹn (tái khám, tổng quát, chung chung ...))
-- 
+- Phân loại thêm cấp độ bệnh nhân => có lộ trình điều trị (cân nhắc mongodb)
+
 *****
 plan: 
 - 23/12/2024 - 19/12/2024: 
@@ -101,102 +102,38 @@ plan:
 		✅ + API Tạo mới và	
 		✅ + Lấy tất cả cuộc hẹn của 1 bác sỹ/ 1 patient order by appointmentDate, by status
 
+- 13/01/2025 - 19/01/2025:
+     - BE:
+		✅ + Redis / memory cahing
+		+ MedicalReport api ( create, get , get by patient (sort by date, status..), update, delete 
+		+ Update, add new PrescriptionDetail 
+		+ Prescription-details( update, add new , delete,)
+		+ Appointment (get by status, top 10 apointment pending status and sort by created time, lấy trong range time nào đó)
+		+ MedicalFile(( update, add new , delete, ) của 1 bệnh nhân
+		+ Filter api
 
+3. SignalR
+Mục đích: Thực hiện giao tiếp thời gian thực giữa máy chủ và ứng dụng client (ví dụ như thông báo khi có lịch hẹn, thay đổi trạng thái bệnh nhân, v.v.).
+5. IdentityServer4 hoặc ASP.NET Core Identity
+Mục đích: Cung cấp hệ thống xác thực và phân quyền người dùng.
+7. Hangfire
+Mục đích: Quản lý và thực hiện các công việc nền (background tasks) như gửi email thông báo, tạo báo cáo hoặc nhắc nhở lịch khám cho bệnh nhân.
+Lợi ích: Cho phép thực hiện các tác vụ định kỳ hoặc theo thời gian mà không cần phải chờ đợi trong quá trình người dùng tương tác với hệ thống.
+8. SQL Server (Full-Text Search)
+Mục đích: Tìm kiếm nhanh chóng và chính xác trong cơ sở dữ liệu, đặc biệt là khi cần tìm kiếm bệnh nhân, hồ sơ bệnh lý, thuốc, hoặc lịch sử khám.
+Lợi ích: Giúp cải thiện hiệu suất tìm kiếm và hỗ trợ tìm kiếm từ đồng nghĩa, đặc biệt là khi có nhiều dữ liệu văn bản trong hệ thống.
+9. RabbitMQ hoặc Azure Service Bus (Message Queues)
+Mục đích: Xử lý và gửi thông điệp giữa các phần của hệ thống hoặc giữa các hệ thống khác nhau (ví dụ, gửi thông báo hoặc email tự động sau khi bác sĩ xác nhận lịch khám).
+Lợi ích: Giúp quản lý các tác vụ đồng bộ, tăng tính khả dụng và khả năng mở rộng của hệ thống.
+10. Caching (Redis hoặc MemoryCache)
+Mục đích: Tăng tốc độ truy cập dữ liệu trong ứng dụng như danh sách bệnh nhân, lịch khám, v.v.
+11. Document Storage (Cloundinary)
+Mục đích: Lưu trữ tài liệu y tế như hồ sơ bệnh nhân, kết quả xét nghiệm, hình ảnh X-quang, v.v.
+12. QR Code/Barcode Scanning
+Mục đích: Tạo mã QR hoặc mã vạch cho bệnh nhân hoặc hồ sơ bệnh nhân để quét khi bệnh nhân đến khám.
+Lợi ích: Giảm thiểu sai sót và tăng tốc quá trình đăng ký khám bệnh, giúp việc truy xuất dữ liệu bệnh nhân nhanh chóng.
+13. Excel/PDF Reporting
+Mục đích: Xuất báo cáo thống kê, báo cáo hóa đơn, báo cáo khám bệnh dưới dạng Excel hoặc PDF.
+14 Unit test
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-***** NOTE
-1. Quản lý lịch hẹn (Appointment Scheduling)
-Mô tả: Xây dựng tính năng quản lý lịch hẹn cho bệnh nhân và bác sĩ. Hệ thống sẽ giúp bệnh nhân đặt lịch và bác sĩ xem lịch làm việc của họ.
-Tính năng chính:
-Chọn thời gian và bác sĩ.
-Tính năng nhắc nhở qua email/SMS.
-Xem lịch hẹn trong ngày, tuần, tháng.
-Chức năng hủy hoặc thay đổi lịch hẹn.
-Công nghệ có thể dùng: FullCalendar (ReactJS), Date-fns, hoặc moment.js để xử lý thời gian.
-2. Quản lý bệnh án (Medical Records)
-Mô tả: Tạo một hệ thống để lưu trữ và truy cập bệnh án của bệnh nhân. Mỗi bệnh nhân có thể có một hồ sơ y tế bao gồm các thông tin về bệnh sử, xét nghiệm, chẩn đoán, và phương pháp điều trị.
-Tính năng chính:
-Lưu trữ thông tin bệnh nhân, bao gồm lịch sử bệnh án.
-Cho phép bác sĩ và bệnh nhân truy cập, cập nhật hồ sơ.
-Lưu trữ các kết quả xét nghiệm, toa thuốc.
-Công nghệ có thể dùng: MongoDB cho cơ sở dữ liệu phi quan hệ, hoặc sử dụng PostgreSQL/Mysql nếu bạn muốn cơ sở dữ liệu quan hệ.
-3. Tính năng quản lý thuốc (Pharmacy Management)
-Mô tả: Xây dựng tính năng quản lý kho thuốc và các đơn thuốc.
-Tính năng chính:
-Lưu trữ thông tin thuốc (tên, liều lượng, hạn sử dụng).
-Quản lý đơn thuốc cho bệnh nhân.
-Kiểm tra số lượng thuốc trong kho và thông báo khi cần bổ sung.
-Công nghệ có thể dùng: ReactJS cho giao diện người dùng, sử dụng Redux hoặc Zustand cho quản lý trạng thái.
-4. Quản lý thanh toán (Billing and Payments)
-Mô tả: Tạo hệ thống thanh toán cho bệnh nhân, bao gồm các phương thức thanh toán như tiền mặt, chuyển khoản, và thanh toán qua thẻ.
-Tính năng chính:
-Tính toán các khoản chi phí khám chữa bệnh.
-Gửi hóa đơn điện tử cho bệnh nhân.
-Lịch sử thanh toán của bệnh nhân.
-Công nghệ có thể dùng: Stripe, PayPal API cho thanh toán trực tuyến.
-5. Chức năng nhắc nhở và thông báo (Notifications & Alerts)
-Mô tả: Tạo hệ thống thông báo để nhắc nhở bệnh nhân về lịch hẹn, các cuộc hẹn sắp tới, hoặc các thông tin cần thiết.
-Tính năng chính:
-Gửi email/SMS nhắc lịch hẹn, xét nghiệm.
-Thông báo về các sự kiện quan trọng.
-Công nghệ có thể dùng: NodeMailer, Twilio API để gửi SMS/email, hoặc Firebase Cloud Messaging.
-6. Quản lý người dùng và phân quyền (User Management & Roles)
-Mô tả: Tạo hệ thống phân quyền người dùng với các vai trò khác nhau (admin, bác sĩ, nhân viên, bệnh nhân).
-Tính năng chính:
-Phân quyền cho các đối tượng người dùng khác nhau.
-Tạo hệ thống đăng ký và đăng nhập.
-Quản lý mật khẩu và các phương thức bảo mật (ví dụ: xác thực 2 yếu tố).
-Công nghệ có thể dùng: JWT (JSON Web Token) cho xác thực, bcrypt cho mã hóa mật khẩu.
-7. Tính năng báo cáo và thống kê (Reports & Analytics)
-Mô tả: Tạo các báo cáo thống kê cho quản lý phòng khám về số lượng bệnh nhân, số lượng khám bệnh, số lượng thuốc đã sử dụng, v.v.
-Tính năng chính:
-Thống kê số lượng bệnh nhân theo tháng/quý.
-Báo cáo các khoản thanh toán, khám chữa bệnh.
-Đồ họa thống kê về số lượng thuốc đã sử dụng, v.v.
-Công nghệ có thể dùng: Chart.js, Recharts hoặc Chartkick (Ruby on Rails).
-8. Tính năng video call cho tư vấn từ xa (Telemedicine)
-Mô tả: Cung cấp tính năng video call cho bác sĩ và bệnh nhân để tư vấn từ xa.
-Tính năng chính:
-Tạo phòng video call.
-Hỗ trợ chia sẻ màn hình, gửi tài liệu.
-Tính năng ghi âm cuộc gọi.
-Công nghệ có thể dùng: WebRTC, Twilio, Daily.co.
-9. Quản lý lịch làm việc của bác sĩ (Doctor's Schedule)
-Mô tả: Xây dựng một hệ thống để bác sĩ có thể tạo và quản lý lịch làm việc của mình.
-Tính năng chính:
-Đặt giờ làm việc cho bác sĩ.
-Hiển thị lịch làm việc trong ngày, tuần.
-Thêm hoặc sửa đổi các cuộc hẹn vào lịch.
-Công nghệ có thể dùng: FullCalendar, React DatePicker.
-10. Quản lý phản hồi và đánh giá (Feedback & Reviews)
-Mô tả: Cho phép bệnh nhân đánh giá bác sĩ hoặc dịch vụ.
-Tính năng chính:
-Bệnh nhân có thể đánh giá bác sĩ theo các tiêu chí như chất lượng, thái độ phục vụ.
-Hiển thị các đánh giá trên trang của bác sĩ hoặc dịch vụ.
-Công nghệ có thể dùng: React Star Rating, tích hợp hệ thống đánh giá và lưu trữ vào cơ sở dữ liệu.
+case gửi 1 lúc quá nhiều mail -> đẩy vào queue????

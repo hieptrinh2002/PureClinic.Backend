@@ -1,11 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PureLifeClinic.Core.Exceptions;
-using PureLifeClinic.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore.Query;
 using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Entities.Business;
+using PureLifeClinic.Core.Exceptions;
 using PureLifeClinic.Core.Interfaces.IRepositories;
+using PureLifeClinic.Infrastructure.Data;
 using System.Linq.Expressions;
-using Microsoft.EntityFrameworkCore.Query;
 
 namespace PureLifeClinic.Infrastructure.Repositories
 {
