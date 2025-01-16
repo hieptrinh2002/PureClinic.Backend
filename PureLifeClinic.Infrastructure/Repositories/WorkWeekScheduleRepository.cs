@@ -14,7 +14,6 @@ namespace PureLifeClinic.Infrastructure.Repositories
         private readonly IMapper _mapper;
         private readonly UserManager<User> _userManager;
 
-
         public WorkWeekScheduleRepository(ApplicationDbContext dbContext, UserManager<User> userManager,  IMapper mapper) : base(dbContext)
         {
             _mapper = mapper;
