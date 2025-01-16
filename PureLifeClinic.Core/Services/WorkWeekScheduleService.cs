@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using PureLifeClinic.Core.Entities.Business;
-using PureLifeClinic.Core.Entities.Business.Schedule;
 using PureLifeClinic.Core.Entities.General;
 using PureLifeClinic.Core.Interfaces.IRepositories;
 using PureLifeClinic.Core.Interfaces.IServices;

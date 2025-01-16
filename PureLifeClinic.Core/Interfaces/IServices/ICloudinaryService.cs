@@ -1,4 +1,4 @@
-﻿using CloudinaryDotNet;
+﻿using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Http;
 
 namespace PureLifeClinic.Core.Interfaces.IServices
@@ -9,6 +9,5 @@ namespace PureLifeClinic.Core.Interfaces.IServices
         Task<List<string>> UploadFilesAsync(List<IFormFile> files);
         Task<bool> DeleteFileAsync(string publicId);
         Task<bool> DeleteFilesAsync(List<string> publicIds);
-        Task<string> GetFileDetailsAsync(string publicId);
     }
 }

@@ -1,6 +1,5 @@
 ﻿
 using PureLifeClinic.Core.Entities.Business;
-using PureLifeClinic.Core.Entities.Business.Schedule;
 
 namespace PureLifeClinic.Core.Interfaces.IServices
 {

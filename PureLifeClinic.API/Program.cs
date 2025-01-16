@@ -9,6 +9,9 @@ using PureLifeClinic.Infrastructure.Data;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using PureLifeClinic.Core.Services;
 using PureLifeClinic.Core.Interfaces.IServices;
+using PureLifeClinic.Core.MessageHub;
+using DinkToPdf.Contracts;
+using DinkToPdf;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -42,12 +45,13 @@ builder.Services.AddLogging(loggingBuilder =>
 // Register Services
 builder.Services.RegisterSecurityService(builder.Configuration);
 builder.Services.RegisterService();
+builder.Services.AddSignalR();
 //builder.Services.RegisterMapperService();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddAuthorization();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
 // API Versioning
 builder.Services
     .AddApiVersioning()
@@ -99,7 +103,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactApp", builder =>
     {
-        builder.WithOrigins("http://localhost:3000") // URL frontend
+        builder.WithOrigins("http://127.0.0.1:5500/") // URL frontend
                .AllowAnyHeader()
                .AllowAnyMethod()
                .AllowCredentials(); 
@@ -108,7 +112,7 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-if(app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
@@ -166,7 +170,9 @@ app.UseMiddleware<RequestResponseLoggingMiddleware>();
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllers(); // Map your regular API controllers
+    endpoints.MapHub<MessageHub>("/NotificationHub"); // Map the SignalR hub
 });
+
 
 app.Run();
 

@@ -1,5 +1,5 @@
-﻿using CloudinaryDotNet.Actions;
-using CloudinaryDotNet;
+﻿using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Http;
 using PureLifeClinic.Core.Interfaces.IServices;
 
@@ -14,15 +14,33 @@ namespace PureLifeClinic.Core.Services
             _cloudinary = cloudinary;
         }
 
-        // Upload a single file
+        private BaseParams CreateUploadParams(Stream fileStream, string fileName, string contentType)
+        {
+            var fileDescription = new FileDescription(fileName, fileStream);
+
+            return contentType.ToLower() switch
+            {
+                "image/jpeg" or "image/png" or "image/gif" => new ImageUploadParams { File = fileDescription },
+                "video/mp4" or "video/avi" or "video/mkv" => new VideoUploadParams { File = fileDescription },
+                "application/pdf" or "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                    => new RawUploadParams { File = fileDescription },
+                _ => throw new NotSupportedException("Unsupported file type"),
+            };
+        }
+
         public async Task<string> UploadFileAsync(IFormFile file)
         {
             using var stream = file.OpenReadStream();
-            var uploadParams = new ImageUploadParams
+            var uploadParams = CreateUploadParams(stream, file.FileName, file.ContentType);
+
+            UploadResult uploadResult = uploadParams switch
             {
-                File = new FileDescription(file.FileName, stream),
+                VideoUploadParams imageParams => await _cloudinary.UploadAsync(imageParams),
+                ImageUploadParams imageParams => await _cloudinary.UploadAsync(imageParams),
+                RawUploadParams rawParams => await _cloudinary.UploadAsync(rawParams),
+                _ => throw new InvalidOperationException("Invalid upload parameters"),
             };
-            var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+
             return uploadResult.SecureUrl?.ToString();
         }
 
@@ -56,14 +74,6 @@ namespace PureLifeClinic.Core.Services
                 deletionResults.Add(success);
             }
             return deletionResults.All(r => r);
-        }
-
-        // Get file details (metadata)
-        public async Task<string> GetFileDetailsAsync(string publicId)
-        {
-            var resourceParams = new GetResourceParams(publicId);
-            var resource = await _cloudinary.GetResourceAsync(resourceParams);
-            return resource?.SecureUrl;
         }
     }
 }
