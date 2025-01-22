@@ -30,6 +30,7 @@ namespace PureLifeClinic.Core.Entities.General
     public enum AppointmentStatus
     {
         Pending,
+        Confirmed,
         Completed,
         Canceled
     }

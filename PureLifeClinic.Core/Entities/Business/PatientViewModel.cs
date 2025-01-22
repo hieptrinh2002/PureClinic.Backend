@@ -34,7 +34,7 @@ namespace PureLifeClinic.Core.Entities.Business
         // new 
         public PatientStatus Status { get; set; } = PatientStatus.New;
         public ICollection<LabResult>? LabResults { get; set; }
-        public ICollection<MedicationInteraction>? Interactions { get; set; }
+        public ICollection<MedicineInteraction>? Interactions { get; set; }
         public ICollection<Allergy>? Allergies { get; set; }
     }
 }

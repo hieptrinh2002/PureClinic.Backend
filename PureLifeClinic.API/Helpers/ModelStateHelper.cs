@@ -16,5 +16,4 @@ namespace PureLifeClinic.API.Helpers
             return string.Join(", ", errors.Select(kvp => $"{kvp.Key}: {kvp.Value}"));
         }
     }
-
 }

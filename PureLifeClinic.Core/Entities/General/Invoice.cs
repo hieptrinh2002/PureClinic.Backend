@@ -15,7 +15,6 @@ namespace PureLifeClinic.Core.Entities.General
         [ForeignKey(nameof(AppointmentId))]
         public virtual Appointment Appointment { get; set; }
 
-
         public void CalculateTotalAmount()
         {
             double total = 0;
@@ -28,7 +27,7 @@ namespace PureLifeClinic.Core.Entities.General
                     {
                         foreach (var prescription in report.PrescriptionDetails)
                         {
-                            total += prescription.Quantity * prescription.Medication.Price;
+                            total += prescription.Quantity * prescription.Medicine.Price;
                         }
                     }
                 }
@@ -40,9 +39,9 @@ namespace PureLifeClinic.Core.Entities.General
             TotalAmount = total;
         }
 
-        private double CalculateMedicationCost()
+        private double CalculateMedicineCost()
         {
-            double medicationCost = 0;
+            double medicineCost = 0;
 
             if (Appointment?.MedicalReports != null)
             {
@@ -52,13 +51,13 @@ namespace PureLifeClinic.Core.Entities.General
                     {
                         foreach (var prescription in report.PrescriptionDetails)
                         {
-                            medicationCost += prescription.Quantity * prescription.Medication.Price;
+                            medicineCost += prescription.Quantity * prescription.Medicine.Price;
                         }
                     }
                 }
             }
 
-            return medicationCost;
+            return medicineCost;
         }
     }
 }

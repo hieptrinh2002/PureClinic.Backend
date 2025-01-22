@@ -108,10 +108,10 @@ namespace PureLifeClinic.Infrastructure.Data
                 }
 
                 // Adding Medication
-                if (!appContext.Medications.Any())
+                if (!appContext.Medicines.Any())
                 {
                     using var transaction = appContext.Database.BeginTransaction();
-                    appContext.Medications.AddRange(Medications());
+                    appContext.Medicines.AddRange(Medicines());
                     await appContext.SaveChangesAsync();
                     transaction.Commit();
                 }
@@ -189,7 +189,7 @@ namespace PureLifeClinic.Infrastructure.Data
                 })
                 .RuleFor(u => u.Address, f => f.Address.FullAddress())
                 .RuleFor(u => u.IsActive, f => f.Random.Bool())
-                .RuleFor(u => u.RoleId, f => roleIds[f.Random.Int(0, roleIds.Count - 1)]) // Gắn roleId từ 1-4
+                .RuleFor(u => u.RoleId, f => roleIds[f.Random.Int(0, roleIds.Count - 1)]) 
                 .RuleFor(u => u.DateOfBirth, f => f.Date.Past(40, DateTime.Now.AddYears(-18)))
                 .RuleFor(u => u.Gender, f => f.PickRandom<Gender>())
                 .RuleFor(u => u.EntryDate, f => DateTime.Now);
@@ -202,7 +202,7 @@ namespace PureLifeClinic.Infrastructure.Data
             var appContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
             var doctors = appContext.Doctors.ToList();
             var patients = appContext.Patients.ToList();
-            var medications = appContext.Medications.ToList(); // Lấy danh sách thuốc
+            var medicines = appContext.Medicines.ToList(); 
 
             var faker = new Faker<Appointment>()
                 .RuleFor(a => a.AppointmentDate, f => f.Date.Future())
@@ -211,15 +211,14 @@ namespace PureLifeClinic.Infrastructure.Data
                 .RuleFor(a => a.DoctorId, f => doctors[f.Random.Int(0, doctors.Count - 1)].Id)
                 .RuleFor(a => a.Status, f => f.PickRandom<AppointmentStatus>())
                 .RuleFor(a => a.EntryDate, f => DateTime.Now)
-                .RuleFor(a => a.MedicalReports, f => GenerateMedicalReports(f, medications))
+                .RuleFor(a => a.MedicalReports, f => GenerateMedicalReports(f, medicines))
                 .RuleFor(u => u.EntryDate, f => DateTime.Now);
-
 
             return faker.Generate(15);
         }
 
         // Generate MedicalReport
-        private static List<MedicalReport> GenerateMedicalReports(Faker faker, List<Medication> medications)
+        private static List<MedicalReport> GenerateMedicalReports(Faker faker, List<Medicine> medications)
         {
             return new Faker<MedicalReport>()
                 .RuleFor(mr => mr.ReportDate, f => f.Date.Past())
@@ -233,26 +232,27 @@ namespace PureLifeClinic.Infrastructure.Data
         }
 
         // Generate PrescriptionDetail
-        private static List<PrescriptionDetail> GeneratePrescriptionDetails(Faker faker, List<Medication> medications)
+        private static List<PrescriptionDetail> GeneratePrescriptionDetails(Faker faker, List<Medicine> medications)
         {
             return new Faker<PrescriptionDetail>()
                 .RuleFor(pd => pd.Quantity, f => f.Random.Int(1, 5))
                 .RuleFor(pd => pd.Dosage, f => $"{f.Random.Int(1, 3)} lần/ngày")
                 .RuleFor(pd => pd.Instructions, f => f.Lorem.Sentence(5))
-                .RuleFor(pd => pd.MedicationId, f => medications[f.Random.Int(0, medications.Count - 1)].Id)
+                .RuleFor(pd => pd.MedicineId, f => medications[f.Random.Int(0, medications.Count - 1)].Id)
                 .RuleFor(u => u.EntryDate, f => DateTime.Now)
                 .Generate(faker.Random.Int(1, 5));
         }
 
-        public static IEnumerable<Medication> Medications()
+        public static IEnumerable<Medicine> Medicines()
         {
-            var faker = new Faker<Medication>()
+            var faker = new Faker<Medicine>()
                 .RuleFor(m => m.Name, f => f.Commerce.ProductName())
                 .RuleFor(m => m.Description, f => f.Lorem.Sentence(10))
-                .RuleFor(m => m.Price, f => Math.Round(f.Random.Double(5.0, 100.0), 2)) 
-                .RuleFor(m => m.StockQuantity, f => f.Random.Int(0, 500)) 
+                .RuleFor(m => m.Price, f => Math.Round(f.Random.Double(5.0, 100.0), 2))
+                .RuleFor(m => m.Quantity, f => f.Random.Int(0, 500))
                 .RuleFor(m => m.Manufacturer, f => f.Company.CompanyName())
-                .RuleFor(m => m.EntryDate, f => DateTime.Now);
+                .RuleFor(m => m.EntryDate, f => DateTime.Now)
+                .RuleFor(m => m.Code, f => (new Guid()).ToString().Substring(0,7));
 
             return faker.Generate(60);
         }

@@ -24,7 +24,8 @@ namespace PureLifeClinic.API.Extensions
             services.AddTransient<IRefreshTokenService, RefreshTokenService>();
             services.AddTransient<IWorkWeekScheduleService, WorkWeekScheduleService>();
             services.AddTransient<IAppointmentService, AppointmentService>();
-
+            services.AddTransient<IMedicalReportService, MedicalReportService>();
+            services.AddTransient<IMedicineService, MedicineService>();
 
             //Cloudinary
             services.AddSingleton<Cloudinary>(serviceProvider =>

@@ -9,10 +9,10 @@ namespace PureLifeClinic.Core.Entities.General
         public string Instructions { get; set; }
 
         // Navigation properties
-        public int MedicationId { get; set; }
+        public int MedicineId { get; set; }
 
-        [ForeignKey(nameof(MedicationId))]
-        public Medication Medication { get; set; }
+        [ForeignKey(nameof(MedicineId))]
+        public Medicine Medicine { get; set; }
 
         public int MedicalReportId { get; set; }
 

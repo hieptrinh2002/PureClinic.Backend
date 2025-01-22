@@ -2,6 +2,7 @@
 using DinkToPdf;
 using DinkToPdf.Contracts;
 using Microsoft.AspNetCore.Mvc;
+using PureLifeClinic.Core.Entities.Business;
 
 namespace PureLifeClinic.API.Controllers.V1
 {
@@ -128,7 +129,7 @@ namespace PureLifeClinic.API.Controllers.V1
                                     <td>Hypertension, Type 2 Diabetes</td>
                                 </tr>
                                 <tr>
-                                    <th>Current Medications</th>
+                                    <th>Current Medicines</th>
                                     <td>Metformin (500mg), Lisinopril (10mg)</td>
                                 </tr>
                                 <tr>

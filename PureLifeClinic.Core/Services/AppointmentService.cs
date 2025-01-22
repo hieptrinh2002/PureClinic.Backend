@@ -6,6 +6,7 @@ using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Entities.General;
 using PureLifeClinic.Core.Interfaces.IRepositories;
 using PureLifeClinic.Core.Interfaces.IServices;
+using System.Linq.Expressions;
 
 namespace PureLifeClinic.Core.Services
 {
@@ -210,6 +211,17 @@ namespace PureLifeClinic.Core.Services
             await _cacheService.SetAsync(cacheKey, response, TimeSpan.FromMinutes(30));
 
             return response;
+        }
+
+        public async Task<ResponseViewModel<IEnumerable<AppointmentViewModel>>> GetAllFilterAppointments(FilterAppointmentRequestViewModel model, CancellationToken cancellationToken)
+        {
+            var result = await _unitOfWork.Appointments.GetAllFilterAppointments(model, cancellationToken);
+            
+            return new ResponseViewModel<IEnumerable<AppointmentViewModel>>
+            {
+                Success = true,
+                Data = _mapper.Map<List<AppointmentViewModel>>(result.Data),
+            };
         }
     }
 }

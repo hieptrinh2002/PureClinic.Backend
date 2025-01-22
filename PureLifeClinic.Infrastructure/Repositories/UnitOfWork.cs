@@ -27,6 +27,8 @@ namespace PureLifeClinic.Infrastructure.Repositories
         public IAppointmentRepository Appointments { get; private set; }
         public IPatientRepository Patients { get; private set; }
         public IDoctorRepository Doctors { get; private set; }
+        public IMedicalReportRepository MedicalReports { get; private set; }
+        public IMedicineRepository Medicines { get; private set; }
 
         public UnitOfWork(
             ApplicationDbContext dbContext,
@@ -51,7 +53,9 @@ namespace PureLifeClinic.Infrastructure.Repositories
             WorkWeeks = new WorkWeekScheduleRepository(_dbContext, _userManager, _mapper);
             Appointments = new AppointmentRepository(_dbContext);
             Patients = new PatientRepository(_dbContext);
-            Doctors = new DoctorRepository(_dbContext); 
+            Doctors = new DoctorRepository(_dbContext);
+            MedicalReports = new MedicalReportRepository(_dbContext);
+            Medicines = new MedicineRepository(_dbContext);
         }
         public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {

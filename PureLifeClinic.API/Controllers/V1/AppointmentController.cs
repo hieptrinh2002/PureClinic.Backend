@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PureLifeClinic.API.Helpers;
+using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Interfaces.IServices;
 
@@ -11,13 +12,13 @@ namespace PureLifeClinic.API.Controllers.V1
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
-    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class AppointmentController : ControllerBase
     {
         private readonly IAppointmentService _appointmentService;
         private readonly ILogger<AppointmentController> _logger;
 
-        public AppointmentController(IAppointmentService appointmentService , ILogger<AppointmentController> logger)
+        public AppointmentController(IAppointmentService appointmentService, ILogger<AppointmentController> logger)
         {
             _appointmentService = appointmentService;
             _logger = logger;
@@ -44,6 +45,89 @@ namespace PureLifeClinic.API.Controllers.V1
                 _logger.LogError(ex, "An error occurred while retrieving appointment");
 
                 var errorResponse = new ResponseViewModel<IEnumerable<AppointmentViewModel>>
+                {
+                    Success = false,
+                    Message = "Error retrieving appointments",
+                    Error = new ErrorViewModel
+                    {
+                        Code = "ERROR_CODE",
+                        Message = ex.Message
+                    }
+                };
+
+                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
+            }
+        }
+
+        [HttpGet("paginated-data")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetbyFilterCondition(int? pageNumber, int? pageSize, string? search, string? sortBy, string? sortOrder, CancellationToken cancellationToken)
+        {
+            try
+            {
+                int pageSizeValue = pageSize ?? 10;
+                int pageNumberValue = pageNumber ?? 1;
+                sortBy = sortBy ?? "EntryDate";
+                sortOrder = sortOrder ?? "desc";
+
+                var filters = new List<ExpressionFilter>();
+                if (!string.IsNullOrWhiteSpace(search) && search != null)
+                {
+                    // Add filters for relevant properties
+                    filters.AddRange(new[]
+                    {
+                        new ExpressionFilter
+                        {
+                            PropertyName = "ReferredPerson",
+                            Value = search,
+                            Comparison = Comparison.Contains
+                        },
+                    });
+                }
+
+                var appointmnets = await _appointmentService.GetPaginatedData(pageNumberValue, pageSizeValue, filters, sortBy, sortOrder, cancellationToken);
+
+                var response = new ResponseViewModel<PaginatedDataViewModel<AppointmentViewModel>>
+                {
+                    Success = true,
+                    Message = "Appointmnets retrieved successfully",
+                    Data = appointmnets
+                };
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while retrieving appointmnets");
+
+                var errorResponse = new ResponseViewModel<IEnumerable<ProductViewModel>>
+                {
+                    Success = false,
+                    Message = "Error retrieving appointmnets",
+                    Error = new ErrorViewModel
+                    {
+                        Code = "ERROR_CODE",
+                        Message = ex.Message
+                    }
+                };
+
+                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
+            }
+        }
+
+        [HttpPost("filter")]
+        public async Task<IActionResult> GetFilterAppointment(FilterAppointmentRequestViewModel model,CancellationToken cancellationToken)
+        {
+            try
+            {
+                var result = await _appointmentService.GetAllFilterAppointments(model, cancellationToken);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while retrieving appointment");
+
+                var errorResponse = new ResponseViewModel<IEnumerable<DoctorAppointmentViewModel>>
                 {
                     Success = false,
                     Message = "Error retrieving appointments",
