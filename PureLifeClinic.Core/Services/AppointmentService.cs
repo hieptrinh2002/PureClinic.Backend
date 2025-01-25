@@ -126,6 +126,7 @@ namespace PureLifeClinic.Core.Services
                 Message = "Update apointment sucessfully !"
             };
         }
+
         public async Task<ResponseViewModel> UpdateAppointmentStatusAsync(int id, AppointmentStatus status, CancellationToken cancellationToken)
         {
             var appointment = await _unitOfWork.Appointments.GetById(id, cancellationToken)

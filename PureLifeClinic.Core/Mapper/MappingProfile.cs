@@ -49,7 +49,28 @@ namespace PureLifeClinic.API.Extensions
               .ReverseMap();
 
             //Medical report mappings
-            CreateMap<MedicalReport, MedicalReportViewModel>().ReverseMap();
+            CreateMap<MedicalReport, MedicalReportViewModel>()
+                .ForMember(dest => dest.MedicalFiles, opt => opt.MapFrom(src => src.MedicalFiles != null? src.MedicalFiles.Select(m => m.FilePath).ToList(): new List<string>()))
+                .ForMember(dest => dest.PrescriptionDetails, opt => opt.MapFrom(src => src.PrescriptionDetails))
+                .ReverseMap();
+
+            CreateMap<MedicalReport, MedicalReportCreateViewModel>().ReverseMap();
+            CreateMap<MedicalReport, MedicalReportUpdateViewModel>().ReverseMap()
+              .ForMember(dest => dest.PrescriptionDetails, opt => opt.MapFrom(src => src.PrescriptionDetails));
+
+
+            // Prescription details view model
+            CreateMap<PrescriptionDetail, PrescriptionDetailViewModel>().ReverseMap()
+                .ForMember(dest => dest.Medicine, opt => opt.MapFrom(src => src.Medicine));
+
+            CreateMap<PrescriptionDetail, PrescriptionDetailCreateViewModel>().ReverseMap();
+            CreateMap<PrescriptionDetail, PrescriptionDetailUpdateViewModel>().ReverseMap()
+                .ForMember(dest => dest.Medicine, opt => opt.MapFrom(src => src.Medicine));
+
+            //Medicine mappings
+            CreateMap<Medicine, MedicineViewModel>().ReverseMap();
+            CreateMap<Medicine, MedicineCreateViewModel>().ReverseMap();
+            CreateMap<Medicine, MedicineUpdateViewModel>().ReverseMap();
 
             //Medicine mappings
             CreateMap<Medicine, MedicineViewModel>().ReverseMap();

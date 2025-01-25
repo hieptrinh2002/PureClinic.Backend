@@ -6,6 +6,7 @@ namespace PureLifeClinic.Core.Entities.Business
 {
     public class PrescriptionDetailViewModel
     {
+        public int Id { get; set; } 
         public int Quantity { get; set; }
         public string Dosage { get; set; }
         public string Instructions { get; set; }
@@ -33,5 +34,10 @@ namespace PureLifeClinic.Core.Entities.Business
 
     public class PrescriptionDetailUpdateViewModel
     {
+        public int Id { get; set; }
+        public int Quantity { get; set; }
+        public string Dosage { get; set; }
+        public string Instructions { get; set; }
+        public MedicineViewModel Medicine { get; set; }
     }
 }

@@ -41,19 +41,22 @@ namespace PureLifeClinic.Core.Entities.Business
         [StringLength(500)]
         public string? Diagnosis { get; set; }
 
-        [StringLength(1000)]
-        public List<PrescriptionDetailCreateViewModel>? PrescriptionDetails { get; set; } =  new List<PrescriptionDetailCreateViewModel>();
-
         [StringLength(200)]
         public string? DoctorNotes { get; set; }
-
-        public IEnumerable<MedicalFileCreateViewModel>? MedicalFiles { get; set; } = new List<MedicalFileCreateViewModel>();
-
-        public int? InvoiceId { get; set; }
     }
 
     public class MedicalReportUpdateViewModel
     {
+        public int Id { get; set; }
 
+        public string Findings { get; set; }
+
+        public string? Recommendations { get; set; }
+
+        public string? Diagnosis { get; set; }
+
+        public List<PrescriptionDetailUpdateViewModel>? PrescriptionDetails { get; set; }
+
+        public string? DoctorNotes { get; set; }
     }
 }
