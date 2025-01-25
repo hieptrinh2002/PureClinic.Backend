@@ -105,7 +105,7 @@ plan:
 - 13/01/2025 - 19/01/2025:
      - BE:
 		✅ + Redis / memory cahing
-		+ MedicalReport api ( create, get , get by patient (sort by date, status..), update, delete 
+		(in progress) + MedicalReport api ( create, get , get by patient (sort by date, status..), update, delete 
 		+ Update, add new PrescriptionDetail 
 		+ Prescription-details( update, add new , delete,)
 		+ Appointment (get by status, top 10 apointment pending status and sort by created time, lấy trong range time nào đó)

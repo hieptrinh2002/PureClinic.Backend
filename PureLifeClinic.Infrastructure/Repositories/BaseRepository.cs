@@ -192,6 +192,26 @@ namespace PureLifeClinic.Infrastructure.Repositories
             return data == null ? throw new NotFoundException("No data found") : data;
         }
 
+        public async Task<T> GetById<Tid>(Tid id, List<Func<IQueryable<T>, IIncludableQueryable<T, object>>> includeExpressions, CancellationToken cancellationToken)
+        {
+            var query = _dbContext.Set<T>().AsQueryable();
+
+            if (includeExpressions != null && includeExpressions.Any())
+            {
+                foreach (var includeExpression in includeExpressions)
+                {
+                    query = includeExpression(query);
+                }
+            }
+
+            // Apply ID filter
+            query = query.Where(e => EF.Property<T>(e, "Id").Equals(id));
+            // Retrieve the entity
+            var data = await query.FirstOrDefaultAsync(cancellationToken);
+
+            return data == null ? throw new NotFoundException("No data found") : data;
+        }
+
         public virtual async Task<T> GetById<Tid>(List<Expression<Func<T, object>>> includeExpressions, Tid id, CancellationToken cancellationToken = default)
         {
             var query = _dbContext.Set<T>().AsQueryable();

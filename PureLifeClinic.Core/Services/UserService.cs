@@ -34,7 +34,7 @@ namespace PureLifeClinic.Core.Services
 
         public new async Task<PaginatedDataViewModel<UserViewModel>> GetPaginatedData(int pageNumber, int pageSize, CancellationToken cancellationToken)
         {
-            var includeList = new List<Expression<Func<User, object>>> { x => x.Role };
+            var includeList = new List<Expression<Func<User, object>>> { x => x.Role, x=> x.Patient, x => x.Doctor  };
 
             var paginatedData = await _unitOfWork.Users.GetPaginatedData(includeList, pageNumber, pageSize, cancellationToken);
             var mappedData = _mapper.Map<IEnumerable<UserViewModel>>(paginatedData.Data);

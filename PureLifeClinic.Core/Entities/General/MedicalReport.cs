@@ -19,10 +19,10 @@ namespace PureLifeClinic.Core.Entities.General
         public string? Recommendations { get; set; }
 
         [StringLength(500)]
-        public string? Diagnosis { get; set; } 
+        public string? Diagnosis { get; set; }
 
         [StringLength(1000)]
-        public List<PrescriptionDetail>? PrescriptionDetails { get; set; }
+        public List<PrescriptionDetail>? PrescriptionDetails { get; set; } = new List<PrescriptionDetail>();
 
         [StringLength(200)]
         public string? DoctorNotes { get; set; } 

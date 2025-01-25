@@ -29,6 +29,7 @@ namespace PureLifeClinic.Infrastructure.Repositories
         public IDoctorRepository Doctors { get; private set; }
         public IMedicalReportRepository MedicalReports { get; private set; }
         public IMedicineRepository Medicines { get; private set; }
+        public IPrescriptionDetailRepository PrescriptionDetails { get; }
 
         public UnitOfWork(
             ApplicationDbContext dbContext,
@@ -56,6 +57,7 @@ namespace PureLifeClinic.Infrastructure.Repositories
             Doctors = new DoctorRepository(_dbContext);
             MedicalReports = new MedicalReportRepository(_dbContext);
             Medicines = new MedicineRepository(_dbContext);
+            PrescriptionDetails = new PrescriptionDetailRepository(_dbContext); 
         }
         public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
