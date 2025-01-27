@@ -27,6 +27,7 @@ namespace PureLifeClinic.API.Extensions
             services.AddTransient<IMedicalReportService, MedicalReportService>();
             services.AddTransient<IMedicineService, MedicineService>();
             services.AddTransient<IPrescriptionDetailService, PrescriptionDetailService>();
+            services.AddTransient<IMedicalFileService, MedicalFileService>();
 
             //Cloudinary
             services.AddSingleton<Cloudinary>(serviceProvider =>

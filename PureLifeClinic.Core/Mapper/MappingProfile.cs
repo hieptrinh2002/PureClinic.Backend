@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Entities.General;
+using PureLifeClinic.Core.Services;
 
 namespace PureLifeClinic.API.Extensions
 {
@@ -76,6 +77,10 @@ namespace PureLifeClinic.API.Extensions
             CreateMap<Medicine, MedicineViewModel>().ReverseMap();
             CreateMap<MedicineCreateViewModel, Medicine>().ReverseMap();
             CreateMap<MedicineUpdateViewModel, Medicine>().ReverseMap();
+
+            //Medical file mappins
+            CreateMap<MedicalFile, MedicalFileUpdateViewModel>().ReverseMap();
+            CreateMap<MedicalFile, MedicalFileCreateViewModel>().ReverseMap();
         }
     }
 }

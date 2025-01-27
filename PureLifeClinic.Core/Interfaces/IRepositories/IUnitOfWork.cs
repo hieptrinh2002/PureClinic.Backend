@@ -16,6 +16,7 @@ namespace PureLifeClinic.Core.Interfaces.IRepositories
         IMedicalReportRepository MedicalReports { get; }
         IMedicineRepository Medicines { get; }
         IPrescriptionDetailRepository PrescriptionDetails { get; }
+        IMedicalFileRepository MedicalFiles { get; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
         Task BeginTransactionAsync(CancellationToken cancellationToken = default);

@@ -1,6 +1,8 @@
 ﻿using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Http;
+using PureLifeClinic.Core.Entities.Business;
+using PureLifeClinic.Core.Entities.General;
 using PureLifeClinic.Core.Interfaces.IServices;
 
 namespace PureLifeClinic.Core.Services
@@ -13,47 +15,55 @@ namespace PureLifeClinic.Core.Services
         {
             _cloudinary = cloudinary;
         }
-
-        private BaseParams CreateUploadParams(Stream fileStream, string fileName, string contentType)
+        private MedicalFile CreateUploadParams(Stream fileStream, string fileName, string contentType)
         {
             var fileDescription = new FileDescription(fileName, fileStream);
-
-            return contentType.ToLower() switch
+            MedicalFile medicalFile = new MedicalFile
             {
-                "image/jpeg" or "image/png" or "image/gif" => new ImageUploadParams { File = fileDescription },
-                "video/mp4" or "video/avi" or "video/mkv" => new VideoUploadParams { File = fileDescription },
-                "application/pdf" or "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                    => new RawUploadParams { File = fileDescription },
-                _ => throw new NotSupportedException("Unsupported file type"),
+                FileName = fileName,
+                FileSize = fileStream.Length / 1024f, 
+                FilePath = null, 
+                FileType = contentType.ToLower() switch
+                {
+                    "image/jpeg" or "image/png" or "image/gif" => FileType.Image,
+                    "video/mp4" or "video/avi" or "video/mkv" => FileType.Video,
+                    "application/pdf" => FileType.PDF,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" => FileType.Excel,
+                    _ => FileType.Other
+                },
+                MedicalReportId = 0,
             };
+
+            return medicalFile;
         }
 
-        public async Task<string> UploadFileAsync(IFormFile file)
+        public async Task<MedicalFile> UploadFileAsync(IFormFile file)
         {
             using var stream = file.OpenReadStream();
-            var uploadParams = CreateUploadParams(stream, file.FileName, file.ContentType);
+            var medicalFile = CreateUploadParams(stream, file.FileName, file.ContentType);
 
-            UploadResult uploadResult = uploadParams switch
+            var uploadParams = new RawUploadParams
             {
-                VideoUploadParams imageParams => await _cloudinary.UploadAsync(imageParams),
-                ImageUploadParams imageParams => await _cloudinary.UploadAsync(imageParams),
-                RawUploadParams rawParams => await _cloudinary.UploadAsync(rawParams),
-                _ => throw new InvalidOperationException("Invalid upload parameters"),
+                File = new FileDescription(file.FileName, stream)
             };
-
-            return uploadResult.SecureUrl?.ToString();
+            UploadResult uploadResult = await _cloudinary.UploadAsync(uploadParams);
+            medicalFile.FilePath = uploadResult.SecureUrl?.ToString();
+            return medicalFile;
         }
 
         // Upload multiple files
-        public async Task<List<string>> UploadFilesAsync(List<IFormFile> files)
+        public async Task<List<MedicalFile>> UploadFilesAsync(FileMultiUploadViewModel model)
         {
-            var urls = new List<string>();
+            var files = model.Files.Select(f => f.FileDetails).ToList();
+            var medicalFiles = new List<MedicalFile>();
+
             foreach (var file in files)
             {
-                var url = await UploadFileAsync(file);
-                urls.Add(url);
+                var medicalFile = await UploadFileAsync(file); // Gọi hàm đã chỉnh sửa để upload và tạo MedicalFile
+                medicalFiles.Add(medicalFile);
             }
-            return urls;
+
+            return medicalFiles;
         }
 
         // Delete a single file

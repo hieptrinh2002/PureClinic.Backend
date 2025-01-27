@@ -12,6 +12,7 @@ using PureLifeClinic.Core.Interfaces.IServices;
 using PureLifeClinic.Core.MessageHub;
 using DinkToPdf.Contracts;
 using DinkToPdf;
+using PureLifeClinic.API.Helpers;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,6 +34,8 @@ builder.Services.AddSingleton<RedisCacheService>(sp =>
     }
     return new RedisCacheService(connectionString);
 });
+builder.Services.AddSingleton<IFileValidator, FileValidator>(); 
+
 // Add CacheServiceFactory
 builder.Services.AddSingleton<ICacheServiceFactory, CacheServiceFactory>();
 

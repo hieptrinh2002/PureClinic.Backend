@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using PureLifeClinic.API.Helpers;
 using PureLifeClinic.Core.Entities.Business;
-using PureLifeClinic.Core.Entities.General;
 using PureLifeClinic.Core.Exceptions;
 using PureLifeClinic.Core.Interfaces.IServices;
 
@@ -65,7 +64,6 @@ namespace PureLifeClinic.API.Controllers.V1
                     }
                 });
             }
-            return Ok();
         }
 
         [HttpGet("patient/{patientId}")]
@@ -119,7 +117,6 @@ namespace PureLifeClinic.API.Controllers.V1
                 {
                     // check apointment is exists
                     var appointment = await _appointmentService.GetById(model.AppointmentId, cancellationToken) ?? throw new NotFoundException("appointment not found");
-
                     var data = await _medicalReportService.Create(model, cancellationToken);
                     var response = new ResponseViewModel<MedicalReportViewModel>
                     {
