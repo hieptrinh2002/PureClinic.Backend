@@ -167,6 +167,7 @@ app.UseAuthorization();
 app.UseCors("AllowReactApp");
 
 #region Custom Middleware
+app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 app.UseMiddleware<RequestResponseLoggingMiddleware>();
 #endregion
 

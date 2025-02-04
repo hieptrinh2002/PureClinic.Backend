@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Entities.General;
+using PureLifeClinic.Core.Exceptions;
 using PureLifeClinic.Core.Interfaces.IRepositories;
 using PureLifeClinic.Core.Interfaces.IServices;
 using System.Linq.Expressions;
@@ -136,7 +137,7 @@ namespace PureLifeClinic.Core.Services
             var user = await _unitOfWork.Users.GetById(userId, default);
             if (user == null)
             {
-                throw new Exception("User not found.");
+                throw new NotFoundException("User not found.");
             }
             return await _unitOfWork.Users.UnlockAccountAsync(user);
         }
@@ -146,7 +147,7 @@ namespace PureLifeClinic.Core.Services
             var user = await _unitOfWork.Users.GetByEmail(email, default);
             if (user == null)
             {
-                throw new Exception("User not found.");
+                throw new NotFoundException("User not found.");
             }
 
             var result = await _unitOfWork.Users.ResetPasswordAsync(user, token, newPassword);

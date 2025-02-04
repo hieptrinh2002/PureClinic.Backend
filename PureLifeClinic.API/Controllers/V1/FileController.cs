@@ -2,7 +2,6 @@
 using DinkToPdf;
 using DinkToPdf.Contracts;
 using Microsoft.AspNetCore.Mvc;
-using PureLifeClinic.Core.Entities.Business;
 
 namespace PureLifeClinic.API.Controllers.V1
 {
@@ -12,10 +11,12 @@ namespace PureLifeClinic.API.Controllers.V1
     public class FileController : ControllerBase
     {
         private readonly IConverter _converter;
+
         public FileController(IConverter converter)
         {
             _converter = converter;
         }
+
         [HttpPost("create-pdf")]
         public IActionResult CreatePdf()
         {

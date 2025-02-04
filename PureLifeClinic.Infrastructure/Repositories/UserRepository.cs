@@ -157,13 +157,10 @@ namespace PureLifeClinic.Infrastructure.Repositories
 
         public async Task<EmailActivationViewModel> GenerateEmailConfirmationTokenAsync(string email)
         {
-            var user = await _userManager.FindByEmailAsync(email);
-            if (user == null)
-                return null;
+            var user = await _userManager.FindByEmailAsync(email) 
+                ?? throw new NotFoundException($"User with email - {email} not found");
 
-            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            if (token == null)
-                return null;
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user)  
 
             return new EmailActivationViewModel
             {

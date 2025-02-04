@@ -42,6 +42,13 @@ namespace PureLifeClinic.Core.Services
 
         public async Task<AppointmentViewModel> Create(AppointmentCreateViewModel model, CancellationToken cancellationToken)
         {
+            // check doctor working time
+
+            // check the appointment time 
+
+            // wrap everything in one transaction 
+
+            // 
             var entity = _mapper.Map<Appointment>(model);
             entity.EntryDate = DateTime.Now;
             entity.EntryBy = Convert.ToInt32(_userContext.UserId);

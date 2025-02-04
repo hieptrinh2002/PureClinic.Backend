@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PureLifeClinic.API.Helpers;
+using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Exceptions;
 using PureLifeClinic.Core.Interfaces.IServices;
@@ -21,7 +22,7 @@ namespace PureLifeClinic.API.Controllers.V1
         private readonly IMailService _mailService;
         private readonly ILogger<AuthController> _logger;
 
-        public AccountController(ILogger<AuthController> logger, 
+        public AccountController(ILogger<AuthController> logger,
             IUserService userService, IAuthService authService, IMailService mailService)
         {
             _logger = logger;
@@ -33,118 +34,74 @@ namespace PureLifeClinic.API.Controllers.V1
         [HttpPost("unlock-account")]
         public async Task<IActionResult> UnlockAccount([FromBody] UnlockAccountRequestViewModel model)
         {
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    var result = await _userService.UnlockAccountAsync(model.UserId);
-                    if (!result)
-                    {
-                        return BadRequest("Failed to unlock the account.");
-                    }
+            if (!ModelState.IsValid)
+                throw new BadRequestException("Invalid input: " + ModelStateHelper.GetErrors(ModelState), ErrorCode.InputValidateError);
 
-                    return Ok("Account unlocked successfully.");
-                }
-                catch (Exception ex)
-                {
-                    return NotFound(ex.Message);
-                }
-            }
-            return StatusCode(StatusCodes.Status400BadRequest, new ResponseViewModel
-            {
-                Success = false,
-                Message = "Invalid input",
-            });
+            var result = await _userService.UnlockAccountAsync(model.UserId);
+            if (!result)
+                throw new BadRequestException("Failed to unlock the account.");
+
+            return Ok("Account unlocked successfully.");
         }
+
 
         [HttpPost("register")]
         public async Task<IActionResult> SendActivationEmail([FromBody] UserCreateViewModel model, string clientUrl, CancellationToken cancellationToken)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+                throw new BadRequestException("Invalid input: " + ModelStateHelper.GetErrors(ModelState), ErrorCode.InputValidateError);
+
+
+
+            string message = "";
+            if (await _userService.IsExists("UserName", model.UserName, cancellationToken))
             {
-                string message = "";
-                if (await _userService.IsExists("UserName", model.UserName, cancellationToken))
-                {
-                    message = $"The user name- '{model.UserName}' already exists";
-                    return StatusCode(StatusCodes.Status400BadRequest, new ResponseViewModel<UserViewModel>
-                    {
-                        Success = false,
-                        Message = message,
-                        Error = new ErrorViewModel
-                        {
-                            Code = "DUPLICATE_NAME",
-                            Message = message
-                        }
-                    });
-                }
-
-                if (await _userService.IsExists("Email", model.Email, cancellationToken))
-                {
-                    message = $"The user Email- '{model.Email}' already exists";
-                    return StatusCode(StatusCodes.Status400BadRequest, new ResponseViewModel<UserViewModel>
-                    {
-                        Success = false,
-                        Message = message,
-                        Error = new ErrorViewModel
-                        {
-                            Code = "DUPLICATE_CODE",
-                            Message = message
-                        }
-                    });
-                }
-
-                try
-                {
-                    var response = await _userService.Create(model, cancellationToken);
-
-                    if (response.Success)
-                    {
-                        // Create activate email token => return link activate
-
-                        var result = await _userService.GenerateEmailConfirmationTokenAsync(model.Email);
-                        if (!result.Success)
-                            throw new Exception(result.Message);
-
-                        var token = Uri.EscapeDataString(result.Data.ActivationToken);
-                        var email = Uri.EscapeDataString(model.Email);
-                        var confirmationLink = MailHelper.GenerateConfirmationLink(email, clientUrl, token);
-
-                        await SendConfirmationEmailAsync(model.Email, confirmationLink, model.UserName);
-                        return Ok(response);
-                    }
-                    else
-                    {
-                        return BadRequest(response);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, $"An error occurred while adding the user");
-                    message = $"An error occurred while adding the user- " + ex.Message;
-
-                    return StatusCode(StatusCodes.Status500InternalServerError, new ResponseViewModel<UserViewModel>
-                    {
-                        Success = false,
-                        Message = message,
-                        Error = new ErrorViewModel
-                        {
-                            Code = "ADD_USER_ERROR",
-                            Message = message
-                        }
-                    });
-                }
+                throw new BadRequestException($"The user name- '{model.UserName}' already exists", ErrorCode.DuplicateUserNameError);
             }
 
-            return StatusCode(StatusCodes.Status400BadRequest, new ResponseViewModel<UserViewModel>
+            if (await _userService.IsExists("Email", model.Email, cancellationToken))
             {
-                Success = false,
-                Message = "Invalid input",
-                Error = new ErrorViewModel
+                message = $"The user Email- '{model.Email}' already exists";
+                throw new BadRequestException(message, ErrorCode.DuplicateUserNameError);
+            }
+            try
+            {
+                var response = await _userService.Create(model, cancellationToken);
+
+                if (response.Success)
                 {
-                    Code = "INPUT_VALIDATION_ERROR",
-                    Message = ModelStateHelper.GetErrors(ModelState)
+                    var result = await _userService.GenerateEmailConfirmationTokenAsync(model.Email);
+                    if (!result.Success)
+                        throw new Exception(result.Message);
+
+                    var token = Uri.EscapeDataString(result.Data.ActivationToken);
+                    var email = Uri.EscapeDataString(model.Email);
+                    var confirmationLink = MailHelper.GenerateConfirmationLink(email, clientUrl, token);
+
+                    await SendConfirmationEmailAsync(model.Email, confirmationLink, model.UserName);
+                    return Ok(response);
                 }
-            });
+                else
+                {
+                    return BadRequest(response);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"An error occurred while adding the user");
+                message = $"An error occurred while adding the user- " + ex.Message;
+
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseViewModel<UserViewModel>
+                {
+                    Success = false,
+                    Message = message,
+                    Error = new ErrorViewModel
+                    {
+                        Code = "ADD_USER_ERROR",
+                        Message = message
+                    }
+                });
+            }
         }
 
 

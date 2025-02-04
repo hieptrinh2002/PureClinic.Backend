@@ -18,16 +18,7 @@
 	+ Unit test
 	+ Mongodb config
 
-- Dữ liệu phi cấu trúc hoặc dữ liệu cần mở rộng linh hoạt: 
-Như hình ảnh X-quang, kết quả xét nghiệm, hoặc các thông tin khám bệnh không tuân theo một cấu trúc cố định.
-Lưu trữ khối lượng lớn dữ liệu mà không cần quan tâm đến việc thay đổi cấu trúc bảng
-Ví dụ, hình ảnh X-quang có thể có nhiều độ phân giải hoặc các kết quả xét nghiệm có thể thay đổi theo từng lần khám.
-
-- Dữ liệu có cấu trúc cố định và cần tính toàn vẹn cao: 
-Thông tin bệnh nhân như tên, địa chỉ, số điện thoại, các thông tin liên quan đến lịch sử bệnh án có thể lưu trữ tốt trong SQL Server.
-Các mối quan hệ phức tạp hoặc dữ liệu cần tham chiếu chặt chẽ: Các bảng liên quan đến bệnh nhân, bác sĩ, lịch hẹn có thể được quản lý tốt hơn trong SQL Server.
-
-(kiểu với các loại bệnh sẽ có những trường riêng, những loại thuốc riêng => linh hoạt)
+	* Nghiệp vụ
 
   - Employee:
 	+ Tiếp nhận yêu cầu khám bệnh và lên lịch khám
@@ -44,6 +35,8 @@ Các mối quan hệ phức tạp hoặc dữ liệu cần tham chiếu chặt c
 	+ Xem lịch sử khám bệnh của các bệnh nhân đã khám
 	+ Xem các đơn thuốc đã kê khai
 	+ Tiếp nhận cuộc hẹn khám bệnh
+	+ Bác sỹ làm một ngày không quá 8 tiếng, mỗi ngày nhận tối đa 15 ca khám chữa bệnh
+	+ Tính số ca khám tối đa dựa trên số giờ và khung giờ làm việc của bác sĩ
 
   - Customer
     + Hệ thống tạo tài khoản mặc định cho người dùng  
@@ -105,13 +98,14 @@ plan:
 - 13/01/2025 - 19/01/2025:
      - BE:
 		✅ + Redis / memory cahing
-		(in progress) + MedicalReport api ( create, get , get by patient (sort by date, status..), update, delete 
-		+ Update, add new PrescriptionDetail 
-		+ Prescription-details( update, add new , delete,)
-		+ Appointment (get by status, top 10 apointment pending status and sort by created time, lấy trong range time nào đó)
-		+ MedicalFile(( update, add new , delete, ) của 1 bệnh nhân
-		+ Filter api
-		+ notification (using RabbitMQ as a service bus, and SignalR to stream messages to a React.js front-end)
+		✅ (in progress) + MedicalReport api ( create, get , get by patient (sort by date, status..), update, delete 
+		✅ + Update, add new PrescriptionDetail 
+		✅ + Prescription-details( update, add new , delete,)
+		✅ + Appointment (get by status, top 10 apointment pending status and sort by created time, lấy trong range time nào đó)
+		✅ + MedicalFile(( update, add new , delete, ) của 1 bệnh nhân
+		✅ + Filter api
+		+ Notification (using RabbitMQ as a service bus, and SignalR to stream messages to a React.js front-end)
+		+ Setup RabbitMq
 
 3. SignalR
 Mục đích: Thực hiện giao tiếp thời gian thực giữa máy chủ và ứng dụng client (ví dụ như thông báo khi có lịch hẹn, thay đổi trạng thái bệnh nhân, v.v.).

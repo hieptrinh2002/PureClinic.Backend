@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using PureLifeClinic.API.Helpers;
 using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Entities.Business;
+using PureLifeClinic.Core.Exceptions;
 using PureLifeClinic.Core.Interfaces.IServices;
 
 namespace PureLifeClinic.API.Controllers.V1
@@ -116,7 +117,7 @@ namespace PureLifeClinic.API.Controllers.V1
         }
 
         [HttpPost("filter")]
-        public async Task<IActionResult> GetFilterAppointment(FilterAppointmentRequestViewModel model,CancellationToken cancellationToken)
+        public async Task<IActionResult> GetFilterAppointment(FilterAppointmentRequestViewModel model, CancellationToken cancellationToken)
         {
             try
             {
@@ -200,221 +201,182 @@ namespace PureLifeClinic.API.Controllers.V1
         [HttpPost("app/create")]
         public async Task<IActionResult> Create(AppointmentCreateViewModel model, CancellationToken cancellationToken)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                string message = string.Empty;  
-                
-                try
-                {
-                    var data = await _appointmentService.Create(model, cancellationToken);
-
-                    var response = new ResponseViewModel<AppointmentViewModel>
-                    {
-                        Success = true,
-                        Message = "Appoinment created successfully",
-                        Data = data
-                    };
-
-                    return Ok(response);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, $"An error occurred while adding the appoinment");
-                    message = $"An error occurred while adding the appoinment- " + ex.Message;
-
-                    return StatusCode(StatusCodes.Status500InternalServerError, new ResponseViewModel<AppointmentViewModel>
-                    {
-                        Success = false,
-                        Message = message,
-                        Error = new ErrorViewModel
-                        {
-                            Code = "ADD_APPOINTMENT_ERROR",
-                            Message = message
-                        }
-                    });
-                }
+                throw new BadRequestException("Invalid input: " + ModelStateHelper.GetErrors(ModelState), ErrorCode.InputValidateError);
             }
-
-            return StatusCode(StatusCodes.Status400BadRequest, new ResponseViewModel<ProductViewModel>
+            string message = string.Empty;
+            try
             {
-                Success = false,
-                Message = "Invalid input",
-                Error = new ErrorViewModel
+                var data = await _appointmentService.Create(model, cancellationToken);
+
+                var response = new ResponseViewModel<AppointmentViewModel>
                 {
-                    Code = "INPUT_VALIDATION_ERROR",
-                    Message = ModelStateHelper.GetErrors(ModelState)
-                }
-            });
+                    Success = true,
+                    Message = "Appoinment created successfully",
+                    Data = data
+                };
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"An error occurred while adding the appoinment");
+                message = $"An error occurred while adding the appoinment- " + ex.Message;
+
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseViewModel<AppointmentViewModel>
+                {
+                    Success = false,
+                    Message = message,
+                    Error = new ErrorViewModel
+                    {
+                        Code = "ADD_APPOINTMENT_ERROR",
+                        Message = message
+                    }
+                });
+            }
         }
 
         // add new appointment
         [HttpPost("in-person/create")]
         public async Task<IActionResult> CreateInPersonAppointment(InPersonAppointmentCreateViewModel model, CancellationToken cancellationToken)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                string message = string.Empty;
-                if (await _appointmentService.IsExists(model.DoctorId, model.AppointmentDate, cancellationToken))
-                {
-                    message = $"The appoinment at {model.AppointmentDate} with doctor already exists";
-                    return StatusCode(StatusCodes.Status400BadRequest, new ResponseViewModel<AppointmentViewModel>
-                    {
-                        Success = false,
-                        Message = message,
-                        Error = new ErrorViewModel
-                        {
-                            Code = "DUPLICATE_APPOINTMENT",
-                            Message = message
-                        }
-                    });
-                }
-                try
-                {
-                    var data = await _appointmentService.CreateInPersonAppointment(model, cancellationToken);
-
-                    var response = new ResponseViewModel<AppointmentViewModel>
-                    {
-                        Success = true,
-                        Message = "Appoinment created successfully",
-                        Data = data
-                    };
-
-                    return Ok(response);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, $"An error occurred while adding the appoinment");
-                    message = $"An error occurred while adding the appoinment- " + ex.Message;
-
-                    return StatusCode(StatusCodes.Status500InternalServerError, new ResponseViewModel<AppointmentViewModel>
-                    {
-                        Success = false,
-                        Message = message,
-                        Error = new ErrorViewModel
-                        {
-                            Code = "ADD_APPOINTMENT_ERROR",
-                            Message = message
-                        }
-                    });
-                }
+                throw new BadRequestException("Invalid input: " + ModelStateHelper.GetErrors(ModelState), ErrorCode.InputValidateError);
             }
-
-            return StatusCode(StatusCodes.Status400BadRequest, new ResponseViewModel<ProductViewModel>
+            string message = string.Empty;
+            if (await _appointmentService.IsExists(model.DoctorId, model.AppointmentDate, cancellationToken))
             {
-                Success = false,
-                Message = "Invalid input",
-                Error = new ErrorViewModel
+                message = $"The appoinment at {model.AppointmentDate} with doctor already exists";
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseViewModel<AppointmentViewModel>
                 {
-                    Code = "INPUT_VALIDATION_ERROR",
-                    Message = ModelStateHelper.GetErrors(ModelState)
-                }
-            });
+                    Success = false,
+                    Message = message,
+                    Error = new ErrorViewModel
+                    {
+                        Code = "DUPLICATE_APPOINTMENT",
+                        Message = message
+                    }
+                });
+            }
+            try
+            {
+                var data = await _appointmentService.CreateInPersonAppointment(model, cancellationToken);
+
+                var response = new ResponseViewModel<AppointmentViewModel>
+                {
+                    Success = true,
+                    Message = "Appoinment created successfully",
+                    Data = data
+                };
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"An error occurred while adding the appoinment");
+                message = $"An error occurred while adding the appoinment- " + ex.Message;
+
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseViewModel<AppointmentViewModel>
+                {
+                    Success = false,
+                    Message = message,
+                    Error = new ErrorViewModel
+                    {
+                        Code = "ADD_APPOINTMENT_ERROR",
+                        Message = message
+                    }
+                });
+            }
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateAppointment(int id, [FromBody] AppointmentUpdateViewModel model, CancellationToken cancellationToken)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                string message = string.Empty;
+                throw new BadRequestException("Invalid input: " + ModelStateHelper.GetErrors(ModelState), ErrorCode.InputValidateError);
+            }
+            string message = string.Empty;
 
-                try
+            try
+            {
+                var result = await _appointmentService.UpdateAppointmentAsync(id, model, cancellationToken);
+
+                if (!result.Success)
                 {
-                    var result = await _appointmentService.UpdateAppointmentAsync(id, model, cancellationToken);
-
-                    if (!result.Success)
-                    {
-                        return Ok(new ResponseViewModel
-                        {
-                            Success = false,
-                            Message = result.Message,
-                        });
-                    }
-
                     return Ok(new ResponseViewModel
                     {
-                        Success = true,
-                        Message = "Appointment updated successfully",
-                    });
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, $"An error occurred while updating the appointment");
-                    message = $"An error occurred while updating the appointment- " + ex.Message;
-
-                    return StatusCode(StatusCodes.Status500InternalServerError, new ResponseViewModel<AppointmentViewModel>
-                    {
                         Success = false,
-                        Message = message,
-                        Error = new ErrorViewModel
-                        {
-                            Code = "UPDATE_APPOINTMENT_ERROR",
-                            Message = message
-                        }
+                        Message = result.Message,
                     });
                 }
-            }
-            return StatusCode(StatusCodes.Status400BadRequest, new ResponseViewModel<AppointmentViewModel>
-            {
-                Success = false,
-                Message = "Invalid input",
-                Error = new ErrorViewModel
+
+                return Ok(new ResponseViewModel
                 {
-                    Code = "INPUT_VALIDATION_ERROR",
-                    Message = ModelStateHelper.GetErrors(ModelState)
-                }
-            });
+                    Success = true,
+                    Message = "Appointment updated successfully",
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"An error occurred while updating the appointment");
+                message = $"An error occurred while updating the appointment- " + ex.Message;
+
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseViewModel<AppointmentViewModel>
+                {
+                    Success = false,
+                    Message = message,
+                    Error = new ErrorViewModel
+                    {
+                        Code = "UPDATE_APPOINTMENT_ERROR",
+                        Message = message
+                    }
+                });
+            }
         }
+
         [HttpPatch("{id}")]
         public async Task<IActionResult> UpdateAppointmentStatus(int id, [FromBody] AppointmentStatusUpdateViewModel model, CancellationToken cancellationToken)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                try
+                throw new BadRequestException("Invalid input: " + ModelStateHelper.GetErrors(ModelState), ErrorCode.InputValidateError);
+            }
+            try
+            {
+                var result = await _appointmentService.UpdateAppointmentStatusAsync(id, model.Status, cancellationToken);
+
+                if (!result.Success)
                 {
-                    var result = await _appointmentService.UpdateAppointmentStatusAsync(id, model.Status, cancellationToken);
-
-                    if (!result.Success)
-                    {
-                        return Ok(new ResponseViewModel
-                        {
-                            Success = false,
-                            Message = result.Message,
-                        });
-                    }
-
                     return Ok(new ResponseViewModel
                     {
-                        Success = true,
-                        Message = "Appointment status updated successfully",
-                    });
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, $"An error occurred while updating the appointment status");
-                    return StatusCode(StatusCodes.Status500InternalServerError, new ResponseViewModel
-                    {
                         Success = false,
-                        Message = $"An error occurred while updating the appointment status - {ex.Message}",
-                        Error = new ErrorViewModel
-                        {
-                            Code = "UPDATE_APPOINTMENT_STATUS_ERROR",
-                            Message = ex.Message
-                        }
+                        Message = result.Message,
                     });
                 }
-            }
 
-            return BadRequest(new ResponseViewModel
-            {
-                Success = false,
-                Message = "Invalid input",
-                Error = new ErrorViewModel
+                return Ok(new ResponseViewModel
                 {
-                    Code = "INPUT_VALIDATION_ERROR",
-                    Message = ModelStateHelper.GetErrors(ModelState)
-                }
-            });
+                    Success = true,
+                    Message = "Appointment status updated successfully",
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"An error occurred while updating the appointment status");
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseViewModel
+                {
+                    Success = false,
+                    Message = $"An error occurred while updating the appointment status - {ex.Message}",
+                    Error = new ErrorViewModel
+                    {
+                        Code = "UPDATE_APPOINTMENT_STATUS_ERROR",
+                        Message = ex.Message
+                    }
+                });
+            }
         }
     }
 }

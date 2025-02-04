@@ -4,6 +4,7 @@ using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Interfaces.IRepositories;
 using PureLifeClinic.Core.Interfaces.IServices;
 using PureLifeClinic.Core.Services;
+using PureLifeClinic.Core.Services.BackgroundJob.RabbitMQ.Connection;
 using PureLifeClinic.Infrastructure.Repositories;
 
 namespace PureLifeClinic.API.Extensions
@@ -28,6 +29,11 @@ namespace PureLifeClinic.API.Extensions
             services.AddTransient<IMedicineService, MedicineService>();
             services.AddTransient<IPrescriptionDetailService, PrescriptionDetailService>();
             services.AddTransient<IMedicalFileService, MedicalFileService>();
+            #endregion
+
+            #region RabbitMQ
+            //services.AddSingleton<IRabbitMQConnection>(new RabbitMQConnection());
+            #endregion
 
             //Cloudinary
             services.AddSingleton<Cloudinary>(serviceProvider =>
@@ -40,7 +46,6 @@ namespace PureLifeClinic.API.Extensions
                 );
                 return new Cloudinary(account);
             });
-            #endregion
 
             #region Repositories
             services.AddTransient<IProductRepository, ProductRepository>();
