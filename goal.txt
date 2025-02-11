@@ -1,24 +1,32 @@
 ﻿- Hệ thống quản lý phòng khám 
 
 * Phân hệ: 
-  - System:
+  - System && technical:
 	+ Realtime: danh sách chờ bệnh nhân, push notification khi có lịch hẹn, ...
 	+ chatbox: Quản lý, tư vấn bệnh nhân, lịch khám bệnh qua chat box.
 	+ cron job: Tự động lập lịch hệ thống gửi reminder cho bệnh nhân trước 1 ngày khám bệnh (mailtrap)
 	+ logger
-	+ elastic search + logs (khó quá thì chuyển qua search full text? :)))
+	+ elastic search + logs (khó quá thì chuyển qua search full text? / Serilog)
 	+ authentication && authorization
 	+ Cloudinary or Azure Blob Storage (saving imgs)
 	+ Caching with redis && MemoryCache (performance optimization)
 	+ Clean architecture
-	+ Dynamic layout if possible.
 	+ review, stars từ khách hàng 
 	+ Rabbit MQ (phức tạp?)
 	+ SqlServer + MongoDB + Redis
 	+ Unit test
 	+ Mongodb config
 
-	* Nghiệp vụ
+* Nghiệp vụ
+
+  - System: 
+	+ Hệ thống cảnh báo nếu bác sĩ kê hai loại thuốc có tương tác nguy hiểm
+	+ Lịch sử dùng thuốc cần được lưu lại để tránh kê đơn trùng lặp hoặc lạm dụng thuốc.
+	+ Nhắc lịch khám qua email, SMS, hoặc notification để giảm tỷ lệ bệnh nhân quên lịch. Nếu bệnh nhân không đến đúng giờ, có thể gửi nhắc nhở hoặc hủy sau X phút.
+	+ Lock thời gian giữ đặt chỗ với 1 bác sĩ?
+	+ Nếu bác sĩ xin nghỉ, hệ thống cần tự động chuyển lịch cho bác sĩ khác hoặc thông báo bệnh nhân.
+	+ Không cho phép đặt lịch vào ngày bác sĩ đã đăng ký nghỉ phép.
+	+ Thông báo cho bác sĩ nếu chưa đăng kí lịch làm việc vào tuần tiếp theo
 
   - Employee:
 	+ Tiếp nhận yêu cầu khám bệnh và lên lịch khám
@@ -37,13 +45,18 @@
 	+ Tiếp nhận cuộc hẹn khám bệnh
 	+ Bác sỹ làm một ngày không quá 8 tiếng, mỗi ngày nhận tối đa 15 ca khám chữa bệnh
 	+ Tính số ca khám tối đa dựa trên số giờ và khung giờ làm việc của bác sĩ
+	+ Mỗi bác sĩ làm tối đa X lượt khám/ngày và chỉ làm trong khung giờ nhất định theo lịch đã đăng kí
+	+ Nếu lịch khám đầy, bệnh nhân cần được đề xuất lịch khám vào ngày khác hoặc bác sĩ khác
+	+ Ưu tiên khám cho nhóm đặc biệt (người già, phụ nữ mang thai, trẻ nhỏ, người khuyết tật).
+	+ Tự động xếp lịch dựa trên thời gian trống của bác sĩ, tránh trùng lặp lịch khám.
+	+ Khi 2 bệnh nhân đặt lịch cùng lúc, hệ thống cần lock hoặc xử lý hàng đợi (queue) để đảm bảo không có 2 lịch khám trùng nhau.
+	(Sử dụng transaction trong database hoặc optimistic concurrency control để tránh lỗi double booking.)
+	+ Kiểm tra xem bệnh nhân có tiền sử dị ứng thuốc không trước khi kê đơn.
 
   - Customer
     + Hệ thống tạo tài khoản mặc định cho người dùng  
     + Xem danh sách dịch vụ phòng khám
 	+ Xem danh sách bác sĩ, thông tin chi tiết...
-
-
 
 ***** Viewer design
 - Từ danh sách patient => chọn tạo lịch hẹn, chọn xem thông tin cá nhân, update status, quản lí hồ sơ patient
@@ -80,8 +93,8 @@ plan:
 	- FE (reactjs)
 		✅+ Login / logout 
 		✅+ Zustand for state management
-		+ show list doctor
-		+ show list partient
+		✅+ show list doctor
+		✅+ show list partient
 	- BE: 
 		✅+ CRUD Appointment api (thêm, update status, )
 		✅+ Update status appointment

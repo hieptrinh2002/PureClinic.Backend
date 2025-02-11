@@ -8,5 +8,6 @@ namespace PureLifeClinic.Core.Interfaces.IServices
         Task<PaginatedDataViewModel<DoctorViewModel>> GetPaginatedData(int pageNumber, int pageSize, CancellationToken cancellationToken);
         Task<DoctorViewModel> GetById(int id, CancellationToken cancellationToken);
         Task<ResponseViewModel> Update(DoctorUpdateViewModel model, CancellationToken cancellationToken);
+        Task<IEnumerable<AppointmentSlotViewModel>> GetDoctorAvailableTimeSlots(int doctorId, DateTime weekStartDate, CancellationToken cancellationToken);
     }
 }

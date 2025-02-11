@@ -2,6 +2,7 @@
 using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Entities.General;
+using PureLifeClinic.Core.Exceptions;
 using PureLifeClinic.Core.Interfaces.IRepositories;
 using PureLifeClinic.Core.Interfaces.IServices;
 using System.Linq.Expressions;
@@ -29,6 +30,58 @@ namespace PureLifeClinic.Core.Services
         {
             var resut = await _unitOfWork.Users.GetDoctorById(id, cancellationToken);
             return _mapper.Map<DoctorViewModel>(resut);
+        }
+
+        public async Task<IEnumerable<AppointmentSlotViewModel>> GetDoctorAvailableTimeSlots(int doctorId, DateTime weekStartDate, CancellationToken cancellationToken)
+        {
+            var workDayTimespans = await _unitOfWork.Doctors.GetDoctorWorkDaysTimespanOfWeek(doctorId, weekStartDate, cancellationToken);
+
+            if (!workDayTimespans.Any())
+                throw new NotFoundException($"Doctor id - {doctorId} don't have any workday timespan in thí week");
+
+            var appointments = await _unitOfWork.Doctors.GetAllAppointmentOfWeek(doctorId, weekStartDate, cancellationToken);
+            List<AppointmentSlotViewModel> availableSlots = new();
+
+            foreach (var workDay in workDayTimespans)
+            {
+                TimeSpan currentStart = workDay.StartTime;
+                TimeSpan workEnd = workDay.EndTime;
+                int maxAppointments = await _unitOfWork.Doctors.GetMaxAppointmentsPerDay(doctorId, workDay.WeekDate);  // number of appointment slot base on working time.
+                int appointmentCount = 0;
+                var dayAppointments = appointments
+                    .Where(a => a.AppointmentDate.Date == workDay.WeekDate.Date)
+                    .OrderBy(a => a.AppointmentDate.TimeOfDay)
+                    .ToList();
+
+                foreach (var appt in dayAppointments)
+                {
+                    if (appointmentCount >= maxAppointments) break; 
+
+                    if (currentStart < appt.StartTime)
+                    {
+                        availableSlots.Add(new AppointmentSlotViewModel
+                        {
+                            WeekDate = workDay.WeekDate,
+                            StartTime = currentStart,
+                            EndTime = appt.StartTime,
+                        });
+                    }
+
+                    currentStart = appt.EndTime;
+                }
+
+                if (currentStart < workEnd)
+                {
+                    availableSlots.Add(new AppointmentSlotViewModel
+                    {
+                        WeekDate = workDay.WeekDate,
+                        StartTime = currentStart,
+                        EndTime = workEnd,
+                    });
+                }
+            }
+
+            return availableSlots;
         }
 
         public async Task<PaginatedDataViewModel<DoctorViewModel>> GetPaginatedData(int pageNumber, int pageSize, CancellationToken cancellationToken)

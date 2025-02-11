@@ -53,7 +53,7 @@ namespace PureLifeClinic.Core.Entities.General
 
     public enum WorkWeekStatus {
         Pending,
-        Completed,
+        Approved,
         Canceled
     }
 }

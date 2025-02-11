@@ -92,6 +92,7 @@ namespace PureLifeClinic.Core.Services
                     };
                 }
 
+                var t = request.WeekStartDate.AddDays((int)DayOfWeek.Friday - (int)DayOfWeek.Monday);
                 // Save the work schedule
                 var workWeek = new WorkWeek
                 {
@@ -104,10 +105,12 @@ namespace PureLifeClinic.Core.Services
                     {
                         DayOfWeek = day.DayOfWeek,
                         StartTime = day.StartTime,
+                        Date = request.WeekStartDate.AddDays((int)day.DayOfWeek - (int)request.WeekStartDate.DayOfWeek),
                         EndTime = day.EndTime,
                         Notes = day.Notes,
                         EntryDate = DateTime.Now,
                         EntryBy = Int32.Parse(_userContext.UserId),
+                        //EntryBy = string.IsNullOrEmpty(_userContext.UserId) ? (int?)null : int.Parse(_userContext.UserId)
                     }).ToList()
                 };
 

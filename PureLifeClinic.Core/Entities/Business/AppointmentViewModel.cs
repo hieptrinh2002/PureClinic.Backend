@@ -9,7 +9,7 @@ namespace PureLifeClinic.Core.Entities.Business
 
         public DateTime AppointmentDate { get; set; }
 
-        public string Reason { get; set; } 
+        public string Reason { get; set; }
 
         public AppointmentStatus Status { get; set; }
 
@@ -103,5 +103,12 @@ namespace PureLifeClinic.Core.Entities.Business
     {
         [Required]
         public AppointmentStatus Status { get; set; }
+    }
+
+    public class AppointmentSlotViewModel
+    {
+        public DateTime WeekDate { get; set; }
+        public TimeSpan StartTime { get; set; }
+        public TimeSpan EndTime { get; set; }
     }
 }

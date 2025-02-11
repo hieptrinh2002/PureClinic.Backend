@@ -53,6 +53,12 @@ namespace PureLifeClinic.Core.Entities.Business
 
         public string Notes { get; set; }
     }
+    public class TimespanWorkDayViewModel
+    {
+        public DateTime WeekDate { get; set; }
+        public TimeSpan StartTime { get; set; }
+        public TimeSpan EndTime { get; set; }
+    }
 
     public class WeekEndDateMustBeSundayAttribute : ValidationAttribute
     {

@@ -202,9 +202,8 @@ namespace PureLifeClinic.API.Controllers.V1
         public async Task<IActionResult> Create(AppointmentCreateViewModel model, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
-            {
                 throw new BadRequestException("Invalid input: " + ModelStateHelper.GetErrors(ModelState), ErrorCode.InputValidateError);
-            }
+            
             string message = string.Empty;
             try
             {
@@ -242,9 +241,8 @@ namespace PureLifeClinic.API.Controllers.V1
         public async Task<IActionResult> CreateInPersonAppointment(InPersonAppointmentCreateViewModel model, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
-            {
                 throw new BadRequestException("Invalid input: " + ModelStateHelper.GetErrors(ModelState), ErrorCode.InputValidateError);
-            }
+
             string message = string.Empty;
             if (await _appointmentService.IsExists(model.DoctorId, model.AppointmentDate, cancellationToken))
             {

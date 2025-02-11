@@ -1,5 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using PureLifeClinic.Core.Common;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PureLifeClinic.Core.Entities.General
 {
@@ -7,6 +8,10 @@ namespace PureLifeClinic.Core.Entities.General
     {
         [Required]
         public DateTime AppointmentDate { get; set; }
+
+        public TimeSpan StartTime => AppointmentDate.TimeOfDay;
+
+        public TimeSpan EndTime => StartTime.Add(TimeSpan.FromMinutes(Constants.AvgAppointmentTimeInMinute));
 
         [Required]
         public string Reason { get; set; } = "Anual health check";

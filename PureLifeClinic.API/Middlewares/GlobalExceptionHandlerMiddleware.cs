@@ -1,9 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Exceptions;
-using System.Net;
 
 namespace PureLifeClinic.API.Middlewares
 {
@@ -46,8 +43,7 @@ namespace PureLifeClinic.API.Middlewares
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Unhandled exception occurred: {Message}", ex.Message);
-
+                _logger.LogError(ex, "Unhandled exception occurred: {Message} - " + ex.Message);
                 await HandleExceptionAsync(context, StatusCodes.Status500InternalServerError, "INTERNAL_SERVER_ERROR", "An unexpected error occurred.");
             }
         }

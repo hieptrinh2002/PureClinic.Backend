@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Interfaces.IServices;
+using PureLifeClinic.Core.Services;
 
 namespace PureLifeClinic.API.Controllers.V1
 {
@@ -42,22 +43,18 @@ namespace PureLifeClinic.API.Controllers.V1
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while retrieving users");
-
-                var errorResponse = new ResponseViewModel<IEnumerable<UserViewModel>>
-                {
-                    Success = false,
-                    Message = "Error retrieving doctors",
-                    Error = new ErrorViewModel
-                    {
-                        Code = "ERROR_CODE",
-                        Message = ex.Message
-                    }
-                };
-
-                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
+                _logger.LogError(ex, "An error occurred while retrieving doctors");
+                throw;
             }
         }
+
+        [HttpGet("{doctorId}/available-time-slots")]
+        public async Task<IActionResult> GetDoctorAvailableTimeSlots(int doctorId, [FromQuery] DateTime weekStartDate, CancellationToken cancellationToken)
+        {
+            var slots = await _doctorService.GetDoctorAvailableTimeSlots(doctorId, weekStartDate, cancellationToken);
+            return Ok(slots);
+        }
+
 
         [HttpGet]
         public async Task<IActionResult> Get(CancellationToken cancellationToken)
@@ -78,19 +75,7 @@ namespace PureLifeClinic.API.Controllers.V1
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while retrieving doctors");
-
-                var errorResponse = new ResponseViewModel<IEnumerable<DoctorViewModel>>
-                {
-                    Success = false,
-                    Message = "Error retrieving doctor",
-                    Error = new ErrorViewModel
-                    {
-                        Code = "ERROR_CODE",
-                        Message = ex.Message
-                    }
-                };
-
-                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
+                throw;
             }
         }
 

@@ -9,6 +9,8 @@ namespace PureLifeClinic.Core.Entities.General
         [ForeignKey(nameof(WorkWeekId))]
         public WorkWeek WorkWeek { get; set; }
 
+        public DateTime Date { get; set; }
+
         public DayOfWeek DayOfWeek { get; set; } // weekday (VD: monday...)
 
         [Required]
