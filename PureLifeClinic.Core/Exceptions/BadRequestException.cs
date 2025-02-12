@@ -10,7 +10,7 @@ namespace PureLifeClinic.Core.Exceptions
         {
         }
 
-        public BadRequestException(string message, string? errorCode = null) : base(message)
+        public BadRequestException(string? message, string? errorCode = null) : base(message)
         {
             if (!string.IsNullOrEmpty(errorCode))
                 ErrorCode = errorCode;

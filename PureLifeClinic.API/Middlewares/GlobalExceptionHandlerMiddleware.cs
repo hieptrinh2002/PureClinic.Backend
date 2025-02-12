@@ -43,7 +43,7 @@ namespace PureLifeClinic.API.Middlewares
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Unhandled exception occurred: {Message} - " + ex.Message);
+                _logger.LogError(ex, "Exception occurred: {Message} - " + ex.Message);
                 await HandleExceptionAsync(context, StatusCodes.Status500InternalServerError, "INTERNAL_SERVER_ERROR", "An unexpected error occurred.");
             }
         }

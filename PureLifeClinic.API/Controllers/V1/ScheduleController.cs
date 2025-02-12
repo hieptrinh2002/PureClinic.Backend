@@ -13,7 +13,7 @@ namespace PureLifeClinic.API.Controllers.V1
     [ApiVersion("1.0")]
     [ApiController]
     [Route("api/v{version:apiVersion}/[controller]")]
-    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ScheduleController : ControllerBase
     {
         private readonly IWorkWeekScheduleService _workWeekScheduleService;
@@ -25,7 +25,6 @@ namespace PureLifeClinic.API.Controllers.V1
             _logger = logger;
         }
 
-        // POST: api/WorkSchedule/Register
         [HttpPost("Register")]
         public async Task<IActionResult> RegisterWorkSchedule([FromBody] WorkScheduleRequestViewModel request, CancellationToken cancellationToken)
         {

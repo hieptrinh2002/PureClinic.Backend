@@ -13,6 +13,7 @@ using PureLifeClinic.Core.MessageHub;
 using DinkToPdf.Contracts;
 using DinkToPdf;
 using PureLifeClinic.API.Helpers;
+using Serilog;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -44,6 +45,16 @@ builder.Services.AddLogging(loggingBuilder =>
 {
     loggingBuilder.AddSeq(builder.Configuration.GetSection("SeqConfig"));
 });
+//Log.Logger = new LoggerConfiguration()
+//    .ReadFrom.Configuration(builder.Configuration) // Đọc config từ appsettings.json
+//    .Enrich.FromLogContext()
+//    .WriteTo.Console() // Ghi log ra console
+//    .WriteTo.Seq("http://localhost:5341") // Ghi log lên Seq
+//    .CreateLogger();
+
+//builder.Host.UseSerilog(); // Sử dụng Serilog thay vì logging mặc định
+
+
 
 // Register Services
 builder.Services.RegisterSecurityService(builder.Configuration);

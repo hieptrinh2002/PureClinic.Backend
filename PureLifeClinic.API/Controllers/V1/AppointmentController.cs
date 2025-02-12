@@ -44,19 +44,7 @@ namespace PureLifeClinic.API.Controllers.V1
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while retrieving appointment");
-
-                var errorResponse = new ResponseViewModel<IEnumerable<AppointmentViewModel>>
-                {
-                    Success = false,
-                    Message = "Error retrieving appointments",
-                    Error = new ErrorViewModel
-                    {
-                        Code = "ERROR_CODE",
-                        Message = ex.Message
-                    }
-                };
-
-                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
+                throw;
             }
         }
 
@@ -100,19 +88,7 @@ namespace PureLifeClinic.API.Controllers.V1
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while retrieving appointmnets");
-
-                var errorResponse = new ResponseViewModel<IEnumerable<ProductViewModel>>
-                {
-                    Success = false,
-                    Message = "Error retrieving appointmnets",
-                    Error = new ErrorViewModel
-                    {
-                        Code = "ERROR_CODE",
-                        Message = ex.Message
-                    }
-                };
-
-                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
+                throw;
             }
         }
 
@@ -127,19 +103,7 @@ namespace PureLifeClinic.API.Controllers.V1
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while retrieving appointment");
-
-                var errorResponse = new ResponseViewModel<IEnumerable<DoctorAppointmentViewModel>>
-                {
-                    Success = false,
-                    Message = "Error retrieving appointments",
-                    Error = new ErrorViewModel
-                    {
-                        Code = "ERROR_CODE",
-                        Message = ex.Message
-                    }
-                };
-
-                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
+                throw;
             }
         }
 
@@ -154,19 +118,7 @@ namespace PureLifeClinic.API.Controllers.V1
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while retrieving appointment");
-
-                var errorResponse = new ResponseViewModel<IEnumerable<DoctorAppointmentViewModel>>
-                {
-                    Success = false,
-                    Message = "Error retrieving appointments",
-                    Error = new ErrorViewModel
-                    {
-                        Code = "ERROR_CODE",
-                        Message = ex.Message
-                    }
-                };
-
-                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
+                throw;
             }
         }
 
@@ -180,20 +132,8 @@ namespace PureLifeClinic.API.Controllers.V1
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while retrieving appointment");
-
-                var errorResponse = new ResponseViewModel<IEnumerable<PatientAppointmentViewModel>>
-                {
-                    Success = false,
-                    Message = "Error retrieving appointments",
-                    Error = new ErrorViewModel
-                    {
-                        Code = "ERROR_CODE",
-                        Message = ex.Message
-                    }
-                };
-
-                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
+                _logger.LogError(ex, $"An error occurred while retrieving appointment by Patient id - {patientId}");
+                throw;
             }
         }
 
@@ -221,21 +161,10 @@ namespace PureLifeClinic.API.Controllers.V1
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"An error occurred while adding the appoinment");
-                message = $"An error occurred while adding the appoinment- " + ex.Message;
-
-                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseViewModel<AppointmentViewModel>
-                {
-                    Success = false,
-                    Message = message,
-                    Error = new ErrorViewModel
-                    {
-                        Code = "ADD_APPOINTMENT_ERROR",
-                        Message = message
-                    }
-                });
+                throw;
             }
         }
-
+            
         // add new appointment
         [HttpPost("in-person/create")]
         public async Task<IActionResult> CreateInPersonAppointment(InPersonAppointmentCreateViewModel model, CancellationToken cancellationToken)
@@ -247,16 +176,7 @@ namespace PureLifeClinic.API.Controllers.V1
             if (await _appointmentService.IsExists(model.DoctorId, model.AppointmentDate, cancellationToken))
             {
                 message = $"The appoinment at {model.AppointmentDate} with doctor already exists";
-                return StatusCode(StatusCodes.Status400BadRequest, new ResponseViewModel<AppointmentViewModel>
-                {
-                    Success = false,
-                    Message = message,
-                    Error = new ErrorViewModel
-                    {
-                        Code = "DUPLICATE_APPOINTMENT",
-                        Message = message
-                    }
-                });
+                throw new BadRequestException(message);
             }
             try
             {
@@ -364,16 +284,7 @@ namespace PureLifeClinic.API.Controllers.V1
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"An error occurred while updating the appointment status");
-                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseViewModel
-                {
-                    Success = false,
-                    Message = $"An error occurred while updating the appointment status - {ex.Message}",
-                    Error = new ErrorViewModel
-                    {
-                        Code = "UPDATE_APPOINTMENT_STATUS_ERROR",
-                        Message = ex.Message
-                    }
-                });
+               throw;
             }
         }
     }

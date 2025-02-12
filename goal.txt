@@ -58,6 +58,10 @@
     + Xem danh sách dịch vụ phòng khám
 	+ Xem danh sách bác sĩ, thông tin chi tiết...
 
+	refs: 
+	binary permission : https://www.youtube.com/watch?v=a8eQKD8w2Qs
+
+
 ***** Viewer design
 - Từ danh sách patient => chọn tạo lịch hẹn, chọn xem thông tin cá nhân, update status, quản lí hồ sơ patient
 ***** API Design 
@@ -69,14 +73,59 @@
    + Lấy tất cả thông tin cuộc hẹn khám bệnh của 1 bác sĩ  (lấy tất cả cuộc hẹn vào ngày hôm nay, tuần này, tháng này) + các filter khác (optinal)
    + Lấy danh sách bệnh nhân đang được chính mình điều trị chính
 - Lấy thông tin 1 bệnh nhân:
-   + Lấy thông tin chung của 1 bệnh nhân
+  ✅ + Lấy thông tin chung của 1 bệnh nhân
    + Lấy tất cả lịch sử khám bệnh của 1 bệnh nhân ( bao gồm hồ sơ bệnh, kết quả các lần trc, lời khuyên bs, )
    + Lấy được tất cả các bệnh án, các file bệnh án, ảnh của 1 bệnh nhân trong các lần khám
    + 
  ** 
 - Thêm các cuộc hẹn khám bệnh giữa khách hàng và bác sĩ  (bac sĩ, khách hàng, thời gian , trạng thái, loại cuộc hẹn (tái khám, tổng quát, chung chung ...))
 - Phân loại thêm cấp độ bệnh nhân => có lộ trình điều trị (cân nhắc mongodb)
-
+***** Quy trình đăng kí khám bệnh online
+Giai đoạn 1: Đăng ký & Kiểm tra khả dụng
+	Bệnh nhân đăng nhập vào hệ thống (nếu chưa có tài khoản thì đăng ký).
+	Chọn chuyên khoa (nội khoa, ngoại khoa, nhi khoa, da liễu, v.v.).      => lấy bác sĩ theo chuyên môn 1 bác sĩ => nhiều chuyên môn, 1 chuyên môn có nhiều bác sĩ
+	Chọn bác sĩ phù hợp (hiển thị danh sách bác sĩ có chuyên môn liên quan).
+	Kiểm tra lịch làm việc của bác sĩ:
+	Chỉ hiển thị các khung giờ còn trống.
+	Không cho phép chọn quá sát thời gian khám để tránh chồng lịch.
+	Bệnh nhân nhập thông tin chi tiết:
+	Chọn ngày giờ mong muốn.
+	Nhập lý do khám bệnh (có thể chọn từ danh sách hoặc nhập tay).
+	Upload tài liệu y tế nếu có (hình ảnh, xét nghiệm, toa thuốc trước đây).
+	Kiểm tra số lần hủy lịch (nếu bệnh nhân có lịch sử hủy nhiều lần, có thể yêu cầu xác minh trước khi đặt lịch mới).
+Giai đoạn 2: Xác nhận lịch hẹn
+	Xác thực thông tin bệnh nhân:
+	Nếu lần đầu đặt khám, yêu cầu nhập số điện thoại và gửi OTP để xác minh.
+	Nếu đã có tài khoản, có thể yêu cầu nhập mật khẩu hoặc xác thực email.
+	Xác nhận lịch hẹn với bác sĩ:
+	Nếu bác sĩ cần xác nhận thủ công, gửi thông báo đến bác sĩ để duyệt lịch.
+	Nếu tự động, hệ thống kiểm tra slot trống và xác nhận ngay.
+	Gửi thông báo đến bệnh nhân:
+	SMS hoặc email với thông tin chi tiết lịch hẹn.
+	Đính kèm hướng dẫn chuẩn bị trước khi khám (nếu có).
+	Thêm lịch hẹn vào hệ thống:
+	Cập nhật trạng thái lịch hẹn (đang chờ xác nhận, đã xác nhận).
+	Cập nhật danh sách lịch của bác sĩ.
+	Giai đoạn 3: Nhắc nhở & Xử lý hủy lịch
+	Gửi nhắc nhở trước lịch hẹn:
+	24h trước khi khám: Gửi SMS/email nhắc nhở.
+	1h trước khi khám: Gửi thông báo push nếu có mobile app.
+	Cho phép bệnh nhân hủy lịch hẹn nhưng có điều kiện:
+	Nếu hủy trước 12 giờ -> Không phạt.
+	Nếu hủy trong vòng 12 giờ trước khi khám -> Tính là hủy muộn. Nếu vượt quá 3 lần trong tháng có thể bị hạn chế đăng ký trong tương lai.
+	Nếu hủy mà đã thanh toán trước -> Cần quy trình hoàn tiền.
+	Xử lý khi bệnh nhân không đến:
+	Nếu không đến khám -> Cập nhật trạng thái lịch là "Không đến".
+	Nếu bệnh nhân vắng mặt 3 lần liên tục -> Hệ thống có thể yêu cầu đặt cọc trước cho lần đặt lịch tiếp theo.
+3. Chặn gian lận & Xử lý xung đột lịch
+	Giới hạn số lịch hẹn mỗi ngày:
+	Ví dụ: Một bác sĩ chỉ nhận tối đa 20 lịch/ngày.
+	Nếu bác sĩ hết slot, không cho phép đặt thêm.
+	Tránh đặt trùng giờ:
+	Kiểm tra xem bệnh nhân đã có lịch vào thời điểm đó hay chưa.
+	Chống đặt ảo:
+	Yêu cầu OTP khi đặt lịch.
+	Giới hạn số lần đặt/hủy trong ngày.
 *****
 plan: 
 - 23/12/2024 - 19/12/2024: 

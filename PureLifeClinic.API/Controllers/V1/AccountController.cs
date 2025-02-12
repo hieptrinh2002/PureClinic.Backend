@@ -51,8 +51,6 @@ namespace PureLifeClinic.API.Controllers.V1
             if (!ModelState.IsValid)
                 throw new BadRequestException("Invalid input: " + ModelStateHelper.GetErrors(ModelState), ErrorCode.InputValidateError);
 
-
-
             string message = "";
             if (await _userService.IsExists("UserName", model.UserName, cancellationToken))
             {
@@ -89,21 +87,9 @@ namespace PureLifeClinic.API.Controllers.V1
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"An error occurred while adding the user");
-                message = $"An error occurred while adding the user- " + ex.Message;
-
-                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseViewModel<UserViewModel>
-                {
-                    Success = false,
-                    Message = message,
-                    Error = new ErrorViewModel
-                    {
-                        Code = "ADD_USER_ERROR",
-                        Message = message
-                    }
-                });
+                throw;
             }
         }
-
 
         [HttpGet("activate-email")]
         public async Task<IActionResult> EmailConfirmation(string emailConfirmation, string activeToken, CancellationToken cancellationToken)
@@ -111,60 +97,31 @@ namespace PureLifeClinic.API.Controllers.V1
             if (!await _userService.IsExists("Email", emailConfirmation, cancellationToken))
             {
                 string message = $"The user Email- '{emailConfirmation}' not found !";
-                return StatusCode(StatusCodes.Status400BadRequest, new ResponseViewModel<UserViewModel>
-                {
-                    Success = false,
-                    Message = message,
-                    Error = new ErrorViewModel
-                    {
-                        Code = "NOT_FOUND_CODE",
-                        Message = message
-                    }
-                });
+                throw new BadRequestException(message);
             }
             var confirmResult = await _authService.ConfirmEmailAsync(emailConfirmation, activeToken, cancellationToken);
             if (!confirmResult.Success)
             {
-                return StatusCode(StatusCodes.Status400BadRequest, new ResponseViewModel<UserViewModel>
-                {
-                    Success = false,
-                    Message = confirmResult.Message,
-                    Error = new ErrorViewModel
-                    {
-                        Code = "EMAIL_CONFIRM_ERROR",
-                        Message = confirmResult.Message
-                    }
-                });
+                throw new BadRequestException(confirmResult.Message);
             }
-
             return Ok(confirmResult);
         }
 
         [HttpPost("reset-password")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest model)
         {
-            try
-            {
-                var result = await _userService.ResetPasswordAsync(model.Email, model.Token, model.NewPassword);
-                if (!result.Success)
-                {
-                    return BadRequest(new ResponseViewModel
-                    {
-                        Message = "Failed to reset password.",
-                        Success = false
-                    });
-                }
 
-                return Ok(new ResponseViewModel
-                {
-                    Message = "Password reset successfully.",
-                    Success = false
-                });
-            }
-            catch (Exception ex)
+            var result = await _userService.ResetPasswordAsync(model.Email, model.Token, model.NewPassword);
+            if (!result.Success)
             {
-                return BadRequest(ex.Message);
+                throw new BadRequestException("Failed to reset password.");
             }
+
+            return Ok(new ResponseViewModel
+            {
+                Message = "Password reset successfully.",
+                Success = false
+            });
         }
 
         [HttpPost("forgot-password")]
@@ -173,24 +130,10 @@ namespace PureLifeClinic.API.Controllers.V1
             try
             {
                 if (!ModelState.IsValid)
-                {
-                    return StatusCode(StatusCodes.Status400BadRequest, new ResponseViewModel
-                    {
-                        Success = false,
-                        Message = "Invalid input",
-                        Error = new ErrorViewModel
-                        {
-                            Code = "INPUT_VALIDATION_ERROR",
-                            Message = ModelStateHelper.GetErrors(ModelState)
-                        }
-                    });
-                }
+                    throw new BadRequestException("Invalid input: " + ModelStateHelper.GetErrors(ModelState), ErrorCode.InputValidateError);
 
                 // get User by email
-                var user = await _userService.GetByEmail(model.Email, default);
-
-                if (user == null)
-                    throw new NotFoundException("email not found");
+                var user = await _userService.GetByEmail(model.Email, default) ?? throw new NotFoundException("email not found");
 
                 // send email with refresh passwork link
                 var result = await _userService.GenerateResetPasswordTokenAsync(model);
