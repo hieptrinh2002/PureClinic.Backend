@@ -14,7 +14,9 @@ using DinkToPdf.Contracts;
 using DinkToPdf;
 using PureLifeClinic.API.Helpers;
 using Serilog;
-
+using FluentValidation;
+using PureLifeClinic.Core.Validations;
+using PureLifeClinic.Core.Entities.Business;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,6 +42,11 @@ builder.Services.AddSingleton<IFileValidator, FileValidator>();
 // Add CacheServiceFactory
 builder.Services.AddSingleton<ICacheServiceFactory, CacheServiceFactory>();
 
+// add fluent validations
+builder.Services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
+
+//builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly, includeInternalTypes: true);   
+
 // Register ILogger service
 builder.Services.AddLogging(loggingBuilder =>
 {
@@ -53,7 +60,6 @@ builder.Services.AddLogging(loggingBuilder =>
 //    .CreateLogger();
 
 //builder.Host.UseSerilog(); // Sử dụng Serilog thay vì logging mặc định
-
 
 
 // Register Services

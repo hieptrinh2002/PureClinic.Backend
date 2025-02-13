@@ -48,22 +48,14 @@ namespace PureLifeClinic.Core.Services
             // wrap everything in one transaction 
 
             // 
-            try
-            {
-                var entity = _mapper.Map<Appointment>(model);
-                entity.EntryDate = DateTime.Now;
-                entity.EntryBy = Convert.ToInt32(_userContext.UserId);
+            var entity = _mapper.Map<Appointment>(model);
+            entity.EntryDate = DateTime.Now;
+            entity.EntryBy = Convert.ToInt32(_userContext.UserId);
 
-                var result = await _unitOfWork.Appointments.Create(entity, cancellationToken);
-                await _unitOfWork.SaveChangesAsync(cancellationToken);
+            var result = await _unitOfWork.Appointments.Create(entity, cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-                return _mapper.Map<AppointmentViewModel>(result);
-            }
-            catch (Exception ex)
-            {
-                var t = ex.Message;
-            }
-            return null;
+            return _mapper.Map<AppointmentViewModel>(result);
         }
 
         public async Task<AppointmentViewModel> CreateInPersonAppointment(InPersonAppointmentCreateViewModel model, CancellationToken cancellationToken)

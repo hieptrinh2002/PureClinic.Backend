@@ -31,6 +31,10 @@ namespace PureLifeClinic.API.Extensions
             services.AddTransient<IMedicalFileService, MedicalFileService>();
             #endregion
 
+            #region Validators  
+            services.AddScoped<IValidationService, ValidationService>();
+            #endregion
+
             #region RabbitMQ
             //services.AddSingleton<IRabbitMQConnection>(new RabbitMQConnection());
             #endregion

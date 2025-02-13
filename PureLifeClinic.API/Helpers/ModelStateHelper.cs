@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+﻿using FluentValidation.Results;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace PureLifeClinic.API.Helpers
 {
@@ -14,6 +15,16 @@ namespace PureLifeClinic.API.Helpers
                 );
 
             return string.Join(", ", errors.Select(kvp => $"{kvp.Key}: {kvp.Value}"));
+        }
+
+        public static HttpValidationProblemDetails GetValidateProblemDetails(ValidationResult validationResult)
+        {
+            return new HttpValidationProblemDetails(validationResult.ToDictionary())
+            {
+                Status = StatusCodes.Status400BadRequest,
+                Title = "Validation failed",
+                Detail = "One or more validation errors occurred."
+            };
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using FluentValidation;
+using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Exceptions;
 
@@ -41,10 +43,24 @@ namespace PureLifeClinic.API.Middlewares
                 _logger.LogError($"KeyNotFoundException: {ex.Message}");
                 await HandleExceptionAsync(context, StatusCodes.Status404NotFound, errorCode, ex.Message);
             }
+            catch (ValidationException ex)
+            {
+                errorCode = "VALIDATE_ERROR";
+                _logger.LogError($"ValidationException: {ex.Message}");
+                await HandleExceptionAsync(context, StatusCodes.Status400BadRequest, errorCode, ex.Message);
+            }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Exception occurred: {Message} - " + ex.Message);
-                await HandleExceptionAsync(context, StatusCodes.Status500InternalServerError, "INTERNAL_SERVER_ERROR", "An unexpected error occurred.");
+                var message = "An unexpected error occurred";
+                var innerExMes = ex.InnerException == null ? string.Empty : ex.InnerException.Message;
+
+                _logger.LogError(ex, $"Exception occurred: {ex.Message}");
+                if (!innerExMes.IsNullOrEmpty())
+                {
+                    _logger.LogError(ex, $"Inner Exception occurred: {innerExMes}");
+                    message += $"- {innerExMes}";
+                }
+                await HandleExceptionAsync(context, StatusCodes.Status500InternalServerError, "INTERNAL_SERVER_ERROR", message);
             }
         }
 

@@ -18,7 +18,6 @@ namespace PureLifeClinic.Core.Entities.Business
         public DoctorViewModel? Doctor { get; set; }
     }
 
-
     public class PatientAppointmentViewModel
     {
         public DateTime AppointmentDate { get; set; }
@@ -43,13 +42,10 @@ namespace PureLifeClinic.Core.Entities.Business
 
     public class AppointmentCreateViewModel
     {
-        [Required]
         public DateTime AppointmentDate { get; set; }
 
-        [Required]
         public string? Reason { get; set; }
 
-        [StringLength(500)]
         public string? OtherReason { get; set; }
 
         public int PatientId { get; set; }
@@ -59,23 +55,17 @@ namespace PureLifeClinic.Core.Entities.Business
 
     public class InPersonAppointmentCreateViewModel
     {
-        [Required, StringLength(maximumLength: 100)]
         public string FullName { get; set; }
 
-        [Required]
         public string PhoneNumber { get; set; }
 
-        [EmailAddress]
         public string? Email { get; set; }
 
-        [Required]
         public Gender? Gender { get; set; }
         public DateTime? DateOfBirth { get; set; }
 
-        [Required]
         public DateTime AppointmentDate { get; set; }
 
-        [Required]
         public string Reason { get; set; } = "Anual health check";
         public string? ReferredPerson { get; set; }
 
@@ -84,16 +74,12 @@ namespace PureLifeClinic.Core.Entities.Business
 
     public class AppointmentUpdateViewModel
     {
-        [Required]
         public DateTime AppointmentDate { get; set; }
 
-        [Required]
-        [StringLength(255)]
         public string? Reason { get; set; }
 
         public int? DoctorId { get; set; }
 
-        [Required]
         public AppointmentStatus Status { get; set; }
 
         public string? ReferredPerson { get; set; }
@@ -101,7 +87,6 @@ namespace PureLifeClinic.Core.Entities.Business
 
     public class AppointmentStatusUpdateViewModel
     {
-        [Required]
         public AppointmentStatus Status { get; set; }
     }
 

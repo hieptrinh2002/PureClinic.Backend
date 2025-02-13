@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace PureLifeClinic.Core.Entities.General
 {
-    internal class Specialization
+    public class Specialization : Base<int>
     {
+        public string Name { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Asp.Versioning;
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,11 +19,16 @@ namespace PureLifeClinic.API.Controllers.V1
     {
         private readonly IAppointmentService _appointmentService;
         private readonly ILogger<AppointmentController> _logger;
+        private readonly IValidationService _validationService;
 
-        public AppointmentController(IAppointmentService appointmentService, ILogger<AppointmentController> logger)
+        public AppointmentController(
+            IAppointmentService appointmentService, 
+            ILogger<AppointmentController> logger, 
+            IValidationService validationService)
         {
             _appointmentService = appointmentService;
             _logger = logger;
+            _validationService = validationService;
         }
 
         [HttpGet]
@@ -141,10 +147,12 @@ namespace PureLifeClinic.API.Controllers.V1
         [HttpPost("app/create")]
         public async Task<IActionResult> Create(AppointmentCreateViewModel model, CancellationToken cancellationToken)
         {
-            if (!ModelState.IsValid)
-                throw new BadRequestException("Invalid input: " + ModelStateHelper.GetErrors(ModelState), ErrorCode.InputValidateError);
-            
             string message = string.Empty;
+
+            var validationResult = await _validationService.ValidateAsync(model);
+            if (!validationResult.IsValid)
+                return new BadRequestObjectResult(ModelStateHelper.GetValidateProblemDetails(validationResult));
+
             try
             {
                 var data = await _appointmentService.Create(model, cancellationToken);
@@ -169,8 +177,9 @@ namespace PureLifeClinic.API.Controllers.V1
         [HttpPost("in-person/create")]
         public async Task<IActionResult> CreateInPersonAppointment(InPersonAppointmentCreateViewModel model, CancellationToken cancellationToken)
         {
-            if (!ModelState.IsValid)
-                throw new BadRequestException("Invalid input: " + ModelStateHelper.GetErrors(ModelState), ErrorCode.InputValidateError);
+            var validationResult = await _validationService.ValidateAsync(model);
+            if (!validationResult.IsValid)
+                return new BadRequestObjectResult(ModelStateHelper.GetValidateProblemDetails(validationResult));
 
             string message = string.Empty;
             if (await _appointmentService.IsExists(model.DoctorId, model.AppointmentDate, cancellationToken))
@@ -212,10 +221,11 @@ namespace PureLifeClinic.API.Controllers.V1
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateAppointment(int id, [FromBody] AppointmentUpdateViewModel model, CancellationToken cancellationToken)
         {
-            if (!ModelState.IsValid)
-            {
-                throw new BadRequestException("Invalid input: " + ModelStateHelper.GetErrors(ModelState), ErrorCode.InputValidateError);
-            }
+            var validationResult = await _validationService.ValidateAsync(model);
+
+            if (!validationResult.IsValid)
+                return new BadRequestObjectResult(ModelStateHelper.GetValidateProblemDetails(validationResult));
+
             string message = string.Empty;
 
             try
@@ -258,10 +268,11 @@ namespace PureLifeClinic.API.Controllers.V1
         [HttpPatch("{id}")]
         public async Task<IActionResult> UpdateAppointmentStatus(int id, [FromBody] AppointmentStatusUpdateViewModel model, CancellationToken cancellationToken)
         {
-            if (!ModelState.IsValid)
-            {
-                throw new BadRequestException("Invalid input: " + ModelStateHelper.GetErrors(ModelState), ErrorCode.InputValidateError);
-            }
+            var validationResult = await _validationService.ValidateAsync(model);
+
+            if (!validationResult.IsValid)
+                return new BadRequestObjectResult(ModelStateHelper.GetValidateProblemDetails(validationResult));  
+
             try
             {
                 var result = await _appointmentService.UpdateAppointmentStatusAsync(id, model.Status, cancellationToken);
