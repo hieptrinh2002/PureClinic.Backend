@@ -55,7 +55,6 @@ namespace PureLifeClinic.Core.Validations
                 .GreaterThan(0).WithMessage("DoctorId must be a valid number.");
         }
     }
-
     public sealed class AppointmentUpdateValidator : AbstractValidator<AppointmentUpdateViewModel>
     {
         public AppointmentUpdateValidator()

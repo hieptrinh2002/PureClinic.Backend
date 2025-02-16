@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using PureLifeClinic.API.Helpers.Auth.PolicyProvider;
 using PureLifeClinic.Core.Entities.General;
 using PureLifeClinic.Infrastructure.Data;
+using System.Security.Claims;
 using System.Text;
 
 namespace PureLifeClinic.API.Extensions
@@ -48,9 +51,36 @@ namespace PureLifeClinic.API.Extensions
                     ValidIssuer = configuration["AppSettings:JwtConfig:ValidIssuer"],
                     ValidateLifetime = true,
                     RequireExpirationTime = true,
-                    ClockSkew = TimeSpan.Zero
+                    ClockSkew = TimeSpan.Zero,
                 };
             });
+            #endregion
+
+            #region Custom Authorization
+
+            services.AddAuthorization();
+
+            //builder.Services.AddAuthorization(options =>
+            //{
+            //    // Mặc định yêu cầu người dùng phải xác thực
+            //    options.DefaultPolicy = new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme)
+            //        .RequireAuthenticatedUser()
+            //        .Build();
+
+            //    // Thêm một chính sách cụ thể
+            //    options.AddPolicy("Over18YearsOld", policy =>
+            //        policy.RequireAssertion(context =>
+            //            context.User.HasClaim(c =>
+            //                (c.Type == "DateOfBirth" && DateTime.Now.Year - DateTime.Parse(c.Value).Year >= 18)
+            //            )));
+            //});
+
+            // Register our custom Authorization handler
+            services.AddSingleton<IAuthorizationHandler, PermissionHandler>();
+
+            // Overrides the DefaultAuthorizationPolicyProvider with our own
+            services.AddSingleton<IAuthorizationPolicyProvider, PermissionAuthorizationPolicyProvider>();
+
             #endregion
 
             return services;

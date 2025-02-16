@@ -1,0 +1,18 @@
+﻿@baseUrl = http://localhost:1100/api/v1
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjExMDAiLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjExMDAiLCJzdWIiOiI3IiwianRpIjoiMmM5MzczZTAtN2U0OC00NmMzLWI0ZjEtODU1ZWNlOGFlNzVlIiwibmJmIjoxNzM5NjczMDU5LCJleHAiOjE3Mzk2NzQ4NTksImlhdCI6MTczOTY3MzA1OX0.kkgBbnBX-N-nsVbHw0B4honHEHKZOk9BqEVqlSluCS8
+
+### Đăng nhập và lấy token
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "userName": "Urban_Hodkiewicz72",
+  "password": "ROnaldo11nbk.."
+}
+###
+
+
+// Product Api
+
+GET {{baseUrl}}/product
+Authorization: Bearer {{token}}

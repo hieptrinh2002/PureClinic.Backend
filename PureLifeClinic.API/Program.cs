@@ -1,22 +1,20 @@
 ﻿using Asp.Versioning;
+using DinkToPdf;
+using DinkToPdf.Contracts;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
-using PureLifeClinic.Core.Common;
 using PureLifeClinic.API.Extensions;
+using PureLifeClinic.API.Helpers;
 using PureLifeClinic.API.Middlewares;
-using PureLifeClinic.Infrastructure.Data;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using PureLifeClinic.Core.Services;
+using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Interfaces.IServices;
 using PureLifeClinic.Core.MessageHub;
-using DinkToPdf.Contracts;
-using DinkToPdf;
-using PureLifeClinic.API.Helpers;
-using Serilog;
-using FluentValidation;
-using PureLifeClinic.Core.Validations;
-using PureLifeClinic.Core.Entities.Business;
+using PureLifeClinic.Core.Services;
+using PureLifeClinic.Infrastructure.Data;
+using Swashbuckle.AspNetCore.SwaggerGen;
+//using PureLifeClinic.API.Helpers.AuthHelper.PolicyProvider;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -61,15 +59,13 @@ builder.Services.AddLogging(loggingBuilder =>
 
 //builder.Host.UseSerilog(); // Sử dụng Serilog thay vì logging mặc định
 
-
 // Register Services
 builder.Services.RegisterSecurityService(builder.Configuration);
 builder.Services.RegisterService();
 builder.Services.AddSignalR();
-//builder.Services.RegisterMapperService();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
-builder.Services.AddAuthorization();
+
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
 // API Versioning

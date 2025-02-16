@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using PureLifeClinic.Core.Enums;
+using System.Linq.Expressions;
 using System.Reflection;
 
 namespace PureLifeClinic.Core.Common

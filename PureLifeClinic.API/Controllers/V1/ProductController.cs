@@ -4,8 +4,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using PureLifeClinic.API.Helpers;
+using PureLifeClinic.API.Helpers.Auth;
+using PureLifeClinic.API.Helpers.Auth.PolicyProvider;
 using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Entities.Business;
+using PureLifeClinic.Core.Enums;
 using PureLifeClinic.Core.Interfaces.IServices;
 
 
@@ -108,7 +111,8 @@ namespace PureLifeClinic.API.Controllers.V1
         }
 
         [HttpGet]
-        [AllowAnonymous]
+        [PermissionAuthorize(PermissionOperator.Or, Permissions.Update)]
+
         public async Task<IActionResult> Get(CancellationToken cancellationToken)
         {
             try

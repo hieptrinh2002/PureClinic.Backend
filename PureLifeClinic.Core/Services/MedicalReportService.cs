@@ -8,6 +8,7 @@ using PureLifeClinic.Core.Interfaces.IRepositories;
 using PureLifeClinic.Core.Interfaces.IServices;
 using System.Linq.Expressions;
 using System.Threading;
+using PureLifeClinic.Core.Enums;
 
 namespace PureLifeClinic.Core.Services
 {
