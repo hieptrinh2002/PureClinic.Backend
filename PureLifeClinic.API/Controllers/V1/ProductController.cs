@@ -111,8 +111,8 @@ namespace PureLifeClinic.API.Controllers.V1
         }
 
         [HttpGet]
-        [PermissionAuthorize(PermissionOperator.Or, Permissions.Update)]
-
+        [PermissionAuthorize(PermissionOperator.And, Permissions.Create, Permissions.Update)]
+        [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> Get(CancellationToken cancellationToken)
         {
             try

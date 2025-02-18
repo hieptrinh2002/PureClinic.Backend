@@ -7,11 +7,17 @@ namespace PureLifeClinic.Core.Entities.General
     {
         [Key]
         public T? Id { get; set; }
+
         public int? EntryBy { get; set; }
+
         public DateTime? EntryDate { get; set; }
+
         public int? UpdatedBy { get; set; }
+
         public DateTime? UpdatedDate { get; set; }
 
         public bool? IsDeleted { get; set; } 
+
+        public DateTime? DeletedDate { get; set; }  
     }
 }

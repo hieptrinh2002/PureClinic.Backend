@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Enums;
 
 namespace PureLifeClinic.API.Helpers.Auth.PolicyProvider
@@ -8,7 +9,6 @@ namespace PureLifeClinic.API.Helpers.Auth.PolicyProvider
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, PermissionRequirement requirement)
         {
 
-            if (requirement.PermissionOperator == PermissionOperator.And)
             if (requirement.PermissionOperator == PermissionOperator.And)
             {
                 foreach (var permission in requirement.Permissions)
@@ -21,6 +21,8 @@ namespace PureLifeClinic.API.Helpers.Auth.PolicyProvider
                         return Task.CompletedTask;
                     }
                 }
+                context.Succeed(requirement);
+                return Task.CompletedTask;
             }
             if (requirement.PermissionOperator == PermissionOperator.Or)
             {

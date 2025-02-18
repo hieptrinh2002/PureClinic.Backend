@@ -61,7 +61,8 @@
 	refs: 
 	binary permission : https://www.youtube.com/watch?v=a8eQKD8w2Qs
 	Authorization in ASP.NET Core | Joao Grassi's blog: https://blog.joaograssi.com/series/authorization-in-asp.net-core/
-
+						https://github.com/joaopgrassi/authz-custom-middleware/blob/main/src/API/Authorization/UserPermissionService.cs#L43
+	Soft Delete parttern: https://www.youtube.com/watch?v=zwBaWiu-rF4
 
 ***** Viewer design
 - Từ danh sách patient => chọn tạo lịch hẹn, chọn xem thông tin cá nhân, update status, quản lí hồ sơ patient

@@ -1,4 +1,5 @@
-﻿namespace PureLifeClinic.API.Helpers.Auth
+﻿namespace PureLifeClinic.Core.Common
+
 {
     public static class AppClaimTypes
     {

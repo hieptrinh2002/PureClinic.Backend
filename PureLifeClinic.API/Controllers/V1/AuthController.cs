@@ -24,12 +24,14 @@ namespace PureLifeClinic.API.Controllers.V1
         private readonly IRefreshTokenService _refreshTokenService;
         private readonly AppSettings _appSettings;
         private readonly IUserContext _userContext;
-  
+        private readonly IUserService _userService;
+
         public AuthController(
             ILogger<AuthController> logger,
             IAuthService authService,
             IOptions<AppSettings> appSettings,
             IRefreshTokenService refreshTokenService,
+            IUserService userService,
             IUserContext userContext)
         {
             _logger = logger;
@@ -37,6 +39,7 @@ namespace PureLifeClinic.API.Controllers.V1
             _refreshTokenService = refreshTokenService; 
             _appSettings = appSettings.Value;
             _userContext = userContext;
+            _userService = userService;
         }
 
 
@@ -52,7 +55,7 @@ namespace PureLifeClinic.API.Controllers.V1
                     if (result.Success)
                     {
                         // get Token data
-                        var tokenData = GenerateJwtToken(result.Data.Id);
+                        var tokenData = await GenerateJwtToken(result.Data.Id);
                         var refreshToken = tokenData.Data.RefreshToken;
 
                         // insert Refresh Token
@@ -123,10 +126,11 @@ namespace PureLifeClinic.API.Controllers.V1
         }
         #endregion
 
-
         #region genarate Token
-        private ResponseViewModel<GenarateTokenViewModel> GenerateJwtToken(int userId)
+        private async Task<ResponseViewModel<GenarateTokenViewModel>> GenerateJwtToken(int userId)
         {
+            var user = await _userService.GetById(userId, default);
+
             var jwtTokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.JwtConfig.Secret);
 
@@ -136,6 +140,7 @@ namespace PureLifeClinic.API.Controllers.V1
                 new Claim(JwtRegisteredClaimNames.Iss, _appSettings.JwtConfig.ValidIssuer),
                 new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(ClaimTypes.Role, user.Role)
             };
 
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -196,7 +201,7 @@ namespace PureLifeClinic.API.Controllers.V1
                             });
                         }
 
-                        var tokenData = GenerateJwtToken(Convert.ToInt32(_userContext.UserId));
+                        var tokenData = await GenerateJwtToken(Convert.ToInt32(_userContext.UserId));
                         var refreshTokenData = GenerateRefreshToken();
 
                         if (tokenData == null || refreshTokenData == null)

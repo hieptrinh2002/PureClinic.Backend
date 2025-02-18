@@ -34,7 +34,7 @@ namespace PureLifeClinic.Core.Entities.General
         public Role Role { get; set; }
         public virtual Doctor? Doctor { get; set; }
         public virtual Patient? Patient { get; set; }
-
+        public List<UserPermission> Permissions { get; private set; } = new();
         public virtual ICollection<WorkWeek> WorkWeeks { get; set; } = new List<WorkWeek>();
 
         public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();

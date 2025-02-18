@@ -26,6 +26,9 @@ namespace PureLifeClinic.Infrastructure.Data
         public DbSet<MedicalFile> MedicalFiles { get; set; }
         public DbSet<PrescriptionDetail> PrescriptionDetails { get; set; }
 
+        public DbSet<Permission> Permissions { get; set; }
+        public DbSet<UserPermission> UserPermissions { get; set; }
+
         #endregion
 
         protected override void OnModelCreating(ModelBuilder builder)

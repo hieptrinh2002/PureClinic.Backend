@@ -4,7 +4,6 @@ using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Interfaces.IRepositories;
 using PureLifeClinic.Core.Interfaces.IServices;
 using PureLifeClinic.Core.Services;
-using PureLifeClinic.Core.Services.BackgroundJob.RabbitMQ.Connection;
 using PureLifeClinic.Infrastructure.Repositories;
 
 namespace PureLifeClinic.API.Extensions
@@ -22,6 +21,7 @@ namespace PureLifeClinic.API.Extensions
             services.AddScoped<IDoctorService, DoctorService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddTransient<IMailService, MailService>();
+            services.AddScoped<IPermissionService, PermissionService>();
             services.AddTransient<IRefreshTokenService, RefreshTokenService>();
             services.AddTransient<IWorkWeekScheduleService, WorkWeekScheduleService>();
             services.AddTransient<IAppointmentService, AppointmentService>();
