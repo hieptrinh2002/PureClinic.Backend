@@ -203,18 +203,7 @@ namespace PureLifeClinic.API.Controllers.V1
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"An error occurred while adding the appoinment");
-                message = $"An error occurred while adding the appoinment- " + ex.Message;
-
-                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseViewModel<AppointmentViewModel>
-                {
-                    Success = false,
-                    Message = message,
-                    Error = new ErrorViewModel
-                    {
-                        Code = "ADD_APPOINTMENT_ERROR",
-                        Message = message
-                    }
-                });
+                throw;
             }
         }
 
@@ -250,18 +239,7 @@ namespace PureLifeClinic.API.Controllers.V1
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"An error occurred while updating the appointment");
-                message = $"An error occurred while updating the appointment- " + ex.Message;
-
-                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseViewModel<AppointmentViewModel>
-                {
-                    Success = false,
-                    Message = message,
-                    Error = new ErrorViewModel
-                    {
-                        Code = "UPDATE_APPOINTMENT_ERROR",
-                        Message = message
-                    }
-                });
+                throw;
             }
         }
 

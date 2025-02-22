@@ -2,7 +2,7 @@
 using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Enums;
 
-namespace PureLifeClinic.API.Helpers.Auth.PolicyProvider
+namespace PureLifeClinic.API.Helpers.Authz.PolicyProvider
 {
     public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
     {

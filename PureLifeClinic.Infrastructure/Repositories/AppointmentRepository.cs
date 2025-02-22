@@ -32,6 +32,12 @@ namespace PureLifeClinic.Infrastructure.Repositories
             if (model.StartTime != null && model.EndTime != null)
                 query = query.Where(a => a.AppointmentDate >= model.StartTime && a.AppointmentDate < model.EndTime && a.Status == model.Status);
 
+            if (!string.IsNullOrEmpty(model.DoctorId))
+                query = query.Where(a => a.DoctorId == int.Parse(model.DoctorId));
+
+            if (!string.IsNullOrEmpty(model.PatientId))
+                query = query.Where(a => a.PatientId == int.Parse(model.PatientId));
+
             if (!string.IsNullOrEmpty(model.SortBy))
             {
                 var orderByExpression = GetOrderByExpression<Appointment>(model.SortBy);

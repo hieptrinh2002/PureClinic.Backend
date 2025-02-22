@@ -119,7 +119,8 @@ namespace PureLifeClinic.Infrastructure.Repositories
             return new PaginatedDataViewModel<T>(data, totalCount);
         }
 
-        public virtual async Task<PaginatedDataViewModel<T>> GetPaginatedData(List<Expression<Func<T, object>>> includeExpressions, int pageNumber, int pageSize, CancellationToken cancellationToken, List<ExpressionFilter>? filters = null)
+        public virtual async Task<PaginatedDataViewModel<T>> GetPaginatedData(
+            List<Expression<Func<T, object>>> includeExpressions, int pageNumber, int pageSize, CancellationToken cancellationToken, List<ExpressionFilter>? filters = null)
         {
             var query = _dbContext.Set<T>().AsQueryable();
 
@@ -148,7 +149,8 @@ namespace PureLifeClinic.Infrastructure.Repositories
             return new PaginatedDataViewModel<T>(data, totalCount);
         }
 
-        public async Task<PaginatedDataViewModel<T>> GetPaginatedData(int pageNumber, int pageSize, List<ExpressionFilter> filters, string sortBy, string sortOrder, CancellationToken cancellationToken = default)
+        public async Task<PaginatedDataViewModel<T>> GetPaginatedData(
+            int pageNumber, int pageSize, List<ExpressionFilter> filters, string sortBy, string sortOrder, CancellationToken cancellationToken = default)
         {
             var query = _dbContext.Set<T>().AsNoTracking();
 

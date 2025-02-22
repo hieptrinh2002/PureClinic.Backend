@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc.Filters;
 using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Entities.General;
@@ -10,21 +11,31 @@ using System.Linq.Expressions;
 
 namespace PureLifeClinic.Core.Services
 {
-    public class DoctorService : IDoctorService
+    public class DoctorService : BaseService<Doctor, DoctorViewModel>, IDoctorService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;   
-        public DoctorService(IUnitOfWork unitOfWork, IMapper mapper)
+        private readonly IMapper _mapper;
+
+        public DoctorService(IMapper mapper, IUnitOfWork unitOfWork) : base(mapper, unitOfWork.Doctors)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-
         public async Task<IEnumerable<DoctorViewModel>> GetAll(CancellationToken cancellationToken)
         {
             var entities = await _unitOfWork.Users.GetAllDoctor(cancellationToken);
             var doctorViewModels = _mapper.Map<IEnumerable<DoctorViewModel>>(entities);
             return doctorViewModels;
+        }
+
+        public async Task<IEnumerable<PatientViewModel>> GetAllPatient(int doctorId, CancellationToken cancellationToken)
+        {
+            Doctor doctor = await _unitOfWork.Doctors.GetById(doctorId, cancellationToken);
+            if (doctor == null)
+                throw new NotFoundException($"Doctor id - {doctorId} not found");
+
+            var patient = await _unitOfWork.Doctors.GetAllPatient(doctorId, cancellationToken);
+            return _mapper.Map<IEnumerable<PatientViewModel>>(patient);
         }
 
         public async Task<DoctorViewModel> GetById(int id, CancellationToken cancellationToken)
@@ -47,7 +58,9 @@ namespace PureLifeClinic.Core.Services
             {
                 TimeSpan currentStart = workDay.StartTime;
                 TimeSpan workEnd = workDay.EndTime;
-                int maxAppointments = await _unitOfWork.Doctors.GetMaxAppointmentsPerDay(doctorId, workDay.WeekDate);  // number of appointment slot base on working time.
+
+                // number of appointment slot base on working time.
+                int maxAppointments = await _unitOfWork.Doctors.GetMaxAppointmentsPerDay(doctorId, workDay.WeekDate);  
                 int appointmentCount = 0;
                 var dayAppointments = appointments
                     .Where(a => a.AppointmentDate.Date == workDay.WeekDate.Date)
@@ -56,7 +69,7 @@ namespace PureLifeClinic.Core.Services
 
                 foreach (var appt in dayAppointments)
                 {
-                    if (appointmentCount >= maxAppointments) break; 
+                    if (appointmentCount >= maxAppointments) break;
 
                     if (currentStart < appt.StartTime)
                     {
@@ -87,7 +100,7 @@ namespace PureLifeClinic.Core.Services
 
         public async Task<PaginatedDataViewModel<DoctorViewModel>> GetPaginatedData(int pageNumber, int pageSize, CancellationToken cancellationToken)
         {
-            var includeList = new List<Expression<Func<User, object>>> { x => x.Role, x=> x.Doctor};
+            var includeList = new List<Expression<Func<User, object>>> { x => x.Role, x => x.Doctor };
 
             var filters = new List<ExpressionFilter>
             {
@@ -95,13 +108,26 @@ namespace PureLifeClinic.Core.Services
                 {
                     PropertyName = "Doctor",
                     Value = null,
-                    Comparison = Comparison.NotEqual 
+                    Comparison = Comparison.NotEqual
                 }
             };
             var paginatedData = await _unitOfWork.Users.GetPaginatedData(includeList, pageNumber, pageSize, cancellationToken, filters);
 
             var paginatedDataViewModel = new PaginatedDataViewModel<DoctorViewModel>(_mapper.Map<IEnumerable<DoctorViewModel>>(paginatedData.Data), paginatedData.TotalCount);
             return paginatedDataViewModel;
+        }
+
+        public async Task<PaginatedDataViewModel<PatientViewModel>> GetPagtinatedPatientData(
+            int doctorId, int pageNumber, int pageSize, List<ExpressionFilter>? filters, string sortBy, string sortOrder, CancellationToken cancellationToken)
+        {
+            var doctor = await _unitOfWork.Doctors.GetById(doctorId, cancellationToken);
+            if (doctor == null)
+                throw new NotFoundException($"Doctor id - {doctorId} not found");
+
+            var paginatedData = await _unitOfWork.Doctors.GetPaginatedPaitentData(doctorId, pageNumber, pageSize, filters, sortBy, sortOrder, cancellationToken);
+            var patientUsers = paginatedData.Data.Select(p => p.User);
+            var mappedData = _mapper.Map<IEnumerable<PatientViewModel>>(patientUsers);
+            return new PaginatedDataViewModel<PatientViewModel>(mappedData, paginatedData.TotalCount);
         }
 
         public Task<ResponseViewModel> Update(DoctorUpdateViewModel model, CancellationToken cancellationToken)

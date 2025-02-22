@@ -2,6 +2,7 @@
 using DinkToPdf;
 using DinkToPdf.Contracts;
 using Microsoft.AspNetCore.Mvc;
+using PureLifeClinic.Core.Entities.Business;
 
 namespace PureLifeClinic.API.Controllers.V1
 {
@@ -17,9 +18,24 @@ namespace PureLifeClinic.API.Controllers.V1
             _converter = converter;
         }
 
-        [HttpPost("create-pdf")]
-        public IActionResult CreatePdf()
+        [HttpPost("genarate-invoice")]
+        public async Task<IActionResult> GenarateInvoice(InvoiceFileCreateViewModel model)
         {
+            return Ok();
+        }
+
+        [HttpPost("medical-report/create")]
+        public async Task<IActionResult>GenarateMedicalFile(MedicalReportFileCreateViewModel model)
+        {
+           // clinic infor
+           // test result
+           // medicine 
+           // total => all morney
+           // bảng phí dịch vụ 
+           // thanh toán
+           // trạng thái thanh toán
+           // các step => step => step
+
             var templateContent = @"
             <!DOCTYPE html>
             <html lang=""en"">

@@ -81,7 +81,7 @@ namespace PureLifeClinic.API.Controllers.V1
                                 UserEmail = result.Data.Email,
                                 UserId = result.Data.Id
                             },
-                            Message = "Login successful"
+                            Message = "Login successfully"
                         });
                     }
 
@@ -103,7 +103,6 @@ namespace PureLifeClinic.API.Controllers.V1
                         }
                     });
                 }
-
             }
 
             return BadRequest(new ResponseViewModel
@@ -279,7 +278,6 @@ namespace PureLifeClinic.API.Controllers.V1
         }
 
         #endregion
-
 
         #region SetRefreshTokenInCookies
         private void SetRefreshTokenInCookies(string refreshToken, DateTime expires)

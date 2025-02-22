@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
-using PureLifeClinic.API.Helpers.Auth.PolicyProvider;
+using PureLifeClinic.API.Helpers.Authz.PolicyProvider;
 using PureLifeClinic.Core.Entities.General;
 using PureLifeClinic.Infrastructure.Data;
 using System.Security.Claims;

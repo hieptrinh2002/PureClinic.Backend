@@ -65,20 +65,7 @@
 	Soft Delete parttern: https://www.youtube.com/watch?v=zwBaWiu-rF4
 
 ***** Viewer design
-- Từ danh sách patient => chọn tạo lịch hẹn, chọn xem thông tin cá nhân, update status, quản lí hồ sơ patient
-***** API Design 
-** Profile
-- Lấy thông tin 1 bác sĩ
-  ✅ + (tt chung, kinh nghiệm, chuyên ngành .....) => profile
-  ✅ + Đăng kí lịch làm việc cho bác sĩ
-  ✅ + Lấy lịch làm việc của một bác sĩ (optinal)
-   + Lấy tất cả thông tin cuộc hẹn khám bệnh của 1 bác sĩ  (lấy tất cả cuộc hẹn vào ngày hôm nay, tuần này, tháng này) + các filter khác (optinal)
-   + Lấy danh sách bệnh nhân đang được chính mình điều trị chính
-- Lấy thông tin 1 bệnh nhân:
-  ✅ + Lấy thông tin chung của 1 bệnh nhân
-   + Lấy tất cả lịch sử khám bệnh của 1 bệnh nhân ( bao gồm hồ sơ bệnh, kết quả các lần trc, lời khuyên bs, )
-   + Lấy được tất cả các bệnh án, các file bệnh án, ảnh của 1 bệnh nhân trong các lần khám
-   + 
+
  ** 
 - Thêm các cuộc hẹn khám bệnh giữa khách hàng và bác sĩ  (bac sĩ, khách hàng, thời gian , trạng thái, loại cuộc hẹn (tái khám, tổng quát, chung chung ...))
 - Phân loại thêm cấp độ bệnh nhân => có lộ trình điều trị (cân nhắc mongodb)
@@ -171,28 +158,21 @@ plan:
 		+ Notification (using RabbitMQ as a service bus, and SignalR to stream messages to a React.js front-end)
 		+ Setup RabbitMq
 
-3. SignalR
-Mục đích: Thực hiện giao tiếp thời gian thực giữa máy chủ và ứng dụng client (ví dụ như thông báo khi có lịch hẹn, thay đổi trạng thái bệnh nhân, v.v.).
-5. IdentityServer4 hoặc ASP.NET Core Identity
-Mục đích: Cung cấp hệ thống xác thực và phân quyền người dùng.
-7. Hangfire
-Mục đích: Quản lý và thực hiện các công việc nền (background tasks) như gửi email thông báo, tạo báo cáo hoặc nhắc nhở lịch khám cho bệnh nhân.
-Lợi ích: Cho phép thực hiện các tác vụ định kỳ hoặc theo thời gian mà không cần phải chờ đợi trong quá trình người dùng tương tác với hệ thống.
-8. SQL Server (Full-Text Search)
-Mục đích: Tìm kiếm nhanh chóng và chính xác trong cơ sở dữ liệu, đặc biệt là khi cần tìm kiếm bệnh nhân, hồ sơ bệnh lý, thuốc, hoặc lịch sử khám.
-Lợi ích: Giúp cải thiện hiệu suất tìm kiếm và hỗ trợ tìm kiếm từ đồng nghĩa, đặc biệt là khi có nhiều dữ liệu văn bản trong hệ thống.
-9. RabbitMQ hoặc Azure Service Bus (Message Queues)
-Mục đích: Xử lý và gửi thông điệp giữa các phần của hệ thống hoặc giữa các hệ thống khác nhau (ví dụ, gửi thông báo hoặc email tự động sau khi bác sĩ xác nhận lịch khám).
-Lợi ích: Giúp quản lý các tác vụ đồng bộ, tăng tính khả dụng và khả năng mở rộng của hệ thống.
-10. Caching (Redis hoặc MemoryCache)
-Mục đích: Tăng tốc độ truy cập dữ liệu trong ứng dụng như danh sách bệnh nhân, lịch khám, v.v.
-11. Document Storage (Cloundinary)
-Mục đích: Lưu trữ tài liệu y tế như hồ sơ bệnh nhân, kết quả xét nghiệm, hình ảnh X-quang, v.v.
-12. QR Code/Barcode Scanning
-Mục đích: Tạo mã QR hoặc mã vạch cho bệnh nhân hoặc hồ sơ bệnh nhân để quét khi bệnh nhân đến khám.
-Lợi ích: Giảm thiểu sai sót và tăng tốc quá trình đăng ký khám bệnh, giúp việc truy xuất dữ liệu bệnh nhân nhanh chóng.
-13. Excel/PDF Reporting
-Mục đích: Xuất báo cáo thống kê, báo cáo hóa đơn, báo cáo khám bệnh dưới dạng Excel hoặc PDF.
-14 Unit test
-
-case gửi 1 lúc quá nhiều mail -> đẩy vào queue????
+- 19/02/2025 
+		-BE: 
+			* Doctor
+			- Get all patient of doctor
+			- Lấy thông tin 1 bác sĩ
+		  ✅ + (tt chung, kinh nghiệm, chuyên ngành .....) => profile
+		  ✅ + Đăng kí lịch làm việc cho bác sĩ
+		  ✅ + Lấy lịch làm việc của một bác sĩ (optinal)
+		  ✅+ Lấy tất cả thông tin cuộc hẹn khám bệnh của 1 bác sĩ  
+		   (lấy tất cả cuộc hẹn vào ngày hôm nay, tuần này, tháng này) + các filter khác (optinal)
+		   + Lấy danh sách bệnh nhân đang được chính mình điều trị chính
+		- Lấy thông tin 1 bệnh nhân:
+		  ✅ + Lấy thông tin chung của 1 bệnh nhân
+		   + Lấy tất cả lịch sử khám bệnh của 1 bệnh nhân ( bao gồm hồ sơ bệnh, kết quả các lần trc, lời khuyên bs, )
+		   + Lấy được tất cả các bệnh án, các file bệnh án, ảnh của 1 bệnh nhân trong các lần khám
+		- Từ danh sách patient => chọn tạo lịch hẹn, chọn xem thông tin cá nhân, update status, quản lí hồ sơ patient
+		- Lấy được danh sách các loại dịch vụ =>  xét nghiệm, siêu âm, nội soi, điện tim, xquang và thủ thuật - tiểu phẩu
+		- Genarate invoice pdf, file kết quả sét nghiệm, file đơn thuốc

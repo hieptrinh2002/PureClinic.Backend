@@ -41,19 +41,7 @@ namespace PureLifeClinic.API.Controllers.V1
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while retrieving doctors");
-
-                var errorResponse = new ResponseViewModel<IEnumerable<PatientViewModel>>
-                {
-                    Success = false,
-                    Message = "Error retrieving doctor",
-                    Error = new ErrorViewModel
-                    {
-                        Code = "ERROR_CODE",
-                        Message = ex.Message
-                    }
-                };
-
-                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
+                throw;
             }
         }
     }

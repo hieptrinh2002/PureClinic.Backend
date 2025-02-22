@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using PureLifeClinic.Core.Entities.Business;
 
-namespace PureLifeClinic.Core.Validations
+namespace PureLifeClinic.Core.Validations.InputViewModel
 {
     public class AppointmentViewModelValidator { }
 
@@ -17,8 +17,8 @@ namespace PureLifeClinic.Core.Validations
         private bool BeInAllowedTimeRange(DateTime date)
         {
             var time = date.TimeOfDay;
-            return (time >= TimeSpan.FromHours(7) && time <= TimeSpan.FromHours(12)) ||
-                   (time >= TimeSpan.FromHours(13) && time <= TimeSpan.FromHours(21));
+            return time >= TimeSpan.FromHours(7) && time <= TimeSpan.FromHours(12) ||
+                   time >= TimeSpan.FromHours(13) && time <= TimeSpan.FromHours(21);
         }
     }
 
@@ -61,7 +61,7 @@ namespace PureLifeClinic.Core.Validations
         {
             RuleFor(x => x.AppointmentDate)
                 .GreaterThan(DateTime.Now)
-                .WithMessage("Appointment date must be in the future.");    
+                .WithMessage("Appointment date must be in the future.");
 
             RuleFor(x => x.Reason)
                 .NotEmpty().WithMessage("Reason is required.")

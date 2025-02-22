@@ -25,7 +25,6 @@ namespace PureLifeClinic.Core.Entities.Business
         public List<FileUploadViewModel> Files { get; set; } = new List<FileUploadViewModel>();
     }
 
-
     public class FileUploadViewModel
     {
         public IFormFile FileDetails { get; set; }

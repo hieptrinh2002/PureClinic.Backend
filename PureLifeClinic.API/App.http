@@ -14,3 +14,6 @@ Content-Type: application/json
 // Product Api
 
 GET {{baseUrl}}/product
+
+###
+Get {{baseUrl}}/doctor/7/patients?pageNumber=1&pageSize=10

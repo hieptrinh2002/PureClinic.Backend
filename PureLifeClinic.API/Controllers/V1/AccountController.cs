@@ -157,15 +157,8 @@ namespace PureLifeClinic.API.Controllers.V1
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseViewModel
-                {
-                    Success = false,
-                    Error = new ErrorViewModel
-                    {
-                        Code = "EMAIL_RESET_PASSWORD_ERROR",
-                        Message = ex.Message
-                    }
-                });
+                _logger.LogError(ex, "An error occurred while sending reset password email");
+                throw;
             }
         }
 

@@ -21,7 +21,7 @@ namespace PureLifeClinic.Core.Entities.General
         public  Doctor? PrimaryDoctor { get; set; }
 
         // new 
-        public PatientStatus Status { get; set; } = PatientStatus.New;
+        public PatientStatus PatientStatus { get; set; } = PatientStatus.New;
         public ICollection<LabResult>? LabResults { get; set; }
         public ICollection<MedicineInteraction>? Interactions { get; set; }
         public ICollection<Allergy>? Allergies { get; set; }

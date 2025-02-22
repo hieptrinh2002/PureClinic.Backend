@@ -26,21 +26,24 @@ namespace PureLifeClinic.Core.Services
             return _mapper.Map<List<TViewModel>>(await _repository.GetAll(cancellationToken));
         }
 
-        public virtual async Task<PaginatedDataViewModel<TViewModel>> GetPaginatedData(int pageNumber, int pageSize, CancellationToken cancellationToken)
+        public virtual async Task<PaginatedDataViewModel<TViewModel>> GetPaginatedData(
+            int pageNumber, int pageSize, CancellationToken cancellationToken)
         {
             var paginatedData = await _repository.GetPaginatedData(pageNumber, pageSize, cancellationToken);
             var mappedData = _mapper.Map<IEnumerable<TViewModel>>(paginatedData.Data);
             return new PaginatedDataViewModel<TViewModel>(mappedData, paginatedData.TotalCount);
         }
 
-        public virtual async Task<PaginatedDataViewModel<TViewModel>> GetPaginatedData(int pageNumber, int pageSize, List<ExpressionFilter> filters, CancellationToken cancellationToken)
+        public virtual async Task<PaginatedDataViewModel<TViewModel>> GetPaginatedData(
+            int pageNumber, int pageSize, List<ExpressionFilter> filters, CancellationToken cancellationToken)
         {
             var paginatedData = await _repository.GetPaginatedData(pageNumber, pageSize, filters, cancellationToken);
             var mappedData = _mapper.Map<IEnumerable<TViewModel>>(paginatedData.Data);
             return new PaginatedDataViewModel<TViewModel>(mappedData, paginatedData.TotalCount);
         }
 
-        public virtual async Task<PaginatedDataViewModel<TViewModel>> GetPaginatedData(int pageNumber, int pageSize, List<ExpressionFilter> filters, string sortBy, string sortOrder, CancellationToken cancellationToken)
+        public virtual async Task<PaginatedDataViewModel<TViewModel>> GetPaginatedData(
+            int pageNumber, int pageSize, List<ExpressionFilter> filters, string sortBy, string sortOrder, CancellationToken cancellationToken)
         {
             var paginatedData = await _repository.GetPaginatedData(pageNumber, pageSize, filters, sortBy, sortOrder, cancellationToken);
             var mappedData = _mapper.Map<IEnumerable<TViewModel>>(paginatedData.Data);

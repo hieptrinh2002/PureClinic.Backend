@@ -23,5 +23,9 @@ namespace PureLifeClinic.Core.Entities.Business
 
         public string SortBy { get; set; } = "AppoimentDate";
         public string SortOrder { get; set; } = "desc";
+
+        public string? DoctorId { get; set; }
+
+        public string? PatientId { get; set; }
     }
 }

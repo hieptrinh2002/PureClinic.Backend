@@ -23,5 +23,7 @@ namespace PureLifeClinic.Core.Entities.General
         public required User User { get; set; }
 
         public ICollection<Patient> PrimaryPatients { get; set; } = new List<Patient>(); // Bệnh nhân chịu trách nhiệm chính
+
+        public ICollection<DoctorSpecialization> Specializations { get; set; } = new List<DoctorSpecialization>();
     }
 }

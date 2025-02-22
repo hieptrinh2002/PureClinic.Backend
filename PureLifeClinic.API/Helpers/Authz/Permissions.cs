@@ -1,4 +1,4 @@
-﻿namespace PureLifeClinic.API.Helpers.Auth
+﻿namespace PureLifeClinic.API.Helpers.Authz
 {
     public static class Permissions
     {

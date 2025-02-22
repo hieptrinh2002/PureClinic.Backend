@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Entities.Business;
+using PureLifeClinic.Core.Entities.General;
+using PureLifeClinic.Core.Enums;
 using PureLifeClinic.Core.Interfaces.IServices;
-using PureLifeClinic.Core.Services;
 
 namespace PureLifeClinic.API.Controllers.V1
 {
@@ -21,6 +23,58 @@ namespace PureLifeClinic.API.Controllers.V1
         {
             _logger = logger;
             _doctorService = doctorService;
+        }
+
+        [HttpGet("{doctorId}/patients")]
+        public async Task<IActionResult> GetPatients(
+            int doctorId,
+            int? pageNumber,
+            int? pageSize,
+            string? search,
+            string? sortBy,
+            string? sortOrder,
+            PatientStatus patientStatus,
+            CancellationToken cancellationToken)
+        {
+            try
+            {
+                int pageSizeValue = pageSize ?? 10;
+                int pageNumberValue = pageNumber ?? 1;
+                sortBy = sortBy ?? "Id";
+                sortOrder = sortOrder ?? "desc";
+
+                var filters = new List<ExpressionFilter>()
+                {
+                    new ExpressionFilter
+                    {
+                        PropertyName = "PatientStatus",
+                        Value = patientStatus,
+                        Comparison = Comparison.Equal
+                    },
+                    new ExpressionFilter
+                    {
+                        PropertyName = "User.Name",
+                        Value = search,
+                        Comparison = Comparison.Contains
+                    },
+                };
+
+                var patientViewModels = await _doctorService.GetPagtinatedPatientData(doctorId, pageNumberValue, pageSizeValue, filters, sortBy, sortOrder, cancellationToken);
+
+                var response = new ResponseViewModel<PaginatedDataViewModel<PatientViewModel>>
+                {
+                    Success = true,
+                    Message = "doctors retrieved successfully",
+                    Data = patientViewModels
+                };
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"An error occurred while retrieving patients of doctor - {doctorId}");
+                throw;
+            }
         }
 
         [HttpGet("paginated")]
