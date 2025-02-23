@@ -1,9 +1,12 @@
 using CloudinaryDotNet;
 using Microsoft.Extensions.Options;
 using PureLifeClinic.Core.Common;
+using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Interfaces.IRepositories;
 using PureLifeClinic.Core.Interfaces.IServices;
+using PureLifeClinic.Core.Interfaces.IServices.IFileGenarator;
 using PureLifeClinic.Core.Services;
+using PureLifeClinic.Core.Services.FileGenerator;
 using PureLifeClinic.Infrastructure.Repositories;
 
 namespace PureLifeClinic.API.Extensions
@@ -29,6 +32,11 @@ namespace PureLifeClinic.API.Extensions
             services.AddTransient<IMedicineService, MedicineService>();
             services.AddTransient<IPrescriptionDetailService, PrescriptionDetailService>();
             services.AddTransient<IMedicalFileService, MedicalFileService>();
+            services.AddTransient<IInvoiceService, InvoiceService>();
+            #endregion
+
+            #region FileGenaratorService  
+            services.AddScoped<IFileGenerator<InvoiceFileCreateViewModel>, InvoiceGenerator>();
             #endregion
 
             #region Validators  

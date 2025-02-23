@@ -15,7 +15,8 @@ namespace PureLifeClinic.Infrastructure.Repositories
         public async Task<bool> IsDoctorAvailableForAppointment(
             int doctorId, DateTime appointmentDate, TimeSpan appointmentStartTime, CancellationToken cancellationToken)
         {
-            var appointmentEndTime = appointmentStartTime.Add(TimeSpan.FromMinutes(Constants.AvgAppointmentTimeInMinute)); // Mặc định mỗi ca khám ít nhất 30 phút
+            // default appointment time is 30 minutes   
+            var appointmentEndTime = appointmentStartTime.Add(TimeSpan.FromMinutes(Constants.AvgAppointmentTimeInMinute)); 
 
             bool hasOverlappingAppointment = await _dbContext.Appointments
                 .Where(a => a.DoctorId == doctorId && a.AppointmentDate == appointmentDate.Date)
@@ -44,12 +45,18 @@ namespace PureLifeClinic.Infrastructure.Repositories
             return workDays;
         }
 
-        public async Task<IEnumerable<Appointment>> GetAllAppointmentOfWeek(int doctorId, DateTime weekStartDate, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Appointment>> GetAllAppointmentOfWeek(
+            int doctorId,
+            DateTime weekStartDate,
+            CancellationToken cancellationToken)
         {
             var appointments = await _dbContext.Appointments
-            .Where(a => a.DoctorId == doctorId && a.AppointmentDate >= weekStartDate && a.AppointmentDate < weekStartDate.AddDays(7) && a.Status == AppointmentStatus.Confirmed)
-            .OrderBy(a => a.AppointmentDate.TimeOfDay)
-            .ToListAsync(cancellationToken);
+                .Where(a => a.DoctorId == doctorId &&
+                            a.AppointmentDate >= weekStartDate &&
+                            a.AppointmentDate < weekStartDate.AddDays(7) &&
+                            a.Status == AppointmentStatus.Confirmed)
+                .OrderBy(a => a.AppointmentDate.TimeOfDay)
+                .ToListAsync(cancellationToken);
 
             return appointments;
         }
@@ -100,14 +107,16 @@ namespace PureLifeClinic.Infrastructure.Repositories
                 .Where(a => a.DoctorId == doctorId && a.AppointmentDate.Date == appointmentDate.Date)
                 .CountAsync(cancellationToken);
 
-            return totalAppointments < Constants.MaxDoctorAppointmentPerday; // Giới hạn mỗi ngày
+            // limit total appointments per day 
+            return totalAppointments < Constants.MaxDoctorAppointmentPerday; 
         }
 
         public async Task<int> GetMaxAppointmentsPerDay(int doctorId, DateTime workDate)
         {
             var totaHoursWorked = await GetDoctorWorkingHours(doctorId, workDate);
 
-            int maxAppointments = (int)Math.Floor((totaHoursWorked / 8.0) * 15); // ratio 8 hours => 15 appointment
+            // ratio 8 hours => 15 appointment
+            int maxAppointments = (int)Math.Floor((totaHoursWorked / 8.0) * 15); 
             return Math.Max(maxAppointments, 0);
         }
 
@@ -173,7 +182,6 @@ namespace PureLifeClinic.Infrastructure.Repositories
             var conversion = Expression.Convert(property, typeof(object));
 
             return Expression.Lambda<Func<T, object>>(conversion, parameter);
-
         }
     }
 }

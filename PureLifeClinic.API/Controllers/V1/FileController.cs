@@ -3,6 +3,7 @@ using DinkToPdf;
 using DinkToPdf.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using PureLifeClinic.Core.Entities.Business;
+using PureLifeClinic.Core.Interfaces.IServices;
 
 namespace PureLifeClinic.API.Controllers.V1
 {
@@ -12,15 +13,19 @@ namespace PureLifeClinic.API.Controllers.V1
     public class FileController : ControllerBase
     {
         private readonly IConverter _converter;
+        private readonly ICloudinaryService _cloudinaryService;
 
-        public FileController(IConverter converter)
+        public FileController(IConverter converter, ICloudinaryService cloudinaryService)
         {
             _converter = converter;
+            _cloudinaryService = cloudinaryService;
         }
 
         [HttpPost("genarate-invoice")]
         public async Task<IActionResult> GenarateInvoice(InvoiceFileCreateViewModel model)
         {
+            //var gen = new PdfInvoiceGenerator(_cloudinaryService);
+            //string filepath = await gen.Test();
             return Ok();
         }
 

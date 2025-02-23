@@ -36,4 +36,12 @@ namespace PureLifeClinic.Core.Enums
         [Display(Name = "EndsWith")]
         EndsWith, //for strings  
     }
+    public enum PaymentMethod
+    {
+        Cash,
+        CreditCard,
+        DebitCard,
+        BankTransfer
+    }
+
 }

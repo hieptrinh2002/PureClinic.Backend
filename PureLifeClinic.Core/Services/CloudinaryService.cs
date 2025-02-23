@@ -50,6 +50,16 @@ namespace PureLifeClinic.Core.Services
             medicalFile.FilePath = uploadResult.SecureUrl?.ToString();
             return medicalFile;
         }
+        public async Task<string> UploadStreamFileAsync(Stream streamFile, string fileName, string contentType = "application/pdf")
+        {
+            var uploadParams = new RawUploadParams
+            {
+                File = new FileDescription(fileName, streamFile)
+            };
+            UploadResult uploadResult = await _cloudinary.UploadAsync(uploadParams);
+
+            return uploadResult.SecureUrl?.ToString();
+        }
 
         // Upload multiple files
         public async Task<List<MedicalFile>> UploadFilesAsync(FileMultiUploadViewModel model)
@@ -59,7 +69,7 @@ namespace PureLifeClinic.Core.Services
 
             foreach (var file in files)
             {
-                var medicalFile = await UploadFileAsync(file); // Gọi hàm đã chỉnh sửa để upload và tạo MedicalFile
+                var medicalFile = await UploadFileAsync(file); 
                 medicalFiles.Add(medicalFile);
             }
 

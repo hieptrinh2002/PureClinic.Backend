@@ -1,9 +1,13 @@
-﻿namespace PureLifeClinic.Core.Entities.Business
+﻿using PureLifeClinic.Core.Enums;
+
+namespace PureLifeClinic.Core.Entities.Business
 {
     public class GenerateInvoiceFileViewModel { }
 
     public class InvoiceFileCreateViewModel
     {
+        public string CLinicLogoUrl { get; set; } 
+
         public InvoiceClinicInfoViewModel ClinicInfo { get; set; }
 
         public InvoiceDoctorInfoViewModel DoctorInfo { get; set; }
@@ -15,6 +19,8 @@
         public List<InvoiceUsedServiceViewModel> Services { get; set; }
 
         public InvoiceBreakdownViewModel InvoiceBreakdown { get; set; }
+
+        public PaymentMethod PaymentMethod { get; set; }    
 
         public DateTime InvoiceDate { get; set; }
 
@@ -43,6 +49,8 @@
 
     public class InvoicePatientInfoViewModel
     {
+        public string PatientId { get; set; }   
+
         public string PatientName { get; set; }
 
         public DateTime DateOfBirth { get; set; }
@@ -62,33 +70,29 @@
 
         public int Dosage { get; set; }
 
-        public decimal Price { get; set; }
+        public double Price { get; set; }
     }
 
     public class InvoiceUsedServiceViewModel
     {
-        // Tên dịch vụ
         public string ServiceName { get; set; }
 
-        // Giá dịch vụ
-        public decimal Price { get; set; }
+        public double Price { get; set; }
 
-        // Số lượng sử dụng dịch vụ (nếu cần)
         public int Quantity { get; set; }
     }
 
     public class InvoiceBreakdownViewModel
     {
-        // Tổng tiền thuốc
-        public decimal MedicationTotal { get; set; }
-        // Tổng tiền dịch vụ
-        public decimal ServiceTotal { get; set; }
-        // Số tiền giảm giá
-        public decimal DiscountAmount { get; set; }
-        // Thuế VAT (nếu có)
-        public decimal TaxAmount { get; set; }
-        // Tổng thanh toán cuối cùng
-        public decimal GrandTotal { get; set; }
+        public double MedicationTotal { get; set; }
+        public double ServiceTotal { get; set; }
+        public double DiscountAmount { get; set; }
+
+        // VAT
+        public double TaxAmount { get; set; }
+
+        // total = (medicationTotal + serviceTotal) - discountAmount + taxAmount
+        public double GrandTotal { get; set; }
     }
 
     public class MedicalReportFileCreateViewModel
