@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using PureLifeClinic.Core.Enums;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PureLifeClinic.Core.Entities.General
@@ -8,10 +9,12 @@ namespace PureLifeClinic.Core.Entities.General
         [Required]
         public double TotalAmount { get; set; }
 
-        [StringLength(500)]
-        public string? PaymentMethod { get; set; }
+        public PaymentMethod PaymentMethod { get; set; }
 
         public int AppointmentId { get; set; }
+
+        public bool IsPaid { get; set; }
+
         [ForeignKey(nameof(AppointmentId))]
         public virtual Appointment Appointment { get; set; }
 

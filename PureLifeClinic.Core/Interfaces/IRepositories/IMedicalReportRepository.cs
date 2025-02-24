@@ -1,10 +1,4 @@
-﻿using PureLifeClinic.Core.Entities.Business;
-using PureLifeClinic.Core.Entities.General;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using PureLifeClinic.Core.Entities.General;
 
 namespace PureLifeClinic.Core.Interfaces.IRepositories
 {

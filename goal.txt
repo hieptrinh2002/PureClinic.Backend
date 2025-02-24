@@ -161,18 +161,18 @@ plan:
 - 19/02/2025 
 		-BE: 
 			* Doctor
-			- Get all patient of doctor
-			- Lấy thông tin 1 bác sĩ
+		  ✅- Get all patient of doctor
+		 - Lấy thông tin 1 bác sĩ
 		  ✅ + (tt chung, kinh nghiệm, chuyên ngành .....) => profile
 		  ✅ + Đăng kí lịch làm việc cho bác sĩ
 		  ✅ + Lấy lịch làm việc của một bác sĩ (optinal)
 		  ✅+ Lấy tất cả thông tin cuộc hẹn khám bệnh của 1 bác sĩ  
 		   (lấy tất cả cuộc hẹn vào ngày hôm nay, tuần này, tháng này) + các filter khác (optinal)
-		   + Lấy danh sách bệnh nhân đang được chính mình điều trị chính
+		  ✅ + Lấy danh sách bệnh nhân đang được chính mình điều trị chính
 		- Lấy thông tin 1 bệnh nhân:
 		  ✅ + Lấy thông tin chung của 1 bệnh nhân
 		   + Lấy tất cả lịch sử khám bệnh của 1 bệnh nhân ( bao gồm hồ sơ bệnh, kết quả các lần trc, lời khuyên bs, )
 		   + Lấy được tất cả các bệnh án, các file bệnh án, ảnh của 1 bệnh nhân trong các lần khám
 		- Từ danh sách patient => chọn tạo lịch hẹn, chọn xem thông tin cá nhân, update status, quản lí hồ sơ patient
 		- Lấy được danh sách các loại dịch vụ =>  xét nghiệm, siêu âm, nội soi, điện tim, xquang và thủ thuật - tiểu phẩu
-		- Genarate invoice pdf, file kết quả sét nghiệm, file đơn thuốc
+		  ✅- Genarate invoice pdf, file kết quả sét nghiệm, file đơn thuốc

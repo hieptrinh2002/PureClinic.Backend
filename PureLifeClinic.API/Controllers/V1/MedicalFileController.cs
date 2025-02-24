@@ -13,7 +13,11 @@ namespace PureLifeClinic.API.Controllers.V1
         private readonly ILogger<MedicalFileController> _logger;   
         private readonly IMedicalReportService _medicalReportService;
         private readonly IMedicalFileService _medicalFileService;
-        public MedicalFileController(IFileValidator fileValidator, ILogger<MedicalFileController> logger, IMedicalReportService medicalReportService, IMedicalFileService medicalFileService)
+        public MedicalFileController(
+            IFileValidator fileValidator, 
+            ILogger<MedicalFileController> logger, 
+            IMedicalReportService medicalReportService, 
+            IMedicalFileService medicalFileService)
         {
             _fileValidator = fileValidator;
             _logger = logger;

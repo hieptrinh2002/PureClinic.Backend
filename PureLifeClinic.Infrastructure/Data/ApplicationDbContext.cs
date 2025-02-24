@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PureLifeClinic.Core.Entities.General;
-using System.Reflection.Emit;
 
 namespace PureLifeClinic.Infrastructure.Data
 {
@@ -44,17 +42,7 @@ namespace PureLifeClinic.Infrastructure.Data
                .HasIndex(e => e.PhoneNumber)
                .IsUnique();
 
-            builder.Entity<IdentityUserRole<int>>()
-                .HasOne<User>()
-                .WithMany()
-                .HasForeignKey(ur => ur.UserId)
-                .OnDelete(DeleteBehavior.Restrict); // ❌ Không cascade khi xóa User
-
-            builder.Entity<IdentityUserRole<int>>()
-                .HasOne<Role>()
-                .WithMany()
-                .HasForeignKey(ur => ur.RoleId)
-                .OnDelete(DeleteBehavior.Cascade); // ✅ Xóa Role thì xóa luôn UserRoles
+           builder.ApplyConfigurationsFromAssembly(builder.GetType().Assembly);
         }
     }
 }

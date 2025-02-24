@@ -23,7 +23,6 @@ namespace PureLifeClinic.Infrastructure.Repositories
                 .ToListAsync(cancellationToken);
         }
 
-
         public Task<List<MedicalReport>> GetMedicalReportsByPatientIdAsync(int patientId, int pageNumber, int pageSize, CancellationToken cancellationToken)
         {
             return _dbContext.MedicalReports

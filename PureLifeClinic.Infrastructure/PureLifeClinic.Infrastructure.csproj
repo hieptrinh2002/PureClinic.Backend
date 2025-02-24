@@ -32,8 +32,4 @@
     <ProjectReference Include="..\PureLifeClinic.Core\PureLifeClinic.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="EntityConfigurations\" />
-  </ItemGroup>
-
 </Project>

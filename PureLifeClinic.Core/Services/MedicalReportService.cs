@@ -1,14 +1,13 @@
 ﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Entities.General;
+using PureLifeClinic.Core.Enums;
 using PureLifeClinic.Core.Interfaces.IRepositories;
 using PureLifeClinic.Core.Interfaces.IServices;
 using System.Linq.Expressions;
-using System.Threading;
-using PureLifeClinic.Core.Enums;
 
 namespace PureLifeClinic.Core.Services
 {
@@ -58,37 +57,6 @@ namespace PureLifeClinic.Core.Services
 
             var medicalReports = await _unitOfWork.MedicalReports.GetMedicalReportByPatientId(patient.Id, cancellationToken);
 
-            //var result = medicalReports.Select(m => new MedicalReportViewModel
-            //{
-            //    Id = m.Id,
-            //    EntryDate = m.EntryDate,
-            //    AppointmentId = m.AppointmentId,
-            //    ReportDate = m.ReportDate,
-            //    Findings = m.Findings,
-            //    Recommendations = m.Recommendations,
-            //    Diagnosis = m.Diagnosis,
-            //    DoctorNotes = m.DoctorNotes,
-            //    MedicalFiles = m.MedicalFiles?.Select(f => f.FilePath).ToList() ?? new List<string>(),
-            //    PrescriptionDetails = m.PrescriptionDetails?.Select(pd => new PrescriptionDetailViewModel
-            //    {
-            //        Id = pd.Id,
-            //        Quantity = pd.Quantity,
-            //        Dosage = pd.Dosage,
-            //        Instructions = pd.Instructions,
-            //        MedicalReportId = pd.MedicalReportId,
-            //        Medicine = new MedicineViewModel
-            //        {
-            //            Id = pd.Medicine.Id,
-            //            Code = pd.Medicine.Code,
-            //            Name = pd.Medicine.Name,
-            //            Price = pd.Medicine.Price,
-            //            Quantity = pd.Medicine.Quantity,
-            //            Description = pd.Medicine.Description,
-            //            IsActive = pd.Medicine.IsActive
-            //        }
-            //    }).ToList()
-            //});
-
             return new ResponseViewModel<IEnumerable<MedicalReportViewModel>>
             {
                 Data = _mapper.Map<IEnumerable<MedicalReportViewModel>>(medicalReports),
@@ -124,7 +92,6 @@ namespace PureLifeClinic.Core.Services
                 query => query.Include(m => m.PrescriptionDetails).ThenInclude(p => p.Medicine),
                 query => query.Include(a => a.MedicalFiles)
             };
-
 
             var result = await _unitOfWork.MedicalReports.GetById(id, includeExpressions, cancellationToken);
 

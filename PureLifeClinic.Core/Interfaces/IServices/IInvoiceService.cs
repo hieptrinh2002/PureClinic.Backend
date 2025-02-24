@@ -2,8 +2,9 @@
 
 namespace PureLifeClinic.Core.Interfaces.IServices
 {
-    public interface IInvoiceService
+    public interface IInvoiceService : IBaseService<InvoiceViewModel>
     {
         Task<ResponseViewModel<Stream>> CreateInvoiceFileAsync(InvoiceFileCreateViewModel invoice, CancellationToken cancellationToken);
+        Task<InvoiceViewModel> Create(InvoiceCreateViewModel model, CancellationToken cancellationToken);
     }
 }

@@ -29,7 +29,8 @@ namespace PureLifeClinic.API.Controllers.V1
 
         [HttpGet("paginated-data")]
         [AllowAnonymous]
-        public async Task<IActionResult> Get(int? pageNumber, int? pageSize, string? search, string? sortBy, string? sortOrder, CancellationToken cancellationToken)
+        public async Task<IActionResult> Get(
+            int? pageNumber, int? pageSize, string? search, string? sortBy, string? sortOrder, CancellationToken cancellationToken)
         {
             try
             {

@@ -42,7 +42,6 @@ namespace PureLifeClinic.API.Controllers.V1
             _userService = userService;
         }
 
-
         #region login/ logout
         [HttpPost, Route("login")]
         public async Task<IActionResult> Login(LoginViewModel model, CancellationToken cancellationToken)

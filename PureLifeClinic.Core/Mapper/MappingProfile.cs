@@ -81,6 +81,10 @@ namespace PureLifeClinic.API.Extensions
             //Medical file mappins
             CreateMap<MedicalFile, MedicalFileUpdateViewModel>().ReverseMap();
             CreateMap<MedicalFile, MedicalFileCreateViewModel>().ReverseMap();
+
+            //Invoice mappings
+            CreateMap<Invoice, InvoiceViewModel>().ReverseMap();
+            CreateMap<Invoice, InvoiceCreateViewModel>().ReverseMap();
         }
     }
 }
