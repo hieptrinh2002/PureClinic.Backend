@@ -16,15 +16,22 @@ namespace PureLifeClinic.Core.Services
         private readonly IMapper _mapper;
         private readonly IUserContext _userContext;
         private readonly ICacheServiceFactory _cacheServiceFactory;
-        public AppointmentService(IMapper mapper, IUserContext userContext, ICacheServiceFactory cacheServiceFactory, IUnitOfWork unitOfWork)
+        private readonly IDoctorService _doctorService;
+        public AppointmentService(
+            IMapper mapper,
+            IUserContext userContext,
+            ICacheServiceFactory cacheServiceFactory,
+            IDoctorService doctorService,
+            IUnitOfWork unitOfWork)
             : base(mapper, unitOfWork.Appointments)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _userContext = userContext;
             _cacheServiceFactory = cacheServiceFactory;
+            _doctorService = doctorService;
         }
-
+     
         public new async Task<IEnumerable<AppointmentViewModel>> GetAll(CancellationToken cancellationToken)
         {
             var includeExpressions = new List<Func<IQueryable<Appointment>, IIncludableQueryable<Appointment, object>>>
@@ -42,13 +49,12 @@ namespace PureLifeClinic.Core.Services
 
         public async Task<AppointmentViewModel> Create(AppointmentCreateViewModel model, CancellationToken cancellationToken)
         {
-            // check doctor working time
+            bool checkValidTime = await _doctorService.CheckAvailableTimeSlots(model.DoctorId, model.AppointmentDate, cancellationToken);  
+            if(checkValidTime == false)
+            {
+                throw new Exception("Doctor is not available at this time");
+            }
 
-            // check the appointment time 
-
-            // wrap everything in one transaction 
-
-            // 
             var entity = _mapper.Map<Appointment>(model);
             entity.EntryDate = DateTime.Now;
             entity.EntryBy = Convert.ToInt32(_userContext.UserId);
@@ -66,7 +72,8 @@ namespace PureLifeClinic.Core.Services
             {
                 if (model.Email != null)
                 {
-                    if (await _unitOfWork.Users.GetByEmail(model.Email, cancellationToken) != null) throw new Exception("Email was used");
+                    if (await _unitOfWork.Users.GetByEmail(model.Email, cancellationToken) != null) 
+                        throw new Exception("Email was used");
                 }
 
                 // create patient 
@@ -95,6 +102,7 @@ namespace PureLifeClinic.Core.Services
                     EntryDate = DateTime.Now,
                     EntryBy = Convert.ToInt32(_userContext.UserId),
                 });
+
                 await _unitOfWork.Patients.Create(patient, cancellationToken);
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);

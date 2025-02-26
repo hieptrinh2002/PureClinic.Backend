@@ -96,4 +96,10 @@ namespace PureLifeClinic.Core.Entities.Business
         public TimeSpan StartTime { get; set; }
         public TimeSpan EndTime { get; set; }
     }
+
+    public class TimeRangeViewModel
+    {
+        public TimeSpan StartTime { get; set; }
+        public TimeSpan EndTime { get; set; }
+    }   
 }

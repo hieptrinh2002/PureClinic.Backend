@@ -18,5 +18,6 @@ namespace PureLifeClinic.Core.Interfaces.IRepositories
 
         Task<PaginatedDataViewModel<Patient>> GetPaginatedPaitentData(
             int doctorId, int pageNumber, int pageSize, List<ExpressionFilter>? filters, string sortBy, string sortOrder, CancellationToken cancellationToken);
+        Task<bool> IsDoctorAvailableForAppointment(int doctorId, DateTime appointmentDate, CancellationToken cancellationToken);
     }
 }

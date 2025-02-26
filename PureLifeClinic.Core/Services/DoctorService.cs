@@ -21,6 +21,12 @@ namespace PureLifeClinic.Core.Services
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
+
+        public async Task<bool> CheckAvailableTimeSlots(int doctorId, DateTime appointmentDate, CancellationToken cancellationToken)
+        {
+            return await _unitOfWork.Doctors.IsDoctorAvailableForAppointment(doctorId, appointmentDate, cancellationToken); 
+        }
+
         public async Task<IEnumerable<DoctorViewModel>> GetAll(CancellationToken cancellationToken)
         {
             var entities = await _unitOfWork.Users.GetAllDoctor(cancellationToken);

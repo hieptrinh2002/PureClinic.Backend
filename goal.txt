@@ -65,7 +65,6 @@
 	Soft Delete parttern: https://www.youtube.com/watch?v=zwBaWiu-rF4
 
 ***** Viewer design
-
  ** 
 - Thêm các cuộc hẹn khám bệnh giữa khách hàng và bác sĩ  (bac sĩ, khách hàng, thời gian , trạng thái, loại cuộc hẹn (tái khám, tổng quát, chung chung ...))
 - Phân loại thêm cấp độ bệnh nhân => có lộ trình điều trị (cân nhắc mongodb)

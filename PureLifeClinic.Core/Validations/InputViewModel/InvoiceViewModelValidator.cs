@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using PureLifeClinic.Core.Entities.Business;
-using PureLifeClinic.Core.Interfaces.IServices;
 
 namespace PureLifeClinic.Core.Validations.InputViewModel
 {
