@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Entities.General;
+using PureLifeClinic.Core.Exceptions;
 using PureLifeClinic.Core.Interfaces.IRepositories;
 using PureLifeClinic.Core.Interfaces.IServices;
 
@@ -39,7 +40,7 @@ namespace PureLifeClinic.Core.Services
             }
             catch (DbUpdateException ex)
             {
-                throw new Exception($"An error occurred while creating the medicine {entity.Name} - {ex.Message}");
+                throw new ErrorException($"An error occurred while creating the medicine {entity.Name} - {ex.Message}");
             }
         }
 
@@ -58,7 +59,7 @@ namespace PureLifeClinic.Core.Services
             }
             catch (DbUpdateException ex)
             {
-                throw new Exception($"An error occurred while updating the medicine id {model.Id} - {ex.Message}.");
+                throw new ErrorException($"An error occurred while updating the medicine id {model.Id} - {ex.Message}.");
             }
         }
 
@@ -73,7 +74,7 @@ namespace PureLifeClinic.Core.Services
             }
             catch (Exception ex)
             {
-                throw new Exception($"An error occurred while deleting the medicine with id - {ex.Message}.");
+                throw new ErrorException($"An error occurred while deleting the medicine with id - {ex.Message}.");
             }
         }
 

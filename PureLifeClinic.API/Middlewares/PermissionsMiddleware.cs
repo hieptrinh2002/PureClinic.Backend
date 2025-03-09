@@ -39,12 +39,15 @@ namespace PureLifeClinic.API.Middlewares
             {
                 _logger.LogWarning("User {sub} does not have permissions", userSub);
 
-                await context.WriteAccessDeniedResponse(cancellationToken: cancellationToken);
-                return;
+                //await context.WriteAccessDeniedResponse(cancellationToken: cancellationToken);
+                //return;
+            }
+            else
+            {
+                context.User.AddIdentity(permissionsIdentity);
             }
 
             // User has permissions, so we add the extra identity containing the "permissions" claims
-            context.User.AddIdentity(permissionsIdentity);
             await _next(context);
         }
     }

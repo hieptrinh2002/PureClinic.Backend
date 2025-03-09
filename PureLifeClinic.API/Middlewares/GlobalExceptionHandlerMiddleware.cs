@@ -49,6 +49,12 @@ namespace PureLifeClinic.API.Middlewares
                 _logger.LogError($"ValidationException: {ex.Message}");
                 await HandleExceptionAsync(context, StatusCodes.Status400BadRequest, errorCode, ex.Message);
             }
+            catch (ErrorException ex)
+            {
+                errorCode = "ERROR";
+                _logger.LogError($"Error: {ex.Message}");
+                await HandleExceptionAsync(context, StatusCodes.Status500InternalServerError, errorCode, ex.Message);
+            }
             catch (Exception ex)
             {
                 var message = "An unexpected error occurred";

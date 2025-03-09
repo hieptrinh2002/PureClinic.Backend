@@ -63,6 +63,7 @@
 	Authorization in ASP.NET Core | Joao Grassi's blog: https://blog.joaograssi.com/series/authorization-in-asp.net-core/
 						https://github.com/joaopgrassi/authz-custom-middleware/blob/main/src/API/Authorization/UserPermissionService.cs#L43
 	Soft Delete parttern: https://www.youtube.com/watch?v=zwBaWiu-rF4
+	SignalR: https://positiwise.com/blog/signalr-in-asp-net-core#Key_Concepts_of_ASPNET_Core_SignalR
 
 ***** Viewer design
  ** 
@@ -175,3 +176,20 @@ plan:
 		- Từ danh sách patient => chọn tạo lịch hẹn, chọn xem thông tin cá nhân, update status, quản lí hồ sơ patient
 		- Lấy được danh sách các loại dịch vụ =>  xét nghiệm, siêu âm, nội soi, điện tim, xquang và thủ thuật - tiểu phẩu
 		  ✅- Genarate invoice pdf, file kết quả sét nghiệm, file đơn thuốc
+
+- 27/02/2025
+		-BE: SginalR
+		✅ IQueueService
+		Quản lý hàng đợi bệnh nhân đang chờ khám.
+		Cập nhật trạng thái hàng đợi khi bệnh nhân vào khám hoặc hoàn thành khám.
+		Gửi sự kiện real-time để cập nhật danh sách chờ trên giao diện.
+		✅ INotificationService
+		Gửi thông báo real-time đến bệnh nhân hoặc bác sĩ.
+		Có thể gửi thông báo khi:
+		Bệnh nhân đặt lịch hẹn thành công.
+		Bác sĩ có bệnh nhân mới trong danh sách.
+		Hóa đơn thanh toán thành công.
+		✅ IChatService
+		Xử lý chat real-time giữa bệnh nhân và bác sĩ.
+		Lưu trữ lịch sử trò chuyện vào database.
+		Thông báo khi có tin nhắn mới

@@ -6,6 +6,7 @@ using PureLifeClinic.API.Helpers;
 using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Entities.General;
+using PureLifeClinic.Core.Exceptions;
 using PureLifeClinic.Core.Interfaces.IServices;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -204,7 +205,7 @@ namespace PureLifeClinic.API.Controllers.V1
 
                         if (tokenData == null || refreshTokenData == null)
                         {
-                            throw new Exception("Token was genarated failed");
+                            throw new ErrorException("Token was genarated failed");
                         }
 
                         refreshTokenData.AccessTokenId = tokenData?.Data?.AccessTokenId;
@@ -222,7 +223,7 @@ namespace PureLifeClinic.API.Controllers.V1
                         var createdTokenResult = await _refreshTokenService.InsertRefreshToken(Convert.ToInt32(_userContext.UserId), refreshTokenCreateModel, default);
                         if (!createdTokenResult.Success || createdTokenResult.Data == null)
                         {
-                            throw new Exception("Token was genarated failed");
+                            throw new ErrorException("Token was genarated failed");
                         }
                         SetRefreshTokenInCookies(createdTokenResult.Data.Token, createdTokenResult.Data.ExpireOn);
 

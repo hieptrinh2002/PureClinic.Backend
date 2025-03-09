@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Entities.General;
+using PureLifeClinic.Core.Exceptions;
 using PureLifeClinic.Core.Interfaces.IRepositories;
 using PureLifeClinic.Core.Interfaces.IServices;
 
@@ -28,7 +29,7 @@ namespace PureLifeClinic.Core.Services
             medicalfile.MedicalReportId = model.MedicalReportId;
             if (string.IsNullOrEmpty(medicalfile.FilePath))
             {
-                throw new Exception("Upload medical failed");
+                throw new ErrorException("Upload medical failed");
             }
 
             var result = await _unitOfWork.MedicalFiles.Create(medicalfile, cancellationToken);

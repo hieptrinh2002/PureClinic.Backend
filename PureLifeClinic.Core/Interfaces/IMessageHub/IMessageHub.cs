@@ -1,7 +1,11 @@
-﻿namespace PureLifeClinic.Core.Interfaces.IMessageHub
+﻿using PureLifeClinic.Core.Entities.General;
+
+namespace PureLifeClinic.Core.Interfaces.IMessageHub
 {
     public interface IMessageHub
     {
-        Task SendNotification(List<string> message);
+        Task ReceiveNotification(string message);
+        Task ReceiveNewAppointment(string message);
+        Task AppointmentStatusUpdated(int appointmentId, AppointmentStatus status, string message);
     }
 }

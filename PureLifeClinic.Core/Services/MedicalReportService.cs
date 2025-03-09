@@ -5,6 +5,7 @@ using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Entities.General;
 using PureLifeClinic.Core.Enums;
+using PureLifeClinic.Core.Exceptions;
 using PureLifeClinic.Core.Interfaces.IRepositories;
 using PureLifeClinic.Core.Interfaces.IServices;
 using System.Linq.Expressions;
@@ -53,7 +54,7 @@ namespace PureLifeClinic.Core.Services
 
         public async Task<ResponseViewModel<IEnumerable<MedicalReportViewModel>>> GetByPatientId(int patientId, CancellationToken cancellationToken)
         {
-            var patient = await _unitOfWork.Patients.GetById(patientId, cancellationToken) ?? throw new Exception("Patient not found");
+            var patient = await _unitOfWork.Patients.GetById(patientId, cancellationToken) ?? throw new ErrorException("Patient not found");
 
             var medicalReports = await _unitOfWork.MedicalReports.GetMedicalReportByPatientId(patient.Id, cancellationToken);
 
@@ -86,7 +87,7 @@ namespace PureLifeClinic.Core.Services
 
         public async Task<ResponseViewModel<MedicalReportViewModel>> GetById(int id, CancellationToken cancellationToken)
         {
-            var patient = await _unitOfWork.MedicalReports.GetById(id, cancellationToken) ?? throw new Exception("Medical report not found");
+            var patient = await _unitOfWork.MedicalReports.GetById(id, cancellationToken) ?? throw new ErrorException("Medical report not found");
             var includeExpressions = new List<Func<IQueryable<MedicalReport>, IIncludableQueryable<MedicalReport, object>>>
             {
                 query => query.Include(m => m.PrescriptionDetails).ThenInclude(p => p.Medicine),

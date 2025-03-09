@@ -70,7 +70,7 @@ namespace PureLifeClinic.API.Controllers.V1
                 {
                     var result = await _userService.GenerateEmailConfirmationTokenAsync(model.Email);
                     if (!result.Success)
-                        throw new Exception(result.Message);
+                        throw new ErrorException(result.Message);
 
                     var token = Uri.EscapeDataString(result.Data.ActivationToken);
                     var email = Uri.EscapeDataString(model.Email);
@@ -138,7 +138,7 @@ namespace PureLifeClinic.API.Controllers.V1
                 // send email with refresh passwork link
                 var result = await _userService.GenerateResetPasswordTokenAsync(model);
                 if (!result.Success)
-                    throw new Exception(result.Message);
+                    throw new ErrorException(result.Message);
 
                 var mailRequest = new MailRequestViewModel()
                 {

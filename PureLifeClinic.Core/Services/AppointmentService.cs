@@ -5,6 +5,7 @@ using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Entities.General;
 using PureLifeClinic.Core.Enums;
+using PureLifeClinic.Core.Exceptions;
 using PureLifeClinic.Core.Interfaces.IRepositories;
 using PureLifeClinic.Core.Interfaces.IServices;
 
@@ -52,7 +53,7 @@ namespace PureLifeClinic.Core.Services
             bool checkValidTime = await _doctorService.CheckAvailableTimeSlots(model.DoctorId, model.AppointmentDate, cancellationToken);  
             if(checkValidTime == false)
             {
-                throw new Exception("Doctor is not available at this time");
+                throw new ErrorException("Doctor is not available at this time");
             }
 
             var entity = _mapper.Map<Appointment>(model);
@@ -73,7 +74,7 @@ namespace PureLifeClinic.Core.Services
                 if (model.Email != null)
                 {
                     if (await _unitOfWork.Users.GetByEmail(model.Email, cancellationToken) != null) 
-                        throw new Exception("Email was used");
+                        throw new ErrorException("Email was used");
                 }
 
                 // create patient 
@@ -161,7 +162,7 @@ namespace PureLifeClinic.Core.Services
         {
             //var includeList = new List<Expression<Func<Appointment, object>>> { x => x.Doctor, x => x.Patient };
 
-            var patient = await _unitOfWork.Doctors.GetById(doctorId, cancellationToken) ?? throw new Exception("Doctor not found");
+            var patient = await _unitOfWork.Doctors.GetById(doctorId, cancellationToken) ?? throw new ErrorException("Doctor not found");
 
             var filters = new List<ExpressionFilter>
             {
@@ -198,7 +199,7 @@ namespace PureLifeClinic.Core.Services
                 return cachedData;
             }
 
-            var patient = await _unitOfWork.Patients.GetById(patientId, cancellationToken) ?? throw new Exception("Patient not found");
+            var patient = await _unitOfWork.Patients.GetById(patientId, cancellationToken) ?? throw new ErrorException("Patient not found");
 
             var filters = new List<ExpressionFilter>
             {

@@ -2,6 +2,7 @@
 using DinkToPdf;
 using DinkToPdf.Contracts;
 using FluentValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
@@ -119,10 +120,11 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactApp", builder =>
     {
-        builder.WithOrigins("http://127.0.0.1:5500/") // URL frontend
+        builder.WithOrigins("http://127.0.0.1:3000/") // URL frontend
                .AllowAnyHeader()
                .AllowAnyMethod()
-               .AllowCredentials(); 
+               .AllowCredentials()
+               .SetIsOriginAllowed(host => true);
     });
 });
 
@@ -188,7 +190,7 @@ app.UseMiddleware<RequestResponseLoggingMiddleware>();
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllers(); // Map your regular API controllers
-    endpoints.MapHub<MessageHub>("/NotificationHub"); // Map the SignalR hub
+    endpoints.MapHub<NotificationHub>("/NotificationHub"); // Map the SignalR hub
 });
 
 

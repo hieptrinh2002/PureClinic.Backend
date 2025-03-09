@@ -3,7 +3,6 @@ using iText.Layout;
 using iText.Layout.Element;
 using iText.Layout.Properties;
 using PureLifeClinic.Core.Entities.Business;
-using PureLifeClinic.Core.Interfaces.IServices.IFileGenarator;
 
 namespace PureLifeClinic.Core.Services.FileGenerator;
 

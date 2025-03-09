@@ -2,6 +2,7 @@
 using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Entities.General;
+using PureLifeClinic.Core.Exceptions;
 using PureLifeClinic.Core.Interfaces.IRepositories;
 using PureLifeClinic.Infrastructure.Data;
 using System.Linq.Expressions;
@@ -13,13 +14,13 @@ namespace PureLifeClinic.Infrastructure.Repositories
         public DoctorRepository(ApplicationDbContext dbContext) : base(dbContext) { }
 
 
-        public async Task<List<WorkDay>> GetWorkingDayTime(int doctorId, DateOnly date, CancellationToken cancellationToken)
+        public async Task<List<WorkDay>> GetWorkingDayTime(int doctorId, DateTime date, CancellationToken cancellationToken)
         {
             return await _dbContext.WorkDays
                 .Join(_dbContext.WorkWeeks, wd => wd.WorkWeekId, ww => ww.Id, (wd, ww) => new { wd, ww })
                 .Join(_dbContext.Users, ww_wd => ww_wd.ww.UserId, u => u.Id, (ww_wd, u) => new { ww_wd.wd, ww_wd.ww, u })
                 .Join(_dbContext.Doctors, u_ww_wd => u_ww_wd.u.Id, d => d.UserId, (u_ww_wd, d) => new { u_ww_wd.wd, d })
-                .Where(x => x.d.Id == doctorId && DateOnly.FromDateTime(x.wd.Date) == date)
+                .Where(x => x.d.Id == doctorId && x.wd.Date == date)
                 .Select(x => x.wd)
                 .ToListAsync(cancellationToken);
         }
@@ -29,7 +30,7 @@ namespace PureLifeClinic.Infrastructure.Repositories
         {
             var appointmentStartTime= appointmentDate.TimeOfDay;
 
-            var workday = await GetWorkingDayTime(doctorId, DateOnly.FromDateTime(appointmentDate), cancellationToken);
+            var workday = await GetWorkingDayTime(doctorId, appointmentDate, cancellationToken);
             // check time range in workday
             bool isWorking = false;
             foreach (var wd in workday)
@@ -41,7 +42,7 @@ namespace PureLifeClinic.Infrastructure.Repositories
                 }
             }
             if (!isWorking) 
-                throw new Exception($" doctor is not working on {DateOnly.FromDateTime(appointmentDate)} at {appointmentStartTime}");
+                throw new ErrorException($"Doctor is not working on {DateOnly.FromDateTime(appointmentDate)} at {appointmentStartTime}");
 
             // check time range in apointmnetdate - default appointment time is 30 minutes   
             var appointmentEndTime = appointmentStartTime.Add(TimeSpan.FromMinutes(Constants.AvgAppointmentTimeInMinute)); 

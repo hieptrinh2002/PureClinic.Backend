@@ -22,6 +22,5 @@ namespace PureLifeClinic.Infrastructure.Data
             // Add any additional entity configurations here
            
         }
-
     }
 }

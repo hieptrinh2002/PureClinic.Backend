@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using MimeKit;
 using PureLifeClinic.API.Helpers.Authz.PolicyProvider;
 using PureLifeClinic.Core.Entities.General;
 using PureLifeClinic.Infrastructure.Data;
@@ -53,7 +54,32 @@ namespace PureLifeClinic.API.Extensions
                     RequireExpirationTime = true,
                     ClockSkew = TimeSpan.Zero,
                 };
-            });
+                // ⚡ support JWT for SignalR
+                jwt.Events = new JwtBearerEvents
+                {
+                   OnMessageReceived = context =>
+                   {
+                        var accessToken = context.Request.Query["access_token"];
+                        var path = context.HttpContext.Request.Path;
+
+                       // Lấy token từ Query String (cho Long Polling / SSE)
+                       if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/NotificationHub"))
+                       {
+                           context.Token = accessToken;
+                       }
+
+                       // Nếu dùng WebSockets, lấy token từ Header
+                       if (string.IsNullOrEmpty(accessToken) && context.HttpContext.Request.Headers.ContainsKey("Authorization"))
+                       {
+                           accessToken = context.HttpContext.Request.Headers["Authorization"]
+                               .ToString()
+                               .Replace("Bearer ", "").Trim(); 
+                       }
+
+                       return Task.CompletedTask;
+                   }
+                };
+            }); 
             #endregion
 
             #region Custom Authorization

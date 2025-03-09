@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PureLifeClinic.API.Helpers;
 using PureLifeClinic.Core.Entities.Business;
+using PureLifeClinic.Core.Exceptions;
 using PureLifeClinic.Core.Interfaces.IServices;
 
 namespace PureLifeClinic.API.Controllers.V1
@@ -192,7 +193,7 @@ namespace PureLifeClinic.API.Controllers.V1
                         // Create activate email token => return link activate
                         var result = await _userService.GenerateEmailConfirmationTokenAsync(model.Email);
                         if(!result.Success)
-                            throw new Exception(result.Message);    
+                            throw new ErrorException(result.Message);    
                         var confirmationLink = Url.Action("ConfirmEmail", "Register", new { result.Data.ActivationToken, email = model.Email }, Request.Scheme);
 
                         var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Template", "MailTemplate.html");

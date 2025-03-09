@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Entities.General;
+using PureLifeClinic.Core.Exceptions;
 using PureLifeClinic.Core.Interfaces.IRepositories;
 using PureLifeClinic.Infrastructure.Data;
 using System.Globalization;
@@ -26,7 +27,7 @@ namespace PureLifeClinic.Infrastructure.Repositories
         public async Task<ResponseViewModel<List<Appointment>>> GetAllFilterAppointments(FilterAppointmentRequestViewModel model, CancellationToken cancellationToken)
         {
             if (model == null)
-                throw new Exception("Invalid input to get filter appointment");
+                throw new ErrorException("Invalid input to get filter appointment");
 
             var query = _dbContext.Appointments.AsQueryable().AsNoTracking();
             if (model.StartTime != null && model.EndTime != null)

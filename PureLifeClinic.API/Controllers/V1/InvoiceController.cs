@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using PureLifeClinic.API.Helpers;
 using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Entities.Business;
+using PureLifeClinic.Core.Exceptions;
 using PureLifeClinic.Core.Interfaces.IServices;
 
 namespace PureLifeClinic.API.Controllers.V1
@@ -49,7 +50,7 @@ namespace PureLifeClinic.API.Controllers.V1
             if (file == null || file?.Data == null)
             {
                 _logger.LogError("Error while generating invoice file");
-                throw new Exception("Error while generating invoice file");
+                throw new ErrorException("Error while generating invoice file");
             }
             string fileName = $"invoice_{model.PatientInfo.PatientId}_{DateTime.UtcNow.Ticks}.pdf";
             var uploadedPath = await _cloudinaryService.UploadStreamFileAsync(file.Data, fileName);
