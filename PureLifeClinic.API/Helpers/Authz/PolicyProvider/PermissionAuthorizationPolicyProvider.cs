@@ -27,7 +27,6 @@ namespace PureLifeClinic.API.Helpers.Authz.PolicyProvider
             string[] permissions = GetPermissionsFromPolicy(policyName);
 
             // create the instance of our custom requirement
-
             PermissionRequirement requirement = new(permissions, permissionOperator);   
 
             // use the builder to create a policy, adding our requirement

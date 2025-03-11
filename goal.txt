@@ -59,11 +59,14 @@
 	+ Xem danh sách bác sĩ, thông tin chi tiết...
 
 	refs: 
-	binary permission : https://www.youtube.com/watch?v=a8eQKD8w2Qs
+	Binary permission : https://www.youtube.com/watch?v=a8eQKD8w2Qs
 	Authorization in ASP.NET Core | Joao Grassi's blog: https://blog.joaograssi.com/series/authorization-in-asp.net-core/
 						https://github.com/joaopgrassi/authz-custom-middleware/blob/main/src/API/Authorization/UserPermissionService.cs#L43
 	Soft Delete parttern: https://www.youtube.com/watch?v=zwBaWiu-rF4
 	SignalR: https://positiwise.com/blog/signalr-in-asp-net-core#Key_Concepts_of_ASPNET_Core_SignalR
+	Optimistic Locking vs Pessimistic Locking With EF Core: https://www.youtube.com/watch?v=lLDBVMj5He8
+	Global Filters With EF Core Query Filters: https://youtu.be/q09fw5OCa_w?si=uOZLg937mjG9mocZ
+
 
 ***** Viewer design
  ** 
@@ -72,7 +75,8 @@
 ***** Quy trình đăng kí khám bệnh online
 Giai đoạn 1: Đăng ký & Kiểm tra khả dụng
 	Bệnh nhân đăng nhập vào hệ thống (nếu chưa có tài khoản thì đăng ký).
-	Chọn chuyên khoa (nội khoa, ngoại khoa, nhi khoa, da liễu, v.v.).      => lấy bác sĩ theo chuyên môn 1 bác sĩ => nhiều chuyên môn, 1 chuyên môn có nhiều bác sĩ
+	Chọn chuyên khoa (nội khoa, ngoại khoa, nhi khoa, da liễu, v.v.).
+	=> lấy bác sĩ theo chuyên môn 1 bác sĩ => nhiều chuyên môn, 1 chuyên môn có nhiều bác sĩ
 	Chọn bác sĩ phù hợp (hiển thị danh sách bác sĩ có chuyên môn liên quan).
 	Kiểm tra lịch làm việc của bác sĩ:
 	Chỉ hiển thị các khung giờ còn trống.

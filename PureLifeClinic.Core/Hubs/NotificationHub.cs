@@ -37,19 +37,18 @@ namespace PureLifeClinic.Core.MessageHub
 
         public async Task SendNotification(string message)
         {
-            await Clients.All.ReceiveNotification(message);
+            await Clients.All.OnNotificationReceived(message);
         }
 
         public async Task NotifyEmployee(string userId, string message)
         {
-            await Clients.Group("Employee").ReceiveNewAppointment(message);
+            await Clients.Group("Employee").OnNewAppointmentReceived(message);
         }
 
         public async Task ReceiveNewAppointment(string userId, string message)
         {
             //await Clients.User(userId).ReceiveNewAppointment(userId, message);
-            await Clients.Group("Employee").ReceiveNewAppointment(message);
-
+            await Clients.Group("Employee").OnNewAppointmentReceived(message);
         }
     }
 }

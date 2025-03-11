@@ -9,23 +9,23 @@ namespace PureLifeClinic.API.Controllers.V1
     [ApiController]
     public class Test : ControllerBase
     {
-        private IHubContext<NotificationHub, IMessageHub> messageHub;
-        public Test(IHubContext<NotificationHub, IMessageHub> _messageHub)
+        private IHubContext<NotificationHub, IMessageHub> _messageHub;
+        public Test(IHubContext<NotificationHub, IMessageHub> messageHub)
         {
-            messageHub = _messageHub;
+            _messageHub = messageHub;
         }
         [HttpPost]
         [Route("productoffers")]
         public string Get(string msg)
         {
-            messageHub.Clients.All.ReceiveNotification(msg);
+            _messageHub.Clients.All.OnNotificationReceived(msg);
             return "Offers sent successfully to all users!";
         }
 
         [HttpGet("TestSendNotificationToOneUser")]
         public string TestSendNotificationToOneUser(string userId, string message)
         {
-            messageHub.Clients.User(userId).ReceiveNewAppointment(message);
+            _messageHub.Clients.User(userId).OnNewAppointmentReceived(message);
 
             return "Notification sent successfully to user!";
         }   

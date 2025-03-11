@@ -2,7 +2,8 @@
 
 namespace PureLifeClinic.Core.Interfaces.IRepositories
 {
-    public interface IInvoiceRepository: IBaseRepository<Invoice>
+    public interface IInvoiceRepository : IBaseRepository<Invoice>
     {
+        Task<Invoice?> GetInvoiceByAppoinmentId(int appoinmentId);
     }
 }

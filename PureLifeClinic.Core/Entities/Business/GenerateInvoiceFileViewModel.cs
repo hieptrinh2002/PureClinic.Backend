@@ -8,6 +8,8 @@ namespace PureLifeClinic.Core.Entities.Business
     {
         public string CLinicLogoUrl { get; set; } 
 
+        public int AppoinmentId { get; set; }   
+
         public InvoiceClinicInfoViewModel ClinicInfo { get; set; }
 
         public InvoiceDoctorInfoViewModel DoctorInfo { get; set; }

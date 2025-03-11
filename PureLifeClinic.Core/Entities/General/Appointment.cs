@@ -1,5 +1,4 @@
 ﻿using PureLifeClinic.Core.Common;
-using PureLifeClinic.Core.Services;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 

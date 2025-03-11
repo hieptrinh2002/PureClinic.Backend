@@ -23,6 +23,7 @@ namespace PureLifeClinic.API.Extensions
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IDoctorService, DoctorService>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddTransient<ITokenService, TokenService>();
             services.AddTransient<IMailService, MailService>();
             services.AddScoped<IPermissionService, PermissionService>();
             services.AddTransient<IRefreshTokenService, RefreshTokenService>();

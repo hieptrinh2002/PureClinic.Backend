@@ -6,5 +6,6 @@ namespace PureLifeClinic.Core.Interfaces.IServices
     {
         Task<ResponseViewModel<Stream>> CreateInvoiceFileAsync(InvoiceFileCreateViewModel invoice, CancellationToken cancellationToken);
         Task<InvoiceViewModel> Create(InvoiceCreateViewModel model, CancellationToken cancellationToken);
+        Task UpdateFilePathToInvoiceAsync(int appoinmentId, string uploadedPath);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using PureLifeClinic.Core.Common;
@@ -6,8 +7,10 @@ using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Entities.General;
 using PureLifeClinic.Core.Enums;
 using PureLifeClinic.Core.Exceptions;
+using PureLifeClinic.Core.Interfaces.IMessageHub;
 using PureLifeClinic.Core.Interfaces.IRepositories;
 using PureLifeClinic.Core.Interfaces.IServices;
+using PureLifeClinic.Core.MessageHub;
 
 namespace PureLifeClinic.Core.Services
 {
@@ -18,11 +21,14 @@ namespace PureLifeClinic.Core.Services
         private readonly IUserContext _userContext;
         private readonly ICacheServiceFactory _cacheServiceFactory;
         private readonly IDoctorService _doctorService;
+        private readonly IHubContext<NotificationHub, IMessageHub> _notificationHub;
+
         public AppointmentService(
             IMapper mapper,
             IUserContext userContext,
             ICacheServiceFactory cacheServiceFactory,
             IDoctorService doctorService,
+            IHubContext<NotificationHub, IMessageHub> notificationHub,
             IUnitOfWork unitOfWork)
             : base(mapper, unitOfWork.Appointments)
         {
@@ -31,8 +37,10 @@ namespace PureLifeClinic.Core.Services
             _userContext = userContext;
             _cacheServiceFactory = cacheServiceFactory;
             _doctorService = doctorService;
+            _notificationHub = notificationHub;
+
         }
-     
+
         public new async Task<IEnumerable<AppointmentViewModel>> GetAll(CancellationToken cancellationToken)
         {
             var includeExpressions = new List<Func<IQueryable<Appointment>, IIncludableQueryable<Appointment, object>>>
@@ -62,10 +70,10 @@ namespace PureLifeClinic.Core.Services
 
             var result = await _unitOfWork.Appointments.Create(entity, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
-
+            await _notificationHub.Clients.Group("Employee").OnNewAppointmentReceived("We have a new appointment !");
+            await _notificationHub.Clients.User(model.DoctorId.ToString()).OnNewAppointmentReceived("You have e new appoinment");
             return _mapper.Map<AppointmentViewModel>(result);
         }
-
         public async Task<AppointmentViewModel> CreateInPersonAppointment(InPersonAppointmentCreateViewModel model, CancellationToken cancellationToken)
         {
             await _unitOfWork.BeginTransactionAsync(cancellationToken);

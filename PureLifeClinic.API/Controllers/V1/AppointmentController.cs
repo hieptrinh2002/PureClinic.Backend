@@ -56,7 +56,8 @@ namespace PureLifeClinic.API.Controllers.V1
 
         [HttpGet("paginated-data")]
         [AllowAnonymous]
-        public async Task<IActionResult> GetbyFilterCondition(int? pageNumber, int? pageSize, string? search, string? sortBy, string? sortOrder, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetbyFilterCondition(
+            int? pageNumber, int? pageSize, string? search, string? sortBy, string? sortOrder, CancellationToken cancellationToken)
         {
             try
             {
@@ -103,6 +104,10 @@ namespace PureLifeClinic.API.Controllers.V1
         {
             try
             {
+                var validationResult = await _validationService.ValidateAsync(model);
+                if (!validationResult.IsValid)
+                    return new BadRequestObjectResult(ModelStateHelper.GetValidateProblemDetails(validationResult));
+
                 var result = await _appointmentService.GetAllFilterAppointments(model, cancellationToken);
                 return Ok(result);
             }

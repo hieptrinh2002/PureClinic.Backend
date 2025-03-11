@@ -54,6 +54,10 @@ namespace PureLifeClinic.API.Controllers.V1
             }
             string fileName = $"invoice_{model.PatientInfo.PatientId}_{DateTime.UtcNow.Ticks}.pdf";
             var uploadedPath = await _cloudinaryService.UploadStreamFileAsync(file.Data, fileName);
+
+            // update invoice file path
+            await _invoiceService.UpdateFilePathToInvoiceAsync(model.AppoinmentId, uploadedPath);
+
             return Ok(new ResponseViewModel<string>
             {
                 Message = "Invoice generated successfully",

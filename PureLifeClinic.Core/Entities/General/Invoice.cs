@@ -18,6 +18,8 @@ namespace PureLifeClinic.Core.Entities.General
         [ForeignKey(nameof(AppointmentId))]
         public virtual Appointment Appointment { get; set; }
 
+        public string? FilePath { get; set; }
+
         public void CalculateTotalAmount()
         {
             double total = 0;

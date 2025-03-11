@@ -4,7 +4,6 @@ using PureLifeClinic.Core.Enums;
 
 namespace PureLifeClinic.API.Helpers.Authz.PolicyProvider
 {
-   
     public class PermissionRequirement: IAuthorizationRequirement
     {
         public static string ClaimType => AppClaimTypes.Permission;

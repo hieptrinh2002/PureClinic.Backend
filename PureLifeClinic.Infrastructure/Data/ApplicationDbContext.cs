@@ -30,6 +30,8 @@ namespace PureLifeClinic.Infrastructure.Data
         public DbSet<Permission> Permissions { get; set; }
         public DbSet<UserPermission> UserPermissions { get; set; }
 
+        public DbSet<Invoice> Invoices { get; set; }    
+
         #endregion
 
         protected override void OnModelCreating(ModelBuilder builder)

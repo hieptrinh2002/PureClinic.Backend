@@ -8,7 +8,10 @@ namespace PureLifeClinic.Infrastructure.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Product> builder)
         {
+            //builder.Property<uint>("Version").IsRowVersion();    
 
+            builder.HasQueryFilter(p => !p.IsDeleted && p.IsActive);
+            // to ignore query filter, user .IgnoreQueryFilters() method    
         }
     }
 }

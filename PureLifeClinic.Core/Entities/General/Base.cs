@@ -16,7 +16,7 @@ namespace PureLifeClinic.Core.Entities.General
 
         public DateTime? UpdatedDate { get; set; }
 
-        public bool? IsDeleted { get; set; } 
+        public bool IsDeleted { get; set; } = false;
 
         public DateTime? DeletedDate { get; set; }  
     }

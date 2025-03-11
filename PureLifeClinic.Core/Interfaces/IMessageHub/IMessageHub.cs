@@ -4,8 +4,9 @@ namespace PureLifeClinic.Core.Interfaces.IMessageHub
 {
     public interface IMessageHub
     {
-        Task ReceiveNotification(string message);
-        Task ReceiveNewAppointment(string message);
-        Task AppointmentStatusUpdated(int appointmentId, AppointmentStatus status, string message);
+        Task OnNotificationReceived(string message);
+        Task OnNewAppointmentReceived(string message);
+        Task OnAppointmentStatusUpdated(int appointmentId, AppointmentStatus status, string message);
     }
+
 }

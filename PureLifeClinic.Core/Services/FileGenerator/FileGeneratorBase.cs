@@ -7,7 +7,7 @@ public abstract class FileGeneratorBase<TCreateViewModel> : IFileGenerator<TCrea
     public async Task<ResponseViewModel<Stream>> GenerateFileAsync(TCreateViewModel model, CancellationToken cancellationToken)
     {
         // create common MemoryStream
-        MemoryStream ms = new MemoryStream();
+        MemoryStream ms = new();
         await CreatePdfAsync(ms, model, cancellationToken);
         ms.Position = 0;
 
