@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Entities.General;
 using PureLifeClinic.Core.Interfaces.IRepositories;
 using PureLifeClinic.Infrastructure.Data;

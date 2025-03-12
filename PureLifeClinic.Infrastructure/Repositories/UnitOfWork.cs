@@ -62,7 +62,7 @@ namespace PureLifeClinic.Infrastructure.Repositories
             Medicines = new MedicineRepository(_dbContext);
             PrescriptionDetails = new PrescriptionDetailRepository(_dbContext); 
             MedicalFiles = new MedicalFileRepository(_dbContext);
-            Permissions = new PermissionRepository(_dbContext);
+            Permissions = new PermissionRepository(_dbContext, _userManager, _roleManager);
             Invoices = new InvoiceRepository(_dbContext);
         }
         public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

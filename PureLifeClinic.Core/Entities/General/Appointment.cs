@@ -1,4 +1,5 @@
-﻿using PureLifeClinic.Core.Common;
+﻿using PureLifeClinic.Core.Common.Constants;
+using PureLifeClinic.Core.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -31,13 +32,5 @@ namespace PureLifeClinic.Core.Entities.General
 
         public ICollection<MedicalReport>? MedicalReports { get; set; } = new List<MedicalReport>();
         public ICollection<AppointmentHealthService>? HealthServices { get; set; } = new List<AppointmentHealthService>();
-    }
-
-    public enum AppointmentStatus
-    {
-        Pending,
-        Confirmed,
-        Completed,
-        Canceled
     }
 }

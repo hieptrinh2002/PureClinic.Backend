@@ -1,4 +1,4 @@
-﻿namespace PureLifeClinic.Core.Common
+﻿namespace PureLifeClinic.Core.Common.Constants
 {
     public static class Constants
     {

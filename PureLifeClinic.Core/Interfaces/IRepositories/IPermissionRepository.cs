@@ -5,6 +5,8 @@ namespace PureLifeClinic.Core.Interfaces.IRepositories
 {
     public interface IPermissionRepository: IBaseRepository<Permission>
     {
-        ValueTask<ClaimsIdentity?> GetUserPermissionsIdentity(string sub, CancellationToken cancellationToken);
+        Task<List<Claim>> GetUserClaimsPermissions(string sub, CancellationToken cancellationToken);
+        Task<List<Claim>> GetRoleClaimsPermissions(string sub, CancellationToken cancellationToken);
+        Task<List<string>> GetUserPermissions(string sub, CancellationToken cancellationToken);
     }
 }

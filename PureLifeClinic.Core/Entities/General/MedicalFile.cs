@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using PureLifeClinic.Core.Enums;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PureLifeClinic.Core.Entities.General
 {
@@ -16,14 +17,5 @@ namespace PureLifeClinic.Core.Entities.General
         [ForeignKey(nameof(MedicalReportId))]
 
         public MedicalReport? MedicalReport { get; set; }
-    }
-    public enum FileType
-    {
-        Image,
-        PDF,
-        Word,
-        Excel,
-        Video,
-        Other
     }
 }

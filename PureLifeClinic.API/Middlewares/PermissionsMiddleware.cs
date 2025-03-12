@@ -27,27 +27,29 @@ namespace PureLifeClinic.API.Middlewares
             var cancellationToken = context.RequestAborted;
             var userSub = context?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? context.User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
 
-
             if (string.IsNullOrEmpty(userSub))
             {
                 await context.WriteAccessDeniedResponse("User 'sub' claim is required", cancellationToken: cancellationToken);
                 return;
             }
-            var permissionsIdentity = await permissionService.GetUserPermissionsIdentity(userSub, cancellationToken);
+            //var permissionsIdentity = await permissionService.GetUserPermissionsIdentity(userSub, cancellationToken);
 
-            if (permissionsIdentity == null)
+            var fullPermission = await permissionService.GetUserPermissionsIdentityAsync(userSub, cancellationToken);
+            var claims = fullPermission.Select(rc => new Claim(rc.Key, rc.Value.ToString()));
+
+
+            if (fullPermission == null) //permissionsIdentity == null)
             {
                 _logger.LogWarning("User {sub} does not have permissions", userSub);
-
-                //await context.WriteAccessDeniedResponse(cancellationToken: cancellationToken);
-                //return;
-            }
-            else
-            {
-                context.User.AddIdentity(permissionsIdentity);
+                await context.WriteAccessDeniedResponse(cancellationToken: cancellationToken);
+                return;
             }
 
-            // User has permissions, so we add the extra identity containing the "permissions" claims
+            //context.User.AddIdentity(permissionsIdentity);
+            var claimsIdentity = (ClaimsIdentity)context.User.Identity;//add (claims); 
+            claimsIdentity.AddClaims(claims);
+            context.User = new ClaimsPrincipal(claimsIdentity);
+
             await _next(context);
         }
     }

@@ -1,5 +1,5 @@
 ﻿using PureLifeClinic.Core.Entities.Business;
-using PureLifeClinic.Core.Entities.General;
+using PureLifeClinic.Core.Enums;
 
 namespace PureLifeClinic.Core.Interfaces.IServices
 {

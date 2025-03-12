@@ -1,4 +1,4 @@
-﻿using PureLifeClinic.Core.Entities.General;
+﻿using PureLifeClinic.Core.Enums;
 
 namespace PureLifeClinic.Core.Entities.Business
 {

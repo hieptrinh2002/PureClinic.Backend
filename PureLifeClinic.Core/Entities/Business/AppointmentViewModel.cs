@@ -1,5 +1,4 @@
-﻿using PureLifeClinic.Core.Entities.General;
-using System.ComponentModel.DataAnnotations;
+﻿using PureLifeClinic.Core.Enums;
 
 namespace PureLifeClinic.Core.Entities.Business
 {

@@ -20,6 +20,7 @@ namespace PureLifeClinic.Infrastructure.Data
             int retryForAvailability = retry ?? 0;
             var appContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
             var UserManager = serviceProvider.GetRequiredService<UserManager<User>>();
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<Role>>();  
 
             try
             {
@@ -31,6 +32,14 @@ namespace PureLifeClinic.Infrastructure.Data
                     await appContext.SaveChangesAsync();
                     transaction.Commit();
                 }
+                //  Adding RoleClaims
+                if(!appContext.RoleClaims.Any())
+                {
+                    using var transaction = appContext.Database.BeginTransaction();
+                    await RoleClaimSeed.SeedRoleClaims(appContext);
+                    transaction.Commit();
+                }
+
 
                 // Adding Users
                 if (!appContext.Users.Any())

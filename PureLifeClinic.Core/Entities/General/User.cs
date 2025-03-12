@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using PureLifeClinic.Core.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -38,11 +39,5 @@ namespace PureLifeClinic.Core.Entities.General
         public virtual ICollection<WorkWeek> WorkWeeks { get; set; } = new List<WorkWeek>();
 
         public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
-    }
-
-    public enum Gender
-    {
-        Female,
-        Male
     }
 }

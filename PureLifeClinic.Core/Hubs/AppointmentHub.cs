@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using PureLifeClinic.Core.Entities.General;
+using PureLifeClinic.Core.Enums;
 
 namespace PureLifeClinic.Core.Hubs
 {

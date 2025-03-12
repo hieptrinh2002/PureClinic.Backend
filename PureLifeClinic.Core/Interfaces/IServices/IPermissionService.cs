@@ -11,5 +11,7 @@ namespace PureLifeClinic.Core.Interfaces.IServices
         /// <param name="sub">The user external id (sub claim)</param>
         /// <param name="cancellationToken"></param>
         ValueTask<ClaimsIdentity?> GetUserPermissionsIdentity(string sub, CancellationToken cancellationToken);
+
+        Task<Dictionary<string, int>> GetUserPermissionsIdentityAsync(string sub, CancellationToken cancellationToken);
     }
 }

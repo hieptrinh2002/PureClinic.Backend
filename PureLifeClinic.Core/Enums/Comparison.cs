@@ -2,11 +2,6 @@
 
 namespace PureLifeClinic.Core.Enums
 {
-    public enum PermissionOperator
-    {
-        And = 1, Or = 2
-    }
-
     public enum Comparison
     {
         [Display(Name = "==")]
@@ -36,12 +31,4 @@ namespace PureLifeClinic.Core.Enums
         [Display(Name = "EndsWith")]
         EndsWith, //for strings  
     }
-    public enum PaymentMethod
-    {
-        Cash,
-        CreditCard,
-        DebitCard,
-        BankTransfer
-    }
-
 }

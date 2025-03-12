@@ -1,42 +1,57 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using PureLifeClinic.Core.Enums;
+using System.Text.RegularExpressions;
 
 namespace PureLifeClinic.API.Helpers.Authz.PolicyProvider
 {
-
     //// multiple permissions
-    //[PermissionAuthorize(PermissionOperator.Or, Permissions.Create, Permissions.Update)]
+    //[PermissionAuthorize(PermissionConstants.Product, PermissionOperator.And, PermissionAction.View, PermissionAction.CreateDelete)]
 
     //// single permission
-    //[PermissionAuthorize("Create")]
+    //[PermissionConstants.Product, PermissionAction.View]
     public class PermissionAuthorizeAttribute: AuthorizeAttribute
     {
         internal const string POLICY_PREFIX = "PERMISSION_";
         private const string Separator = "_";
-
-        public PermissionAuthorizeAttribute(
-           PermissionOperator permissionOperator, params string[] permissions)
+        public PermissionAuthorizeAttribute(string resource, PermissionOperator permissionOperator, params PermissionAction[] permissions)
         {
-            // E.g: PERMISSION_1_Create_Update..
-            Policy = $"{POLICY_PREFIX}{(int)permissionOperator}{Separator}{string.Join(Separator, permissions)}";
+            // E.g: PERMISSION_Customer_1_Create_Update.. ~ => PERMISSION_Customer_1_1_2..
+            Policy = $"{POLICY_PREFIX}{resource}{Separator}{(int)permissionOperator}{Separator}{
+                string.Join(
+                Separator, 
+                permissions.Select(p => (int)p).ToArray())
+                }";
         }
 
-        public PermissionAuthorizeAttribute(string permission)
+        public PermissionAuthorizeAttribute(string resource, string permission)
         {
-            // E.g: PERMISSION_1_Create..
-            Policy = $"{POLICY_PREFIX}{(int)PermissionOperator.And}{Separator}{permission}";
+            Policy = $"{POLICY_PREFIX}{resource}{Separator}{(int)PermissionOperator.And}{Separator}{permission}";
         }
 
         public static PermissionOperator GetOperatorFromPolicy(string policyName)
         {
-            var @operator = int.Parse(policyName.AsSpan(POLICY_PREFIX.Length, 1));
-            return (PermissionOperator)@operator;
+            Match match = Regex.Match(policyName, @"_(\d+)_");
+            if (match.Success)
+                return (PermissionOperator)int.Parse(match.Groups[1].Value);
+
+            return PermissionOperator.And; 
         }
 
-        public static string[] GetPermissionsFromPolicy(string policyName)
+        public static string GetResourceFromPolicy(string policyName)
         {
-            return policyName.Substring(POLICY_PREFIX.Length + 2)
-                .Split(new[] { Separator }, StringSplitOptions.RemoveEmptyEntries);
+            // E.g: PERMISSION_Customer_1_1_2.. => "Customer"
+            string resource = policyName.Substring(POLICY_PREFIX.Length)
+                .Split(new[] { Separator }, StringSplitOptions.RemoveEmptyEntries)[0];
+            return resource;
+        }
+
+        public static int[] GetPermissionsFromPolicy(string policyName)
+        {
+            // remove prefix
+            string[] parts = policyName.Substring(POLICY_PREFIX.Length).Split(Separator, StringSplitOptions.RemoveEmptyEntries);
+
+            // remove resource name and PermissionOperator (2 first elements)
+            return parts.Skip(2).Select(int.Parse).ToArray();
         }
     }
 }

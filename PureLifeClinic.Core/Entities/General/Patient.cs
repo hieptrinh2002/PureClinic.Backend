@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using PureLifeClinic.Core.Enums;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PureLifeClinic.Core.Entities.General
@@ -25,13 +26,5 @@ namespace PureLifeClinic.Core.Entities.General
         public ICollection<LabResult>? LabResults { get; set; }
         public ICollection<MedicineInteraction>? Interactions { get; set; }
         public ICollection<Allergy>? Allergies { get; set; }
-    }
-    public enum PatientStatus
-    {
-        New,
-        UnderTreatment, 
-        Stable,        
-        Discharged,     
-        Referred        
     }
 }

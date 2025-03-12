@@ -1,6 +1,7 @@
 ﻿using Bogus;
 using Microsoft.Extensions.DependencyInjection;
 using PureLifeClinic.Core.Entities.General;
+using PureLifeClinic.Core.Enums;
 
 namespace PureLifeClinic.Infrastructure.Data.SeedData
 {
