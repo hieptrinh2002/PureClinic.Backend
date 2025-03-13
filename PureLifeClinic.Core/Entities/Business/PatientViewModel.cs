@@ -1,7 +1,7 @@
 ﻿using PureLifeClinic.Core.Entities.General;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
 using PureLifeClinic.Core.Enums;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PureLifeClinic.Core.Entities.Business
 {

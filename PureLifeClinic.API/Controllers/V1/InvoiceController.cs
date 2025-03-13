@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using PureLifeClinic.API.Helpers;
+using PureLifeClinic.API.ActionFilters;
 using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Exceptions;
@@ -20,26 +20,25 @@ namespace PureLifeClinic.API.Controllers.V1
     {
         private readonly ICloudinaryService _cloudinaryService;
         private readonly IInvoiceService _invoiceService;
-        private ILogger<InvoiceController> _logger;
+        private readonly ILogger<InvoiceController> _logger;
         private readonly AppSettings _appSettings;
-        private readonly IValidationService _validationService;
 
 
         public InvoiceController(
             ICloudinaryService cloudinaryService,
             IInvoiceService invoiceService,
             ILogger<InvoiceController> logger,
-            IOptions<AppSettings> appSettings,
-            IValidationService validationService)
+            IOptions<AppSettings> appSettings)
         {
             _cloudinaryService = cloudinaryService;
             _invoiceService = invoiceService;
             _logger = logger;
             _appSettings = appSettings.Value;
-            _validationService = validationService;
         }
 
         [HttpPost("generate")]
+        [ServiceFilter(typeof(ValidateInputViewModelFilter))]
+
         public async Task<IActionResult> GenarateInvoice(InvoiceFileCreateViewModel model, CancellationToken cancellationToken)
         {
             model.ClinicInfo.PhoneNumber = _appSettings.ClinicInfo.Phone;
@@ -67,13 +66,9 @@ namespace PureLifeClinic.API.Controllers.V1
         }
 
         [HttpPost]
+        [ServiceFilter(typeof(ValidateInputViewModelFilter))]
         public async Task<IActionResult> Create(InvoiceCreateViewModel model, CancellationToken cancellationToken)
         {
-            var validationResult = await _validationService.ValidateAsync(model);
-
-            if (!validationResult.IsValid)
-                return new BadRequestObjectResult(ModelStateHelper.GetValidateProblemDetails(validationResult));
-
             try
             {
                 var data = await _invoiceService.Create(model, cancellationToken);

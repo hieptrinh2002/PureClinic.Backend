@@ -1,5 +1,6 @@
 using CloudinaryDotNet;
 using Microsoft.Extensions.Options;
+using PureLifeClinic.API.ActionFilters;
 using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Interfaces.IRepositories;
@@ -43,6 +44,11 @@ namespace PureLifeClinic.API.Extensions
             #region Validators  
             services.AddScoped<IValidationService, ValidationService>();
             #endregion
+
+
+            services.AddScoped<ValidateInputViewModelFilter>();
+
+
 
             #region RabbitMQ
             //services.AddSingleton<IRabbitMQConnection>(new RabbitMQConnection());

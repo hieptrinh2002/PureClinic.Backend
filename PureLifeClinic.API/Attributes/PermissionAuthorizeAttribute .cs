@@ -2,25 +2,23 @@
 using PureLifeClinic.Core.Enums;
 using System.Text.RegularExpressions;
 
-namespace PureLifeClinic.API.Helpers.Authz.PolicyProvider
+namespace PureLifeClinic.API.Attributes
 {
     //// multiple permissions
     //[PermissionAuthorize(PermissionConstants.Product, PermissionOperator.And, PermissionAction.View, PermissionAction.CreateDelete)]
 
     //// single permission
     //[PermissionConstants.Product, PermissionAction.View]
-    public class PermissionAuthorizeAttribute: AuthorizeAttribute
+    public class PermissionAuthorizeAttribute : AuthorizeAttribute
     {
         internal const string POLICY_PREFIX = "PERMISSION_";
         private const string Separator = "_";
         public PermissionAuthorizeAttribute(string resource, PermissionOperator permissionOperator, params PermissionAction[] permissions)
         {
             // E.g: PERMISSION_Customer_1_Create_Update.. ~ => PERMISSION_Customer_1_1_2..
-            Policy = $"{POLICY_PREFIX}{resource}{Separator}{(int)permissionOperator}{Separator}{
-                string.Join(
-                Separator, 
-                permissions.Select(p => (int)p).ToArray())
-                }";
+            Policy = $"{POLICY_PREFIX}{resource}{Separator}{(int)permissionOperator}{Separator}{string.Join(
+                Separator,
+                permissions.Select(p => (int)p).ToArray())}";
         }
 
         public PermissionAuthorizeAttribute(string resource, string permission)
@@ -34,7 +32,7 @@ namespace PureLifeClinic.API.Helpers.Authz.PolicyProvider
             if (match.Success)
                 return (PermissionOperator)int.Parse(match.Groups[1].Value);
 
-            return PermissionOperator.And; 
+            return PermissionOperator.And;
         }
 
         public static string GetResourceFromPolicy(string policyName)

@@ -66,7 +66,8 @@
 	SignalR: https://positiwise.com/blog/signalr-in-asp-net-core#Key_Concepts_of_ASPNET_Core_SignalR
 	Optimistic Locking vs Pessimistic Locking With EF Core: https://www.youtube.com/watch?v=lLDBVMj5He8
 	Global Filters With EF Core Query Filters: https://youtu.be/q09fw5OCa_w?si=uOZLg937mjG9mocZ
-
+	Filter Type/ Action filter in .NET Core.: https://hieutech.vn/2022/04/10-dieu-can-tranh-khi-lam-viec-voi-controller-trong-net-core.html
+								  https://code-maze.com/action-filters-aspnetcore/
 
 ***** Viewer design
  ** 
@@ -164,7 +165,7 @@ plan:
 
 - 19/02/2025 
 		-BE: 
-			* Doctor
+			* Doctor	
 		  ✅- Get all patient of doctor
 		 - Lấy thông tin 1 bác sĩ
 		  ✅ + (tt chung, kinh nghiệm, chuyên ngành .....) => profile

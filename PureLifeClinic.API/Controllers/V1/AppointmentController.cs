@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PureLifeClinic.API.Helpers;
+using PureLifeClinic.API.ActionFilters;
 using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Enums;
@@ -81,33 +81,30 @@ namespace PureLifeClinic.API.Controllers.V1
                     });
                 }
 
-                var appointmnets = await _appointmentService.GetPaginatedData(pageNumberValue, pageSizeValue, filters, sortBy, sortOrder, cancellationToken);
+                var appointments = await _appointmentService.GetPaginatedData(pageNumberValue, pageSizeValue, filters, sortBy, sortOrder, cancellationToken);
 
                 var response = new ResponseViewModel<PaginatedDataViewModel<AppointmentViewModel>>
                 {
                     Success = true,
-                    Message = "Appointmnets retrieved successfully",
-                    Data = appointmnets
+                    Message = "Appointments retrieved successfully",
+                    Data = appointments
                 };
 
                 return Ok(response);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while retrieving appointmnets");
+                _logger.LogError(ex, "An error occurred while retrieving appointments");
                 throw;
             }
         }
 
+        [ServiceFilter(typeof(ValidateInputViewModelFilter))]
         [HttpPost("filter")]
         public async Task<IActionResult> GetFilterAppointment(FilterAppointmentRequestViewModel model, CancellationToken cancellationToken)
         {
             try
             {
-                var validationResult = await _validationService.ValidateAsync(model);
-                if (!validationResult.IsValid)
-                    return new BadRequestObjectResult(ModelStateHelper.GetValidateProblemDetails(validationResult));
-
                 var result = await _appointmentService.GetAllFilterAppointments(model, cancellationToken);
                 return Ok(result);
             }
@@ -149,15 +146,10 @@ namespace PureLifeClinic.API.Controllers.V1
         }
 
         // add new appointment
+        [ServiceFilter(typeof(ValidateInputViewModelFilter))]
         [HttpPost("app/create")]
         public async Task<IActionResult> Create(AppointmentCreateViewModel model, CancellationToken cancellationToken)
         {
-            string message = string.Empty;
-
-            var validationResult = await _validationService.ValidateAsync(model);
-            if (!validationResult.IsValid)
-                return new BadRequestObjectResult(ModelStateHelper.GetValidateProblemDetails(validationResult));
-
             try
             {
                 var data = await _appointmentService.Create(model, cancellationToken);
@@ -177,19 +169,15 @@ namespace PureLifeClinic.API.Controllers.V1
                 throw;
             }
         }
-            
+
         // add new appointment
+        [ServiceFilter(typeof(ValidateInputViewModelFilter))]
         [HttpPost("in-person/create")]
         public async Task<IActionResult> CreateInPersonAppointment(InPersonAppointmentCreateViewModel model, CancellationToken cancellationToken)
         {
-            var validationResult = await _validationService.ValidateAsync(model);
-            if (!validationResult.IsValid)
-                return new BadRequestObjectResult(ModelStateHelper.GetValidateProblemDetails(validationResult));
-
-            string message = string.Empty;
             if (await _appointmentService.IsExists(model.DoctorId, model.AppointmentDate, cancellationToken))
             {
-                message = $"The appoinment at {model.AppointmentDate} with doctor already exists";
+                string message = $"The appoinment at {model.AppointmentDate} with doctor already exists";
                 throw new BadRequestException(message);
             }
             try
@@ -212,16 +200,10 @@ namespace PureLifeClinic.API.Controllers.V1
             }
         }
 
+        [ServiceFilter(typeof(ValidateInputViewModelFilter))]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateAppointment(int id, [FromBody] AppointmentUpdateViewModel model, CancellationToken cancellationToken)
         {
-            var validationResult = await _validationService.ValidateAsync(model);
-
-            if (!validationResult.IsValid)
-                return new BadRequestObjectResult(ModelStateHelper.GetValidateProblemDetails(validationResult));
-
-            string message = string.Empty;
-
             try
             {
                 var result = await _appointmentService.UpdateAppointmentAsync(id, model, cancellationToken);
@@ -248,14 +230,10 @@ namespace PureLifeClinic.API.Controllers.V1
             }
         }
 
+        [ServiceFilter(typeof(ValidateInputViewModelFilter))]
         [HttpPatch("{id}")]
-        public async Task<IActionResult> UpdateAppointmentStatus(int id, [FromBody] AppointmentStatusUpdateViewModel model, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateAppointmentStatus([FromBody] AppointmentStatusUpdateViewModel model, int id, CancellationToken cancellationToken)
         {
-            var validationResult = await _validationService.ValidateAsync(model);
-
-            if (!validationResult.IsValid)
-                return new BadRequestObjectResult(ModelStateHelper.GetValidateProblemDetails(validationResult));  
-
             try
             {
                 var result = await _appointmentService.UpdateAppointmentStatusAsync(id, model.Status, cancellationToken);

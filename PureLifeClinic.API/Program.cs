@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using PureLifeClinic.API.ActionFilters;
 using PureLifeClinic.API.Extensions;
 using PureLifeClinic.API.Helpers;
 using PureLifeClinic.API.Middlewares;
@@ -80,7 +81,12 @@ builder.Services
     });
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddControllers();
+builder.Services.AddControllers(
+    //options =>
+    //{
+    //    options.Filters.Add<ApiLoggingFilter>();
+    //}
+);
 
 // Swagger Settings
 builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
