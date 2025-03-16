@@ -13,7 +13,7 @@ namespace PureLifeClinic.Infrastructure.Data.SeedData
 
             foreach (var role in roles)
             {
-                foreach (var permission in PermissionConstants.Permissions)
+                foreach (var permission in ResourceConstants.Permissions)
                 {
                     int permissionValue = 0;
 
@@ -22,14 +22,14 @@ namespace PureLifeClinic.Infrastructure.Data.SeedData
                         case "ADMIN":
                             permissionValue = (int)(PermissionAction.View | PermissionAction.CreateDelete | PermissionAction.Update |
                                                     PermissionAction.ActiveDeactive | PermissionAction.Approve |
-                                                    PermissionAction.Send | PermissionAction.ImportExport | PermissionAction.Lock);
+                                                    PermissionAction.Send | PermissionAction.ImportExport | PermissionAction.LockUnlock);
                             break;
 
                         case "EMPLOYEE":
-                            if (permission == PermissionConstants.User ||
-                                permission == PermissionConstants.Patient ||
-                                permission == PermissionConstants.Appointment ||
-                                permission == PermissionConstants.Invoice)
+                            if (permission == ResourceConstants.User ||
+                                permission == ResourceConstants.Patient ||
+                                permission == ResourceConstants.Appointment ||
+                                permission == ResourceConstants.Invoice)
                             {
                                 permissionValue = (int)(PermissionAction.View | PermissionAction.CreateDelete | PermissionAction.Update |
                                                         PermissionAction.Approve | PermissionAction.ImportExport);
@@ -37,14 +37,14 @@ namespace PureLifeClinic.Infrastructure.Data.SeedData
                             break;
 
                         case "DOCTOR":
-                            if (permission == PermissionConstants.Patient || permission == PermissionConstants.MedicalReport)
+                            if (permission == ResourceConstants.Patient || permission == ResourceConstants.MedicalReport)
                             {
                                 permissionValue = (int)(PermissionAction.View | PermissionAction.Update);
                             }
                             break;
 
                         case "PATIENT":
-                            if (permission == PermissionConstants.Patient)
+                            if (permission == ResourceConstants.Patient)
                             {
                                 permissionValue = (int)PermissionAction.View;
                             }

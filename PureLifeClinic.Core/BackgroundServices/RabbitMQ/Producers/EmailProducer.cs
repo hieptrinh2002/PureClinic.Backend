@@ -1,8 +1,8 @@
-﻿using PureLifeClinic.Core.Services.BackgroundJob.RabbitMQ.Connection;
-using PureLifeClinic.Core.Services.BackgroundJob.RabbitMQ.Producers.Interfaces;
+﻿using PureLifeClinic.Core.BackgroundServices.RabbitMQ.Connection;
+using PureLifeClinic.Core.BackgroundServices.RabbitMQ.Producers.Interfaces;
 using RabbitMQ.Client;
 
-namespace PureLifeClinic.Core.Services.BackgroundJob.RabbitMQ.Producers
+namespace PureLifeClinic.Core.BackgroundServices.RabbitMQ.Producers
 {
     public class EmailProducer : IMessageProducer
     {

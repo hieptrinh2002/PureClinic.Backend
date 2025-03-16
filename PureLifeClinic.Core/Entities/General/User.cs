@@ -10,6 +10,7 @@ namespace PureLifeClinic.Core.Entities.General
         [Required, StringLength(maximumLength: 100, MinimumLength = 2)]
         public string FullName { get; set; }
         public bool IsActive { get; set; }
+
         [Required]
         public int RoleId { get; set; }
         public int? EntryBy { get; set; }
@@ -21,6 +22,7 @@ namespace PureLifeClinic.Core.Entities.General
         public DateTime? DateOfBirth { get; set; }
         public string? ImagePath { get; set; }
 
+        public bool IsLockPermission { get; set; } = false; 
         public int? Age
         {
             get

@@ -34,7 +34,7 @@ namespace PureLifeClinic.API.Middlewares
             }
             //var permissionsIdentity = await permissionService.GetUserPermissionsIdentity(userSub, cancellationToken);
 
-            var fullPermission = await permissionService.GetUserPermissionsIdentityAsync(userSub, cancellationToken);
+            var fullPermission = await permissionService.GetUserPermissionsIdentityAsync(int.Parse(userSub), cancellationToken);
             var claims = fullPermission.Select(rc => new Claim(rc.Key, rc.Value.ToString()));
 
 

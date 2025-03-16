@@ -14,6 +14,11 @@
     <PackageReference Include="CloudinaryDotNet" Version="1.27.1" />
     <PackageReference Include="DinkToPdf" Version="1.0.8" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+    <PackageReference Include="Hangfire" Version="1.8.18" />
+    <PackageReference Include="Hangfire.AspNetCore" Version="1.8.18" />
+    <PackageReference Include="Hangfire.Core" Version="1.8.18" />
+    <PackageReference Include="Hangfire.NetCore" Version="1.8.18" />
+    <PackageReference Include="Hangfire.SqlServer" Version="1.8.18" />
     <PackageReference Include="HtmlToPdfConverter.Core" Version="2.0.0" />
     <PackageReference Include="itext.bouncy-castle-adapter" Version="9.1.0" />
     <PackageReference Include="itext7" Version="9.1.0" />

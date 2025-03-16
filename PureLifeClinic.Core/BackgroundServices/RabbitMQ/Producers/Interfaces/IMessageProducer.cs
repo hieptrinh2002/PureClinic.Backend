@@ -1,4 +1,4 @@
-﻿namespace PureLifeClinic.Core.Services.BackgroundJob.RabbitMQ.Producers.Interfaces
+﻿namespace PureLifeClinic.Core.BackgroundServices.RabbitMQ.Producers.Interfaces
 {
     public interface IMessageProducer
     {

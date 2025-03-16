@@ -58,6 +58,16 @@
     + Xem danh sách dịch vụ phòng khám
 	+ Xem danh sách bác sĩ, thông tin chi tiết...
 
+
+	* Technical: 
+	Hangfire: Phù hợp với các tác vụ theo lịch hoặc công việc nặng mà không cần phản hồi ngay:
+		Tự động gửi nhắc lịch khám định kỳ (hàng ngày quét danh sách bệnh nhân sắp đến hẹn để gửi thông báo).
+		Dọn dẹp dữ liệu cũ (xóa lịch sử cuộc hẹn, logs quá cũ sau X ngày).
+		Tạo báo cáo tự động (mỗi ngày, tuần hoặc tháng tổng hợp số liệu về bệnh nhân, doanh thu, đơn thuốc).
+		Gửi email xác nhận đặt lịch nhưng có thể xử lý sau vài giây (tránh làm API chậm).
+
+
+
 	refs: 
 	Binary permission : https://www.youtube.com/watch?v=a8eQKD8w2Qs
 	Authorization in ASP.NET Core | Joao Grassi's blog: https://blog.joaograssi.com/series/authorization-in-asp.net-core/
@@ -68,6 +78,7 @@
 	Global Filters With EF Core Query Filters: https://youtu.be/q09fw5OCa_w?si=uOZLg937mjG9mocZ
 	Filter Type/ Action filter in .NET Core.: https://hieutech.vn/2022/04/10-dieu-can-tranh-khi-lam-viec-voi-controller-trong-net-core.html
 								  https://code-maze.com/action-filters-aspnetcore/
+    Tech share: https://tech.cybozu.vn/
 
 ***** Viewer design
  ** 

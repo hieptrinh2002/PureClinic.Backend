@@ -1,6 +1,6 @@
 ﻿namespace PureLifeClinic.Core.Common.Constants
 {
-    public static class PermissionConstants
+    public static class ResourceConstants
     {
         public const int Deny = -1;
 

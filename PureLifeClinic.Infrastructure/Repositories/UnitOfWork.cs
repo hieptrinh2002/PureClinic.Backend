@@ -33,6 +33,10 @@ namespace PureLifeClinic.Infrastructure.Repositories
         public IMedicalFileRepository MedicalFiles { get; }
         public IPermissionRepository Permissions { get; }
         public IInvoiceRepository Invoices { get; }
+        public IRoleClaimRepository RoleClaims { get; }
+        
+        public IUserClaimRepository UserClaims { get; }
+
 
         public UnitOfWork(
             ApplicationDbContext dbContext,
@@ -64,6 +68,8 @@ namespace PureLifeClinic.Infrastructure.Repositories
             MedicalFiles = new MedicalFileRepository(_dbContext);
             Permissions = new PermissionRepository(_dbContext, _userManager, _roleManager);
             Invoices = new InvoiceRepository(_dbContext);
+            RoleClaims = new RoleClaimRepository(_dbContext);   
+            UserClaims = new UserClaimRepository(_dbContext);
         }
         public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {

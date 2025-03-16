@@ -1,5 +1,5 @@
-﻿using PureLifeClinic.Core.Entities.Business;
-using PureLifeClinic.Core.Services.BackgroundJob.RabbitMQ.Connection;
+﻿using PureLifeClinic.Core.BackgroundServices.RabbitMQ.Connection;
+using PureLifeClinic.Core.Entities.Business;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PureLifeClinic.Core.Services.BackgroundJob.RabbitMQ.Consumers
+namespace PureLifeClinic.Core.BackgroundServices.RabbitMQ.Consumers
 {
     internal class EmailConsumer
     {
@@ -21,7 +21,7 @@ namespace PureLifeClinic.Core.Services.BackgroundJob.RabbitMQ.Consumers
 
         public async Task ConsumeAsync()
         {
-            using var channel =await _connection.Connection.CreateChannelAsync();
+            using var channel = await _connection.Connection.CreateChannelAsync();
             await channel.QueueDeclareAsync(queue: "email_queue", durable: true, exclusive: false, autoDelete: false);
 
             var consumer = new AsyncEventingBasicConsumer(channel);

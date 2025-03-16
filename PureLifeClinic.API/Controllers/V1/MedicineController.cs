@@ -150,7 +150,6 @@ namespace PureLifeClinic.API.Controllers.V1
         }
 
 
-        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Create(MedicineCreateViewModel model, CancellationToken cancellationToken)
         {

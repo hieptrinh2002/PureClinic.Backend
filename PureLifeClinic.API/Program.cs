@@ -2,11 +2,10 @@
 using DinkToPdf;
 using DinkToPdf.Contracts;
 using FluentValidation;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Hangfire;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
-using PureLifeClinic.API.ActionFilters;
 using PureLifeClinic.API.Extensions;
 using PureLifeClinic.API.Helpers;
 using PureLifeClinic.API.Middlewares;
@@ -16,13 +15,21 @@ using PureLifeClinic.Core.MessageHub;
 using PureLifeClinic.Core.Services;
 using PureLifeClinic.Infrastructure.Data;
 using Swashbuckle.AspNetCore.SwaggerGen;
-//using PureLifeClinic.API.Helpers.AuthHelper.PolicyProvider;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Register DbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("PrimaryDbConnection"))); //.UseLazyLoadingProxies()
+
+// Add hangfire 
+builder.Services.AddHangfire(
+    config => config.UseSimpleAssemblyNameTypeSerializer()
+                    .UseRecommendedSerializerSettings()
+                    .UseSqlServerStorage(builder.Configuration.GetConnectionString("HangfireDbConnection"))
+);
+builder.Services.AddHangfireServer();
+
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 
 // Add caching services
@@ -186,6 +193,9 @@ app.UseRouting(); // Add this line to configure routing
 app.UseAuthentication();
 app.UseMiddleware<PermissionsMiddleware>();
 app.UseAuthorization();
+
+app.UseHangfireDashboard();
+
 app.UseCors("AllowReactApp");
 
 #region Custom Middleware

@@ -10,7 +10,8 @@ namespace PureLifeClinic.Core.Interfaces.IRepositories
     {
         Task<IEnumerable<T>> GetAll(CancellationToken cancellationToken);
         Task<IEnumerable<T>> GetAll(List<Expression<Func<T, object>>> includeExpressions, CancellationToken cancellationToken = default);
-        Task<IEnumerable<T>> GetAll(List<Expression<Func<T, object>>> includeExpressions, List<ExpressionFilter> filters, CancellationToken cancellationToken = default);
+        Task<IEnumerable<T>> GetAll(List<Expression<Func<T, object>>>? includeExpressions, List<ExpressionFilter> filters, CancellationToken cancellationToken = default);
+        Task<IEnumerable<T>> GetAll(List<ExpressionFilter> filters, CancellationToken cancellationToken = default);
         Task<IEnumerable<T>> GetAll(List<Func<IQueryable<T>, IIncludableQueryable<T, object>>> includeExpressions, List<ExpressionFilter>? filters, CancellationToken cancellationToken = default);
         Task<PaginatedDataViewModel<T>> GetPaginatedData(int pageNumber, int pageSize, CancellationToken cancellationToken);
         Task<PaginatedDataViewModel<T>> GetPaginatedData(int pageNumber, int pageSize, List<ExpressionFilter> filters, CancellationToken cancellationToken);

@@ -42,7 +42,7 @@ namespace PureLifeClinic.Infrastructure.Repositories
             return entities;
         }
 
-        public async Task<IEnumerable<T>> GetAll(List<Expression<Func<T, object>>> includeExpressions, List<ExpressionFilter> filters, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<T>> GetAll(List<Expression<Func<T, object>>>? includeExpressions, List<ExpressionFilter> filters, CancellationToken cancellationToken = default)
         {
             var query = _dbContext.Set<T>().AsQueryable();
             if (includeExpressions != null)
@@ -57,6 +57,19 @@ namespace PureLifeClinic.Infrastructure.Repositories
             var entities = await query.AsNoTracking().ToListAsync(cancellationToken);
             return entities;
         }
+
+        public async Task<IEnumerable<T>> GetAll(List<ExpressionFilter> filters, CancellationToken cancellationToken = default)
+        {
+            var query = _dbContext.Set<T>().AsQueryable();
+            if (filters != null && filters.Any())
+            {
+                var expressionTree = ExpressionBuilder.ConstructAndExpressionTree<T>(filters);
+                query = query.Where(expressionTree);
+            }
+            var entities = await query.AsNoTracking().ToListAsync(cancellationToken);
+            return entities;
+        }
+
 
         public async Task<IEnumerable<T>> GetAll(
             List<Func<IQueryable<T>, IIncludableQueryable<T, object>>> includeExpressions,

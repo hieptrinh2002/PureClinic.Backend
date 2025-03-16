@@ -9,6 +9,8 @@ namespace PureLifeClinic.API.Attributes
 
     //// single permission
     //[PermissionConstants.Product, PermissionAction.View]
+
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
     public class PermissionAuthorizeAttribute : AuthorizeAttribute
     {
         internal const string POLICY_PREFIX = "PERMISSION_";
@@ -21,9 +23,9 @@ namespace PureLifeClinic.API.Attributes
                 permissions.Select(p => (int)p).ToArray())}";
         }
 
-        public PermissionAuthorizeAttribute(string resource, string permission)
+        public PermissionAuthorizeAttribute(string resource, PermissionAction permission)
         {
-            Policy = $"{POLICY_PREFIX}{resource}{Separator}{(int)PermissionOperator.And}{Separator}{permission}";
+            Policy = $"{POLICY_PREFIX}{resource}{Separator}{(int)PermissionOperator.And}{Separator}{(int)permission}";
         }
 
         public static PermissionOperator GetOperatorFromPolicy(string policyName)

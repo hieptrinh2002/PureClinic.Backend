@@ -2,9 +2,10 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PureLifeClinic.API.Attributes;
 using PureLifeClinic.Core.Common;
+using PureLifeClinic.Core.Common.Constants;
 using PureLifeClinic.Core.Entities.Business;
-using PureLifeClinic.Core.Entities.General;
 using PureLifeClinic.Core.Enums;
 using PureLifeClinic.Core.Interfaces.IServices;
 
@@ -25,6 +26,7 @@ namespace PureLifeClinic.API.Controllers.V1
             _doctorService = doctorService;
         }
 
+        [PermissionAuthorize(ResourceConstants.Patient, PermissionAction.View)]
         [HttpGet("{doctorId}/patients")]
         public async Task<IActionResult> GetPatients(
             int doctorId,
@@ -77,6 +79,7 @@ namespace PureLifeClinic.API.Controllers.V1
             }
         }
 
+        [PermissionAuthorize(ResourceConstants.Doctor, PermissionAction.View)]
         [HttpGet("paginated")]
         public async Task<IActionResult> Get(int? pageNumber, int? pageSize, CancellationToken cancellationToken)
         {
@@ -102,6 +105,7 @@ namespace PureLifeClinic.API.Controllers.V1
             }
         }
 
+        [PermissionAuthorize(ResourceConstants.Appointment, PermissionAction.View)]
         [HttpGet("{doctorId}/available-time-slots")]
         public async Task<IActionResult> GetDoctorAvailableTimeSlots(int doctorId, [FromQuery] DateTime weekStartDate, CancellationToken cancellationToken)
         {
@@ -109,7 +113,7 @@ namespace PureLifeClinic.API.Controllers.V1
             return Ok(slots);
         }
 
-
+        [PermissionAuthorize(ResourceConstants.Doctor, PermissionAction.View)]
         [HttpGet]
         public async Task<IActionResult> Get(CancellationToken cancellationToken)
         {
@@ -133,6 +137,7 @@ namespace PureLifeClinic.API.Controllers.V1
             }
         }
 
+        [PermissionAuthorize(ResourceConstants.Doctor, PermissionAction.View)]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id, CancellationToken cancellationToken)
         {

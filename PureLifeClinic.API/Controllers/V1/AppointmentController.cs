@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PureLifeClinic.API.ActionFilters;
+using PureLifeClinic.API.Attributes;
 using PureLifeClinic.Core.Common;
+using PureLifeClinic.Core.Common.Constants;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Enums;
 using PureLifeClinic.Core.Exceptions;
@@ -19,16 +21,13 @@ namespace PureLifeClinic.API.Controllers.V1
     {
         private readonly IAppointmentService _appointmentService;
         private readonly ILogger<AppointmentController> _logger;
-        private readonly IValidationService _validationService;
 
         public AppointmentController(
             IAppointmentService appointmentService, 
-            ILogger<AppointmentController> logger, 
-            IValidationService validationService)
+            ILogger<AppointmentController> logger)
         {
             _appointmentService = appointmentService;
             _logger = logger;
-            _validationService = validationService;
         }
 
         [HttpGet]
@@ -55,7 +54,7 @@ namespace PureLifeClinic.API.Controllers.V1
         }
 
         [HttpGet("paginated-data")]
-        [AllowAnonymous]
+        [PermissionAuthorize(ResourceConstants.Appointment, PermissionAction.View)]
         public async Task<IActionResult> GetbyFilterCondition(
             int? pageNumber, int? pageSize, string? search, string? sortBy, string? sortOrder, CancellationToken cancellationToken)
         {
@@ -101,6 +100,8 @@ namespace PureLifeClinic.API.Controllers.V1
 
         [ServiceFilter(typeof(ValidateInputViewModelFilter))]
         [HttpPost("filter")]
+        [PermissionAuthorize(ResourceConstants.Appointment, PermissionAction.View)]
+
         public async Task<IActionResult> GetFilterAppointment(FilterAppointmentRequestViewModel model, CancellationToken cancellationToken)
         {
             try
@@ -116,6 +117,8 @@ namespace PureLifeClinic.API.Controllers.V1
         }
 
         [HttpGet("doctor/{doctorId}")]
+        [PermissionAuthorize(ResourceConstants.Appointment, PermissionAction.View)]
+
         public async Task<IActionResult> GetAppointmentsByDoctor(int doctorId, CancellationToken cancellationToken)
         {
             try
@@ -131,6 +134,8 @@ namespace PureLifeClinic.API.Controllers.V1
         }
 
         [HttpGet("patient/{patientId}")]
+        [PermissionAuthorize(ResourceConstants.Appointment, PermissionAction.View)]
+
         public async Task<IActionResult> GetAppointmentsByPatient(int patientId, CancellationToken cancellationToken)
         {
             try
@@ -148,6 +153,8 @@ namespace PureLifeClinic.API.Controllers.V1
         // add new appointment
         [ServiceFilter(typeof(ValidateInputViewModelFilter))]
         [HttpPost("app/create")]
+        [PermissionAuthorize(ResourceConstants.Appointment, PermissionAction.CreateDelete)]
+
         public async Task<IActionResult> Create(AppointmentCreateViewModel model, CancellationToken cancellationToken)
         {
             try
@@ -171,9 +178,11 @@ namespace PureLifeClinic.API.Controllers.V1
         }
 
         // add new appointment
-        [ServiceFilter(typeof(ValidateInputViewModelFilter))]
-        [HttpPost("in-person/create")]
-        public async Task<IActionResult> CreateInPersonAppointment(InPersonAppointmentCreateViewModel model, CancellationToken cancellationToken)
+        [Authorize(Roles = RoleConstant.Employee)]
+        [PermissionAuthorize(ResourceConstants.Appointment, PermissionAction.CreateDelete)] 
+        [ServiceFilter(typeof(ValidateInputViewModelFilter))] 
+        [HttpPost("in-person/create")] 
+        public async Task<IActionResult> CreateInPersonAppointment([FromBody] InPersonAppointmentCreateViewModel model, CancellationToken cancellationToken)
         {
             if (await _appointmentService.IsExists(model.DoctorId, model.AppointmentDate, cancellationToken))
             {
@@ -200,6 +209,7 @@ namespace PureLifeClinic.API.Controllers.V1
             }
         }
 
+        [PermissionAuthorize(ResourceConstants.Appointment, PermissionAction.Update)]
         [ServiceFilter(typeof(ValidateInputViewModelFilter))]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateAppointment(int id, [FromBody] AppointmentUpdateViewModel model, CancellationToken cancellationToken)
@@ -230,6 +240,11 @@ namespace PureLifeClinic.API.Controllers.V1
             }
         }
 
+        // customer update appointment when it's not approved
+
+
+
+        [PermissionAuthorize(ResourceConstants.Appointment, PermissionAction.Update)]
         [ServiceFilter(typeof(ValidateInputViewModelFilter))]
         [HttpPatch("{id}")]
         public async Task<IActionResult> UpdateAppointmentStatus([FromBody] AppointmentStatusUpdateViewModel model, int id, CancellationToken cancellationToken)

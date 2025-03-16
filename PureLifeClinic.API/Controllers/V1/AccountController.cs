@@ -1,10 +1,13 @@
 ﻿using Asp.Versioning;
+using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PureLifeClinic.API.Attributes;
 using PureLifeClinic.API.Helpers;
 using PureLifeClinic.Core.Common.Constants;
 using PureLifeClinic.Core.Entities.Business;
+using PureLifeClinic.Core.Enums;
 using PureLifeClinic.Core.Exceptions;
 using PureLifeClinic.Core.Interfaces.IServices;
 
@@ -32,6 +35,7 @@ namespace PureLifeClinic.API.Controllers.V1
         }
 
         [HttpPost("unlock-account")]
+        [PermissionAuthorize(ResourceConstants.User, PermissionAction.LockUnlock)]
         public async Task<IActionResult> UnlockAccount([FromBody] UnlockAccountRequestViewModel model)
         {
             if (!ModelState.IsValid)
@@ -43,7 +47,6 @@ namespace PureLifeClinic.API.Controllers.V1
 
             return Ok("Account unlocked successfully.");
         }
-
 
         [HttpPost("register")]
         public async Task<IActionResult> SendActivationEmail([FromBody] UserCreateViewModel model, string clientUrl, CancellationToken cancellationToken)
@@ -140,6 +143,9 @@ namespace PureLifeClinic.API.Controllers.V1
                 if (!result.Success)
                     throw new ErrorException(result.Message);
 
+                if (result.Data == null)
+                    throw new ErrorException("Failed to generate reset password token");
+
                 var mailRequest = new MailRequestViewModel()
                 {
                     ToEmail = model.Email,
@@ -147,7 +153,8 @@ namespace PureLifeClinic.API.Controllers.V1
                     Body = result.Data.EmailBody
                 };
 
-                await _mailService.SendEmailAsync(mailRequest);
+                //await _mailService.SendEmailAsync(mailRequest);
+                BackgroundJob.Enqueue<IMailService>(mailService => mailService.SendEmailAsync(mailRequest));
 
                 return Ok(new ResponseViewModel
                 {
@@ -174,6 +181,7 @@ namespace PureLifeClinic.API.Controllers.V1
                 Body = emailBody,
             };
 
+            BackgroundJob.Enqueue<IMailService>(mailService => mailService.SendEmailAsync(mailRequestViewModel));
             await _mailService.SendEmailAsync(mailRequestViewModel);
         }
     }

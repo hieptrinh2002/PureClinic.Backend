@@ -1,6 +1,4 @@
-﻿using PureLifeClinic.Core.Entities.General;
-
-namespace PureLifeClinic.Core.Interfaces.IRepositories
+﻿namespace PureLifeClinic.Core.Interfaces.IRepositories
 {
     public interface IUnitOfWork : IDisposable
     {
@@ -19,6 +17,9 @@ namespace PureLifeClinic.Core.Interfaces.IRepositories
         IMedicalFileRepository MedicalFiles { get; }
         IPermissionRepository Permissions { get;  }
         IInvoiceRepository Invoices { get; }
+        IRoleClaimRepository RoleClaims { get; }
+        IUserClaimRepository UserClaims { get; }
+
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
         Task BeginTransactionAsync(CancellationToken cancellationToken = default);

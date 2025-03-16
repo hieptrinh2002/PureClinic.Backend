@@ -5,7 +5,7 @@ using PureLifeClinic.Core.Interfaces.IServices;
 
 namespace PureLifeClinic.API.ActionFilters
 {
-    public class ValidateInputViewModelFilter : Attribute, IAsyncActionFilter
+    public class ValidateInputViewModelFilter : IAsyncActionFilter
     {
         private readonly IValidationService _validationService;
         public ValidateInputViewModelFilter(IValidationService validationService)

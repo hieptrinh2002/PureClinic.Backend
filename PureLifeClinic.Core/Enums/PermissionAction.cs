@@ -26,7 +26,7 @@ namespace PureLifeClinic.Core.Enums
         [Description("Import/Export")]
         ImportExport = 64,
 
-        [Description("Lock")]
-        Lock = 128,
+        [Description("Lock/Unlock")]
+        LockUnlock = 128,
     }
 }

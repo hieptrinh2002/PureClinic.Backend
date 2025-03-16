@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PureLifeClinic.Core.Services.BackgroundJob.RabbitMQ.Consumers
+namespace PureLifeClinic.Core.BackgroundServices.RabbitMQ.Consumers
 {
     public interface IMessageConsumer
     {

@@ -1,6 +1,6 @@
 ﻿using RabbitMQ.Client;
 
-namespace PureLifeClinic.Core.Services.BackgroundJob.RabbitMQ.Connection
+namespace PureLifeClinic.Core.BackgroundServices.RabbitMQ.Connection
 {
     public class RabbitMQConnection : IRabbitMQConnection, IDisposable
     {
@@ -22,7 +22,7 @@ namespace PureLifeClinic.Core.Services.BackgroundJob.RabbitMQ.Connection
         }
         public void Dispose()
         {
-            _connection?.Dispose(); 
+            _connection?.Dispose();
         }
     }
 }
