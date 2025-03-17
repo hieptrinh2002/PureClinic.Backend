@@ -18,9 +18,8 @@ namespace PureLifeClinic.API.Attributes
         public PermissionAuthorizeAttribute(string resource, PermissionOperator permissionOperator, params PermissionAction[] permissions)
         {
             // E.g: PERMISSION_Customer_1_Create_Update.. ~ => PERMISSION_Customer_1_1_2..
-            Policy = $"{POLICY_PREFIX}{resource}{Separator}{(int)permissionOperator}{Separator}{string.Join(
-                Separator,
-                permissions.Select(p => (int)p).ToArray())}";
+            Policy = $"{POLICY_PREFIX}{resource}{Separator}{(int)permissionOperator}{Separator}{string
+                .Join(Separator, permissions.Select(p => (int)p).ToArray())}";
         }
 
         public PermissionAuthorizeAttribute(string resource, PermissionAction permission)

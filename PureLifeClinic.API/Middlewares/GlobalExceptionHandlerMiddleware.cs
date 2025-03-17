@@ -61,7 +61,7 @@ namespace PureLifeClinic.API.Middlewares
                 var innerExMes = ex.InnerException == null ? string.Empty : ex.InnerException.Message;
 
                 _logger.LogError(ex, $"Exception occurred: {ex.Message}");
-                if (!innerExMes.IsNullOrEmpty())
+                if (!string.IsNullOrEmpty(innerExMes))
                 {
                     _logger.LogError(ex, $"Inner Exception occurred: {innerExMes}");
                     message += $"- {innerExMes}";

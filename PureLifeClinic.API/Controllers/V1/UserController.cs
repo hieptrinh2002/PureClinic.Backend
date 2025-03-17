@@ -1,10 +1,12 @@
 ﻿using Asp.Versioning;
+using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PureLifeClinic.API.Helpers;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Exceptions;
+using PureLifeClinic.Core.Interfaces.IBackgroundJobs;
 using PureLifeClinic.Core.Interfaces.IServices;
 
 namespace PureLifeClinic.API.Controllers.V1
@@ -18,12 +20,13 @@ namespace PureLifeClinic.API.Controllers.V1
         private readonly ILogger<UserController> _logger;
         private readonly IUserService _userService;
         private readonly IMailService _emailService;    
-
-        public UserController(ILogger<UserController> logger, IUserService userService, IMailService emailService)
+        private readonly IBackgroundJobService _backgroundJobService;
+        public UserController(ILogger<UserController> logger, IUserService userService, IMailService emailService, IBackgroundJobService backgroundJobService)
         {
             _logger = logger;
             _userService = userService;
             _emailService = emailService;
+            _backgroundJobService = backgroundJobService;
         }
 
         [HttpGet("paginated")]
@@ -206,8 +209,8 @@ namespace PureLifeClinic.API.Controllers.V1
                             Body = emailBody,
                         };
 
-                        await _emailService.SendEmailAsync(mailRequestViewModel);
-
+                        _backgroundJobService.ScheduleImmediateJob<IMailService>(m => m.SendEmailAsync(mailRequestViewModel));
+                       
                         return Ok(response);
                     }
                     else

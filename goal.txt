@@ -66,8 +66,6 @@
 		Tạo báo cáo tự động (mỗi ngày, tuần hoặc tháng tổng hợp số liệu về bệnh nhân, doanh thu, đơn thuốc).
 		Gửi email xác nhận đặt lịch nhưng có thể xử lý sau vài giây (tránh làm API chậm).
 
-
-
 	refs: 
 	Binary permission : https://www.youtube.com/watch?v=a8eQKD8w2Qs
 	Authorization in ASP.NET Core | Joao Grassi's blog: https://blog.joaograssi.com/series/authorization-in-asp.net-core/
@@ -79,6 +77,8 @@
 	Filter Type/ Action filter in .NET Core.: https://hieutech.vn/2022/04/10-dieu-can-tranh-khi-lam-viec-voi-controller-trong-net-core.html
 								  https://code-maze.com/action-filters-aspnetcore/
     Tech share: https://tech.cybozu.vn/
+	multi-factor authentication and single sign-on (SSO) solutions .net api: https://learn.microsoft.com/en-us/aspnet/core/security/authentication/mfa?view=aspnetcore-9.0
+
 
 ***** Viewer design
  ** 

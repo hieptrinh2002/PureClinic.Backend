@@ -2,6 +2,6 @@
 {
     public interface IDataCleanupJob
     {
-        //Task CleanupOldRecordsAsync();
+        Task CleanupOldRecordsAsync();
     }
 }

@@ -38,7 +38,6 @@ namespace PureLifeClinic.Core.Services
             _cacheServiceFactory = cacheServiceFactory;
             _doctorService = doctorService;
             _notificationHub = notificationHub;
-
         }
 
         public new async Task<IEnumerable<AppointmentViewModel>> GetAll(CancellationToken cancellationToken)
@@ -70,8 +69,10 @@ namespace PureLifeClinic.Core.Services
 
             var result = await _unitOfWork.Appointments.Create(entity, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+
             await _notificationHub.Clients.Group("Employee").OnNewAppointmentReceived("We have a new appointment !");
             await _notificationHub.Clients.User(model.DoctorId.ToString()).OnNewAppointmentReceived("You have e new appoinment");
+
             return _mapper.Map<AppointmentViewModel>(result);
         }
         public async Task<AppointmentViewModel> CreateInPersonAppointment(InPersonAppointmentCreateViewModel model, CancellationToken cancellationToken)

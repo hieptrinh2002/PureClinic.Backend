@@ -47,5 +47,13 @@ namespace PureLifeClinic.Core.Services
             await smtp.SendAsync(email);
             smtp.Disconnect(true);
         }
+
+        public async Task SendEmailBatchAsync(List<MailRequestViewModel> emails)
+        {
+            foreach (var email in emails)
+            {
+                await SendEmailAsync(email);
+            }
+        }
     }
 }

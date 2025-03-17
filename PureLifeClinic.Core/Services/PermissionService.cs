@@ -96,8 +96,8 @@ namespace PureLifeClinic.Core.Services
                     await _unitOfWork.UserClaims.Create(identityUserClaim, cancellationToken);
                 }
             }
-            await _unitOfWork.CommitTransactionAsync(cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+            await _unitOfWork.CommitTransactionAsync(cancellationToken);
         }
 
         public async Task<Dictionary<string, int>> GetRolePermissions(int roleId, CancellationToken cancellationToken)
@@ -239,8 +239,8 @@ namespace PureLifeClinic.Core.Services
                 };
                 await _unitOfWork.RoleClaims.Update(identityRoleClaim, cancellationToken);
             }
-            await _unitOfWork.CommitTransactionAsync(cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+            await _unitOfWork.CommitTransactionAsync(cancellationToken);
         }
 
         public async Task UpdateUserPermissions(int userId, List<ResourcePermissionViewModel> models, CancellationToken cancellationToken)
@@ -265,8 +265,8 @@ namespace PureLifeClinic.Core.Services
                 };
                 await _unitOfWork.UserClaims.Update(identityUserClaim, cancellationToken);
             }
-            await _unitOfWork.CommitTransactionAsync(cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+            await _unitOfWork.CommitTransactionAsync(cancellationToken);
         }
     }
 }

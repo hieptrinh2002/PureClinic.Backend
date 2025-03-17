@@ -1,8 +1,10 @@
 using CloudinaryDotNet;
 using Microsoft.Extensions.Options;
 using PureLifeClinic.API.ActionFilters;
+using PureLifeClinic.Core.BackgroundServices;
 using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Entities.Business;
+using PureLifeClinic.Core.Interfaces.IBackgroundJobs;
 using PureLifeClinic.Core.Interfaces.IRepositories;
 using PureLifeClinic.Core.Interfaces.IServices;
 using PureLifeClinic.Core.Interfaces.IServices.IFileGenarator;
@@ -45,10 +47,10 @@ namespace PureLifeClinic.API.Extensions
             services.AddScoped<IValidationService, ValidationService>();
             #endregion
 
-
             services.AddScoped<ValidateInputViewModelFilter>();
 
-
+            services.AddScoped<IBackgroundJobService, BackgroundJobService>();
+            services.AddScoped<IRecurringJobService, RecurringJobService>();
 
             #region RabbitMQ
             //services.AddSingleton<IRabbitMQConnection>(new RabbitMQConnection());

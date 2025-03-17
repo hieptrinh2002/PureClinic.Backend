@@ -1,5 +1,4 @@
 ﻿using Asp.Versioning;
-using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +8,7 @@ using PureLifeClinic.Core.Common.Constants;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Enums;
 using PureLifeClinic.Core.Exceptions;
+using PureLifeClinic.Core.Interfaces.IBackgroundJobs;
 using PureLifeClinic.Core.Interfaces.IServices;
 
 namespace PureLifeClinic.API.Controllers.V1
@@ -22,16 +22,16 @@ namespace PureLifeClinic.API.Controllers.V1
     {
         private readonly IUserService _userService;
         private readonly IAuthService _authService;
-        private readonly IMailService _mailService;
         private readonly ILogger<AuthController> _logger;
+        private readonly IBackgroundJobService _backgroundService; 
 
         public AccountController(ILogger<AuthController> logger,
-            IUserService userService, IAuthService authService, IMailService mailService)
+            IUserService userService, IAuthService authService, IBackgroundJobService backgroundJobService)
         {
             _logger = logger;
             _userService = userService;
             _authService = authService;
-            _mailService = mailService;
+            _backgroundService = backgroundJobService;  
         }
 
         [HttpPost("unlock-account")]
@@ -49,6 +49,7 @@ namespace PureLifeClinic.API.Controllers.V1
         }
 
         [HttpPost("register")]
+        [AllowAnonymous]
         public async Task<IActionResult> SendActivationEmail([FromBody] UserCreateViewModel model, string clientUrl, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
@@ -79,7 +80,7 @@ namespace PureLifeClinic.API.Controllers.V1
                     var email = Uri.EscapeDataString(model.Email);
                     var confirmationLink = MailHelper.GenerateConfirmationLink(email, clientUrl, token);
 
-                    await SendConfirmationEmailAsync(model.Email, confirmationLink, model.UserName);
+                    SendConfirmationEmailAsync(model.Email, confirmationLink, model.UserName);
                     return Ok(response);
                 }
                 else
@@ -95,6 +96,7 @@ namespace PureLifeClinic.API.Controllers.V1
         }
 
         [HttpGet("activate-email")]
+        [AllowAnonymous]
         public async Task<IActionResult> EmailConfirmation(string emailConfirmation, string activeToken, CancellationToken cancellationToken)
         {
             if (!await _userService.IsExists("Email", emailConfirmation, cancellationToken))
@@ -128,6 +130,8 @@ namespace PureLifeClinic.API.Controllers.V1
         }
 
         [HttpPost("forgot-password")]
+        [AllowAnonymous]
+
         public async Task<IActionResult> ChangePassword([FromBody] ForgotPasswordRequestViewModel model)
         {
             try
@@ -153,8 +157,7 @@ namespace PureLifeClinic.API.Controllers.V1
                     Body = result.Data.EmailBody
                 };
 
-                //await _mailService.SendEmailAsync(mailRequest);
-                BackgroundJob.Enqueue<IMailService>(mailService => mailService.SendEmailAsync(mailRequest));
+                _backgroundService.ScheduleImmediateJob<IMailService>(mailService => mailService.SendEmailAsync(mailRequest));
 
                 return Ok(new ResponseViewModel
                 {
@@ -169,7 +172,7 @@ namespace PureLifeClinic.API.Controllers.V1
             }
         }
 
-        private async Task SendConfirmationEmailAsync(string email, string confirmationLink, string userName)
+        private void SendConfirmationEmailAsync(string email, string confirmationLink, string userName)
         {
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Template", "MailTemplate.html");
             var emailBody = MailHelper.ReadAndProcessHtmlTemplate(filePath, confirmationLink, userName);
@@ -181,8 +184,7 @@ namespace PureLifeClinic.API.Controllers.V1
                 Body = emailBody,
             };
 
-            BackgroundJob.Enqueue<IMailService>(mailService => mailService.SendEmailAsync(mailRequestViewModel));
-            await _mailService.SendEmailAsync(mailRequestViewModel);
+            _backgroundService.ScheduleImmediateJob<IMailService>(mailService => mailService.SendEmailAsync(mailRequestViewModel));
         }
     }
 }

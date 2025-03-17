@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Entities.General;
+using PureLifeClinic.Core.Enums;
 using PureLifeClinic.Core.Exceptions;
 using PureLifeClinic.Core.Interfaces.IRepositories;
 using PureLifeClinic.Infrastructure.Data;
@@ -64,5 +65,20 @@ namespace PureLifeClinic.Infrastructure.Repositories
         {
             return await _dbContext.Appointments.AsNoTracking().Where(a => a.DoctorId == doctorId && a.AppointmentDate == date).AnyAsync(cancellationToken);
         }
+
+        public async Task<List<Appointment>> GetUpcomingAppointmentsBatchAsync(int pageIndex, int batchSize, int hoursBefore)
+        {
+            DateTime targetTime = DateTime.UtcNow.AddHours(hoursBefore); 
+
+            return await _dbContext.Appointments
+                .Where(a => a.AppointmentDate >= DateTime.UtcNow && a.AppointmentDate <= targetTime && a.Status == AppointmentStatus.Approved)
+                .OrderBy(a => a.AppointmentDate)
+                .Skip(pageIndex * batchSize)
+                .Take(batchSize)
+                .Include(a => a.Patient)
+                .ThenInclude(p => p.User) 
+                .ToListAsync();
+        }
+
     }
 }

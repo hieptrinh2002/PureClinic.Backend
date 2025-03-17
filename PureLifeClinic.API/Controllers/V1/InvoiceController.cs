@@ -10,6 +10,7 @@ using PureLifeClinic.Core.Common.Constants;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Enums;
 using PureLifeClinic.Core.Exceptions;
+using PureLifeClinic.Core.Interfaces.IBackgroundJobs;
 using PureLifeClinic.Core.Interfaces.IServices;
 
 namespace PureLifeClinic.API.Controllers.V1
@@ -21,22 +22,21 @@ namespace PureLifeClinic.API.Controllers.V1
 
     public class InvoiceController : ControllerBase
     {
-        private readonly ICloudinaryService _cloudinaryService;
         private readonly IInvoiceService _invoiceService;
         private readonly ILogger<InvoiceController> _logger;
         private readonly AppSettings _appSettings;
-
+        private readonly IBackgroundJobService _backgroundJobService;
 
         public InvoiceController(
-            ICloudinaryService cloudinaryService,
             IInvoiceService invoiceService,
             ILogger<InvoiceController> logger,
-            IOptions<AppSettings> appSettings)
+            IOptions<AppSettings> appSettings,
+            IBackgroundJobService backgroundJobService)
         {
-            _cloudinaryService = cloudinaryService;
             _invoiceService = invoiceService;
             _logger = logger;
             _appSettings = appSettings.Value;
+            _backgroundJobService = backgroundJobService;
         }
 
         [PermissionAuthorize(ResourceConstants.Invoice, PermissionAction.CreateDelete)]
@@ -49,25 +49,18 @@ namespace PureLifeClinic.API.Controllers.V1
             model.ClinicInfo.ClinicName = _appSettings.ClinicInfo.Name;
 
             var file = await _invoiceService.CreateInvoiceFileAsync(model, cancellationToken);
+
             if (file == null || file?.Data == null)
             {
                 _logger.LogError("Error while generating invoice file");
                 throw new ErrorException("Error while generating invoice file");
             }
-            string fileName = $"invoice_{model.PatientInfo.PatientId}_{DateTime.UtcNow.Ticks}.pdf";
-            var uploadedPath = await _cloudinaryService.UploadStreamFileAsync(file.Data, fileName);
 
-            // update invoice file path
-            await _invoiceService.UpdateFilePathToInvoiceAsync(model.AppoinmentId, uploadedPath);
+            _backgroundJobService.ScheduleImmediateJob<IInvoiceService>
+                (service => service.ProcessInvoiceAsync(model, file.Data, cancellationToken));
 
-            return Ok(new ResponseViewModel<string>
-            {
-                Message = "Invoice generated successfully",
-                Success = true,
-                Data = uploadedPath
-            });
+            return File(file.Data, "application/pdf", $"invoice_{model.PatientInfo.PatientId}.pdf");
         }
-
 
         [PermissionAuthorize(ResourceConstants.Invoice, PermissionAction.CreateDelete)]
         [ServiceFilter(typeof(ValidateInputViewModelFilter))]
