@@ -3,6 +3,7 @@ using DinkToPdf;
 using DinkToPdf.Contracts;
 using FluentValidation;
 using Hangfire;
+using Hangfire.Server;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
@@ -15,6 +16,7 @@ using PureLifeClinic.Core.MessageHub;
 using PureLifeClinic.Core.Services;
 using PureLifeClinic.Infrastructure.Data;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using RecurringJobScheduler = PureLifeClinic.Core.BackgroundServices.Schedulers.RecurringJobScheduler;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -158,7 +160,6 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = services.GetRequiredService<ApplicationDbContext>();
-
         // Seed the database
         await ApplicationDbContextSeed.SeedAsync(services, loggerFactory);
     }
@@ -195,6 +196,12 @@ app.UseMiddleware<PermissionsMiddleware>();
 app.UseAuthorization();
 
 app.UseHangfireDashboard();
+
+using (var scope = app.Services.CreateScope())
+{
+    RecurringJobScheduler.ConfigureJobs(scope.ServiceProvider);
+}
+
 
 app.UseCors("AllowReactApp");
 

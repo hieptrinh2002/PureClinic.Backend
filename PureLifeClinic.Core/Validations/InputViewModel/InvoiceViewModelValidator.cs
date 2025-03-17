@@ -117,6 +117,8 @@ namespace PureLifeClinic.Core.Validations.InputViewModel
 
             RuleFor(x => x.PhoneNumber)
                 .NotEmpty().WithMessage("Phone number must not be empty.");
+            RuleFor(x => x.Email)
+                .NotEmpty().WithMessage("Email must not be empty.");
         }
     }
 

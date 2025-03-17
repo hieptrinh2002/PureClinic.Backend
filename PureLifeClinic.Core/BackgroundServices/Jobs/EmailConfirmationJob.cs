@@ -1,5 +1,7 @@
-﻿using Hangfire;
+﻿using Microsoft.AspNetCore.Identity;
 using PureLifeClinic.Core.Entities.Business;
+using PureLifeClinic.Core.Entities.General;
+using PureLifeClinic.Core.Exceptions;
 using PureLifeClinic.Core.Interfaces.IBackgroundJobs;
 using PureLifeClinic.Core.Interfaces.IServices;
 
@@ -7,32 +9,33 @@ namespace PureLifeClinic.Core.BackgroundServices.Jobs
 {
     public class EmailConfirmationJob : IEmailConfirmationJob
     {
-        private readonly IMailService _emailService;
+        private readonly IBackgroundJobService _backgroundJobService;
+        private readonly UserManager<User> _userManager;
 
-        public EmailConfirmationJob(IMailService emailService)
+        public EmailConfirmationJob(IBackgroundJobService backgroundJobService, UserManager<User> userManager)
         {
-            _emailService = emailService;
+            _backgroundJobService = backgroundJobService;
+            _userManager = userManager;
         }
 
-        public Task SendConfirmationEmailsAsync(string userEmail)
+        public async Task SendConfirmationEmailsAsync(string userEmail)
         {
-            MailRequestViewModel model = new MailRequestViewModel
+            var user = await _userManager.FindByEmailAsync(userEmail) ?? throw new NotFoundException("User not found");
+
+            var model = new MailRequestViewModel
             {
                 ToEmail = userEmail,
                 Subject = "Confirm booking appointment",
                 Body = "Please confirm your booking appointment."
             };
 
-            BackgroundJob.Enqueue<IMailService>(mailService => mailService.SendEmailAsync(model));
-
-            return Task.CompletedTask; 
+            _backgroundJobService.ScheduleImmediateJob<IMailService>(mailService => mailService.SendEmailAsync(model));
         }
 
-        public Task SendConfirmationEmailsAsync(MailRequestViewModel request)
+        public async Task SendConfirmationEmailsAsync(MailRequestViewModel request)
         {
-            BackgroundJob.Enqueue<IMailService>(mailService => mailService.SendEmailAsync(request));
-            return Task.CompletedTask;
-
+            var user = await _userManager.FindByEmailAsync(request.ToEmail) ?? throw new NotFoundException("User not found");
+            _backgroundJobService.ScheduleImmediateJob<IMailService>(mailService => mailService.SendEmailAsync(request));
         }
     }
 }

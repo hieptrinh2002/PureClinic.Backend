@@ -34,9 +34,7 @@ namespace PureLifeClinic.Infrastructure.Repositories
         public IPermissionRepository Permissions { get; }
         public IInvoiceRepository Invoices { get; }
         public IRoleClaimRepository RoleClaims { get; }
-        
         public IUserClaimRepository UserClaims { get; }
-
 
         public UnitOfWork(
             ApplicationDbContext dbContext,

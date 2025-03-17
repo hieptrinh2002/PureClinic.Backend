@@ -1,15 +1,26 @@
 ﻿using Hangfire;
+using Microsoft.Extensions.DependencyInjection;
 using PureLifeClinic.Core.Interfaces.IBackgroundJobs;
 
 namespace PureLifeClinic.Core.BackgroundServices.Schedulers
 {
     public static class RecurringJobScheduler
     {
-        public static void ConfigureJobs()
+        public static void ConfigureJobs(IServiceProvider serviceProvider)
         {
-            RecurringJob.AddOrUpdate<IAppointmentReminderJob>("appointment-reminder", job => job.SendRemindersAsync(), Cron.Daily);
-            //RecurringJob.AddOrUpdate<IDataCleanupJob>("data-cleanup", job => job.CleanupOldRecordsAsync(), Cron.Monthly);
-            RecurringJob.AddOrUpdate<IReportGenerationJob>("report-generation", job => job.GenerateMonthlyReportAsync(), Cron.Monthly);
+            var recurringJobService = serviceProvider.GetRequiredService<IRecurringJobService>();
+
+            recurringJobService.AddOrUpdate<IAppointmentReminderJob>(
+                "daily-appointment-reminder",
+                x => x.SendRemindersAsync(24),
+                Cron.Daily
+            );
+
+            recurringJobService.AddOrUpdate<IReportGenerationJob>(
+                "monthly-report-generation",
+                x => x.GenerateMonthlyReportAsync(),
+                Cron.Weekly
+            );
         }
     }
 }

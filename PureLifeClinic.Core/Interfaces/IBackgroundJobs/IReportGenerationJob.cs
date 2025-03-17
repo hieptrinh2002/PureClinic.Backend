@@ -3,5 +3,6 @@
     public interface IReportGenerationJob
     {
         Task GenerateMonthlyReportAsync();
+        Task GenerateWeeklyReportAsync();
     }
 }
