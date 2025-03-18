@@ -3,7 +3,6 @@ using DinkToPdf;
 using DinkToPdf.Contracts;
 using FluentValidation;
 using Hangfire;
-using Hangfire.Server;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
@@ -12,11 +11,11 @@ using PureLifeClinic.API.Helpers;
 using PureLifeClinic.API.Middlewares;
 using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Interfaces.IServices;
-using PureLifeClinic.Core.MessageHub;
-using PureLifeClinic.Core.Services;
-using PureLifeClinic.Infrastructure.Data;
+using PureLifeClinic.Infrastructure.Caching;
+using PureLifeClinic.Infrastructure.Persistence.Data;
+using PureLifeClinic.Infrastructure.SignalR.Hubs;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using RecurringJobScheduler = PureLifeClinic.Core.BackgroundServices.Schedulers.RecurringJobScheduler;
+using RecurringJobScheduler = PureLifeClinic.Infrastructure.BackgroundServices.Schedulers.RecurringJobScheduler;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +32,7 @@ builder.Services.AddHangfire(
 builder.Services.AddHangfireServer();
 
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
+builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("ConnectionStrings"));
 
 // Add caching services
 builder.Services.AddMemoryCache();

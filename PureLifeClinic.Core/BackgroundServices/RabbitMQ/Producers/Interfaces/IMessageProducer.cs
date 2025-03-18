@@ -1,7 +1,0 @@
-﻿namespace PureLifeClinic.Core.BackgroundServices.RabbitMQ.Producers.Interfaces
-{
-    public interface IMessageProducer
-    {
-        void SendMessage<T>(T message);
-    }
-}

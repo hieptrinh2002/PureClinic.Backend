@@ -3,14 +3,16 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using PureLifeClinic.Core.Common;
+using PureLifeClinic.Core.Common.Constants;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Entities.General;
 using PureLifeClinic.Core.Enums;
 using PureLifeClinic.Core.Exceptions;
+using PureLifeClinic.Core.Interfaces.IBackgroundJobs;
 using PureLifeClinic.Core.Interfaces.IMessageHub;
 using PureLifeClinic.Core.Interfaces.IRepositories;
 using PureLifeClinic.Core.Interfaces.IServices;
-using PureLifeClinic.Core.MessageHub;
+using PureLifeClinic.Core.Interfaces.IServices.INotification;
 
 namespace PureLifeClinic.Core.Services
 {
@@ -21,14 +23,15 @@ namespace PureLifeClinic.Core.Services
         private readonly IUserContext _userContext;
         private readonly ICacheServiceFactory _cacheServiceFactory;
         private readonly IDoctorService _doctorService;
-        private readonly IHubContext<NotificationHub, IMessageHub> _notificationHub;
-
+        private readonly INotificationService _notificationService;
+        private readonly IBackgroundJobService _backgroundJobService;
         public AppointmentService(
             IMapper mapper,
             IUserContext userContext,
             ICacheServiceFactory cacheServiceFactory,
             IDoctorService doctorService,
-            IHubContext<NotificationHub, IMessageHub> notificationHub,
+            INotificationService notificationService,
+            IBackgroundJobService backgroundJobService,
             IUnitOfWork unitOfWork)
             : base(mapper, unitOfWork.Appointments)
         {
@@ -37,7 +40,8 @@ namespace PureLifeClinic.Core.Services
             _userContext = userContext;
             _cacheServiceFactory = cacheServiceFactory;
             _doctorService = doctorService;
-            _notificationHub = notificationHub;
+            _notificationService = notificationService; 
+            _backgroundJobService = backgroundJobService;   
         }
 
         public new async Task<IEnumerable<AppointmentViewModel>> GetAll(CancellationToken cancellationToken)
@@ -70,8 +74,15 @@ namespace PureLifeClinic.Core.Services
             var result = await _unitOfWork.Appointments.Create(entity, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            await _notificationHub.Clients.Group("Employee").OnNewAppointmentReceived("We have a new appointment !");
-            await _notificationHub.Clients.User(model.DoctorId.ToString()).OnNewAppointmentReceived("You have e new appoinment");
+            // wrap the notification in a background job
+            _backgroundJobService.ScheduleImmediateJob<INotificationService>(
+                x => x.SendToGroupAsync(GroupConstants.Employee, EventConstants.OnNewAppointmentReceived, "We have a new appointment !")
+            );
+
+            var doctorUser = await _doctorService.GetUserAsync(model.DoctorId, cancellationToken);
+            _backgroundJobService.ScheduleImmediateJob<INotificationService>(
+                x => x.SendToUserAsync(doctorUser.Id.ToString(), EventConstants.OnNewAppointmentReceived, "You have a new appointment !")
+            );
 
             return _mapper.Map<AppointmentViewModel>(result);
         }

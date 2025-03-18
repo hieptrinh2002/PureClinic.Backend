@@ -135,6 +135,11 @@ namespace PureLifeClinic.Core.Services
             return new PaginatedDataViewModel<PatientViewModel>(mappedData, paginatedData.TotalCount);
         }
 
+        public async Task<User> GetUserAsync(int doctorId, CancellationToken cancellationToken)
+        {
+            return await _unitOfWork.Doctors.GetUserByDoctorId(doctorId, cancellationToken);
+        }
+
         public Task<ResponseViewModel> Update(DoctorUpdateViewModel model, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();

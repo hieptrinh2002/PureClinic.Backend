@@ -3,8 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Moq;
 using PureLifeClinic.Core.Entities.General;
-using PureLifeClinic.Infrastructure.Data;
-using PureLifeClinic.Infrastructure.Repositories;
+using PureLifeClinic.Infrastructure.Persistence.Data;
+using PureLifeClinic.Infrastructure.Persistence.Repositories;
 
 namespace PureLifeClinic.UnitTest.Infrastructure
 {

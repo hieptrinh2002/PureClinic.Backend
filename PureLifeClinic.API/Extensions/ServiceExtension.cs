@@ -1,16 +1,19 @@
 using CloudinaryDotNet;
 using Microsoft.Extensions.Options;
 using PureLifeClinic.API.ActionFilters;
-using PureLifeClinic.Core.BackgroundServices;
 using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Interfaces.IBackgroundJobs;
 using PureLifeClinic.Core.Interfaces.IRepositories;
 using PureLifeClinic.Core.Interfaces.IServices;
 using PureLifeClinic.Core.Interfaces.IServices.IFileGenarator;
+using PureLifeClinic.Core.Interfaces.IServices.INotification;
 using PureLifeClinic.Core.Services;
 using PureLifeClinic.Core.Services.FileGenerator;
-using PureLifeClinic.Infrastructure.Repositories;
+using PureLifeClinic.Infrastructure.BackgroundServices;
+using PureLifeClinic.Infrastructure.ExternalServices;
+using PureLifeClinic.Infrastructure.Persistence.Repositories;
+using PureLifeClinic.Infrastructure.SignalR;
 
 namespace PureLifeClinic.API.Extensions
 {
@@ -27,7 +30,7 @@ namespace PureLifeClinic.API.Extensions
             services.AddScoped<IDoctorService, DoctorService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddTransient<ITokenService, TokenService>();
-            services.AddTransient<IMailService, MailService>();
+            services.AddTransient<IMailService, EmailService>();
             services.AddScoped<IPermissionService, PermissionService>();
             services.AddTransient<IRefreshTokenService, RefreshTokenService>();
             services.AddTransient<IWorkWeekScheduleService, WorkWeekScheduleService>();
@@ -48,9 +51,12 @@ namespace PureLifeClinic.API.Extensions
             #endregion
 
             services.AddScoped<ValidateInputViewModelFilter>();
-
             services.AddScoped<IBackgroundJobService, BackgroundJobService>();
             services.AddScoped<IRecurringJobService, RecurringJobService>();
+
+
+            services.AddScoped<INotificationService, NotificationService>();
+            services.AddScoped<IHubConnectionService, HubConnectionService>();  
 
             #region RabbitMQ
             //services.AddSingleton<IRabbitMQConnection>(new RabbitMQConnection());

@@ -1,4 +1,5 @@
-﻿using PureLifeClinic.Core.Services;
+﻿using PureLifeClinic.Core.Enums;
+using PureLifeClinic.Core.Services;
 
 namespace PureLifeClinic.Core.Interfaces.IServices
 {

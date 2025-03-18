@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using PureLifeClinic.Core.Interfaces.IMessageHub;
-using PureLifeClinic.Core.MessageHub;
+using PureLifeClinic.Infrastructure.SignalR.Hubs;
 
 namespace PureLifeClinic.API.Controllers.V1
 {

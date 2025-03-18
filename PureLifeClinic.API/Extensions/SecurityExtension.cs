@@ -2,11 +2,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
-using MimeKit;
 using PureLifeClinic.API.Helpers.Authz.PolicyProvider;
 using PureLifeClinic.Core.Entities.General;
-using PureLifeClinic.Infrastructure.Data;
-using System.Security.Claims;
+using PureLifeClinic.Infrastructure.Persistence.Data;
 using System.Text;
 
 namespace PureLifeClinic.API.Extensions

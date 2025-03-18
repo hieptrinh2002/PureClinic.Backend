@@ -1,5 +1,6 @@
 ﻿using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Entities.Business;
+using PureLifeClinic.Core.Entities.General;
 
 namespace PureLifeClinic.Core.Interfaces.IServices
 {
@@ -14,6 +15,7 @@ namespace PureLifeClinic.Core.Interfaces.IServices
         Task<PaginatedDataViewModel<PatientViewModel>> GetPagtinatedPatientData(
            int doctorId, int pageNumber, int pageSize, List<ExpressionFilter>? filters, string sortBy, string sortOrder, CancellationToken cancellationToken);
         Task<bool> CheckAvailableTimeSlots(int doctorId, DateTime appointmentDate, CancellationToken cancellationToken);
+        Task<User> GetUserAsync(int doctorId, CancellationToken cancellationToken);
 
         //new Task<PaginatedDataViewModel<PatientViewModel>> GetPaginatedPatientData(
         //    int doctorId, int pageNumber, int pageSize, string? sortBy, string? sortOrder, string? searchKey, CancellationToken cancellationToken);
