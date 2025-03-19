@@ -45,11 +45,11 @@ namespace PureLifeClinic.Infrastructure.SignalR.Hubs
 
         public override async Task OnConnectedAsync()
         {
-            string userId = Context.UserIdentifier;
-            string role = Context.User.IsInRole("Employee") ? "Employee" : "User";
+            //string userId = Context.UserIdentifier;
+            //string role = Context.User.IsInRole("Employee") ? "Employee" : "User";
 
-            await _connectionService.AddConnectionAsync(Context.ConnectionId, userId, role);
-            await Groups.AddToGroupAsync(Context.ConnectionId, role == "Employee" ? "Employee" : $"User_{userId}");
+            //await _connectionService.AddConnectionAsync(Context.ConnectionId, userId, role);
+            //await Groups.AddToGroupAsync(Context.ConnectionId, role == "Employee" ? "Employee" : $"User_{userId}");
 
             await base.OnConnectedAsync();
         }

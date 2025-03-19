@@ -202,7 +202,6 @@ using (var scope = app.Services.CreateScope())
     RecurringJobScheduler.ConfigureJobs(scope.ServiceProvider);
 }
 
-
 app.UseCors("AllowReactApp");
 
 #region Custom Middleware
@@ -210,12 +209,9 @@ app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 app.UseMiddleware<RequestResponseLoggingMiddleware>();
 #endregion
 
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllers(); // Map your regular API controllers
-    endpoints.MapHub<NotificationHub>("/NotificationHub"); // Map the SignalR hub
-});
-
+app.MapControllers(); // API controllers
+app.MapHub<NotificationHub>("/NotificationHub"); // SignalR hub
+app.MapHub<UserAuthHub>("/UserAuthHub");
 
 app.Run();
 

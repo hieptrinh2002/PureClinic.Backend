@@ -6,6 +6,7 @@ namespace PureLifeClinic.Infrastructure.Persistence.Data
 {
     public class ApplicationDbContext : IdentityDbContext<User, Role, int>
     {
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
@@ -32,6 +33,7 @@ namespace PureLifeClinic.Infrastructure.Persistence.Data
 
         public DbSet<Invoice> Invoices { get; set; }
 
+        public DbSet<UserConnection> UserConnections { get; set; }    
         #endregion
 
         protected override void OnModelCreating(ModelBuilder builder)

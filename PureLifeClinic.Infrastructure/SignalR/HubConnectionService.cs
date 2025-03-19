@@ -1,22 +1,50 @@
-﻿using PureLifeClinic.Core.Interfaces.IServices.INotification;
-using System.Collections.Concurrent;
+﻿using Microsoft.EntityFrameworkCore;
+using PureLifeClinic.Core.Entities.General;
+using PureLifeClinic.Core.Interfaces.IServices.INotification;
+using PureLifeClinic.Infrastructure.Persistence.Data;
 
 namespace PureLifeClinic.Infrastructure.SignalR
 {
     public class HubConnectionService : IHubConnectionService
     {
-        private static readonly ConcurrentDictionary<string, (string UserId, string Role)> _connections = new();
+        private readonly ApplicationDbContext _dbContext;
 
-        public Task AddConnectionAsync(string connectionId, string userId, string role)
+        public HubConnectionService(ApplicationDbContext dbContext)
         {
-            _connections[connectionId] = (userId, role);
-            return Task.CompletedTask;
+            _dbContext = dbContext;
         }
 
-        public Task RemoveConnectionAsync(string connectionId)
+        public async Task AddConnectionAsync(string userId, string connectionId, string device, string ip)
         {
-            _connections.TryRemove(connectionId, out _);
-            return Task.CompletedTask;
+            var connection = new UserConnection
+            {
+                UserId = int.Parse(userId),
+                ConnectionId = connectionId,
+                Device = device,
+                IpAddress = ip,
+                IsOnline = true
+            };
+
+            _dbContext.UserConnections.Add(connection);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task RemoveConnectionAsync(string connectionId)
+        {
+            var connection = await _dbContext.UserConnections.FirstOrDefaultAsync(c => c.ConnectionId == connectionId);
+
+            if (connection != null)
+            {
+                _dbContext.UserConnections.Remove(connection);
+                await _dbContext.SaveChangesAsync();
+            }
+        }
+
+        public async Task<List<UserConnection>> GetUserConnectionsAsync(string userId)
+        {
+            return await _dbContext.UserConnections
+                .Where(c => c.UserId == int.Parse(userId) && c.IsOnline)
+                .ToListAsync();
         }
     }
 }
