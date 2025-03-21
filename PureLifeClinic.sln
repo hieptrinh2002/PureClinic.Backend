@@ -14,7 +14,32 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Business", "Business", "{235A1B2E-2B63-44A8-A928-4E779372463B}"
 	ProjectSection(SolutionItems) = preProject
 		goal.txt = goal.txt
+		Spec.txt = Spec.txt
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Src", "Src", "{CACF6F73-B069-4576-8141-5F2C61F1AA45}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{2F5DC2C7-C833-40BB-A5A9-963410477D9A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PeruLifeClinic.Api.Tests", "PeruLifeClinic.Api.Tests\PeruLifeClinic.Api.Tests.csproj", "{F471FF3E-C3DF-44B8-BC27-48918695E674}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PureLifeClinic.Core.Tests", "PureLifeClinic.Core.Tests\PureLifeClinic.Core.Tests.csproj", "{A572DE1D-3D98-4000-A414-4360868AEE96}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PureLifeClinic.Infrastructure.Tests", "PureLifeClinic.Infrastructure.Tests\PureLifeClinic.Infrastructure.Tests.csproj", "{2671697D-09AE-4020-BE26-6E13F45DE093}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SqlScripts", "SqlScripts", "{148D6D97-C9B1-4A84-B60D-D20344F620B3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Funtions", "Funtions", "{510CF207-D41F-408A-8C9D-3A8938D0898F}"
+	ProjectSection(SolutionItems) = preProject
+		PureLifeClinic.Infrastructure\Persistence\SqlCommand\Functions\ufn_CSVToTable.sql = PureLifeClinic.Infrastructure\Persistence\SqlCommand\Functions\ufn_CSVToTable.sql
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StoreProcedures", "StoreProcedures", "{658385E9-D3E4-4945-AFC7-13BC90BE5882}"
+	ProjectSection(SolutionItems) = preProject
+		PureLifeClinic.Infrastructure\Persistence\SqlCommand\StoreProcedures\Get_Function_WithActions.sql = PureLifeClinic.Infrastructure\Persistence\SqlCommand\StoreProcedures\Get_Function_WithActions.sql
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IndexPartions", "IndexPartions", "{6EE3F148-6562-4750-BAFD-B88731DA79F5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,9 +63,33 @@ Global
 		{E80FE11C-4A4B-456B-A79A-9201F5A11060}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E80FE11C-4A4B-456B-A79A-9201F5A11060}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E80FE11C-4A4B-456B-A79A-9201F5A11060}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F471FF3E-C3DF-44B8-BC27-48918695E674}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F471FF3E-C3DF-44B8-BC27-48918695E674}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F471FF3E-C3DF-44B8-BC27-48918695E674}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F471FF3E-C3DF-44B8-BC27-48918695E674}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A572DE1D-3D98-4000-A414-4360868AEE96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A572DE1D-3D98-4000-A414-4360868AEE96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A572DE1D-3D98-4000-A414-4360868AEE96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A572DE1D-3D98-4000-A414-4360868AEE96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2671697D-09AE-4020-BE26-6E13F45DE093}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2671697D-09AE-4020-BE26-6E13F45DE093}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2671697D-09AE-4020-BE26-6E13F45DE093}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2671697D-09AE-4020-BE26-6E13F45DE093}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{540CC202-D687-4B54-8746-4E943F0D16C6} = {CACF6F73-B069-4576-8141-5F2C61F1AA45}
+		{A9767277-DD3A-47BA-9704-E525D32F1D9D} = {CACF6F73-B069-4576-8141-5F2C61F1AA45}
+		{9A138398-C199-404D-9E42-3095A2290A07} = {2F5DC2C7-C833-40BB-A5A9-963410477D9A}
+		{E80FE11C-4A4B-456B-A79A-9201F5A11060} = {CACF6F73-B069-4576-8141-5F2C61F1AA45}
+		{F471FF3E-C3DF-44B8-BC27-48918695E674} = {2F5DC2C7-C833-40BB-A5A9-963410477D9A}
+		{A572DE1D-3D98-4000-A414-4360868AEE96} = {2F5DC2C7-C833-40BB-A5A9-963410477D9A}
+		{2671697D-09AE-4020-BE26-6E13F45DE093} = {2F5DC2C7-C833-40BB-A5A9-963410477D9A}
+		{510CF207-D41F-408A-8C9D-3A8938D0898F} = {148D6D97-C9B1-4A84-B60D-D20344F620B3}
+		{658385E9-D3E4-4945-AFC7-13BC90BE5882} = {148D6D97-C9B1-4A84-B60D-D20344F620B3}
+		{6EE3F148-6562-4750-BAFD-B88731DA79F5} = {148D6D97-C9B1-4A84-B60D-D20344F620B3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {554B3771-ADE1-4A3F-8808-562B64E046E0}

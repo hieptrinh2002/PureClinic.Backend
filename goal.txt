@@ -78,7 +78,18 @@
 								  https://code-maze.com/action-filters-aspnetcore/
     Tech share: https://tech.cybozu.vn/
 	multi-factor authentication and single sign-on (SSO) solutions .net api: https://learn.microsoft.com/en-us/aspnet/core/security/authentication/mfa?view=aspnetcore-9.0
+	Unitest: 
+		✅ Trường hợp đúng (Happy Path)
+		✅ Giá trị biên (Boundary Cases)
+		✅ Dữ liệu không hợp lệ (Edge Cases)
+		✅ Xử lý ngoại lệ (Exception Handling)
 
+	Đặt tính:
+		+ Fact
+		+ Isolation
+		+ Repeatable
+		+ Self-Validating
+		+ Timely
 
 ***** Viewer design
  ** 

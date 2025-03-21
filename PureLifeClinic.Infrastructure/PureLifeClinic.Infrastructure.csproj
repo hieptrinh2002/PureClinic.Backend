@@ -38,8 +38,4 @@
     <ProjectReference Include="..\PureLifeClinic.Core\PureLifeClinic.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Persistence\SqlCommand\Functions\" />
-  </ItemGroup>
-
 </Project>

@@ -5,7 +5,6 @@ using PureLifeClinic.Core.Enums;
 using PureLifeClinic.Core.Exceptions;
 using PureLifeClinic.Core.Interfaces.IRepositories;
 using PureLifeClinic.Infrastructure.Persistence.Data;
-using System.Globalization;
 using System.Linq.Expressions;
 
 namespace PureLifeClinic.Infrastructure.Persistence.Repositories
