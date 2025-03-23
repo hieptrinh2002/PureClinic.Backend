@@ -22,10 +22,10 @@ namespace PureLifeClinic.API.Controllers.V1
     {
         private readonly IUserService _userService;
         private readonly IAuthService _authService;
-        private readonly ILogger<AuthController> _logger;
+        private readonly ILogger<AccountController> _logger;
         private readonly IBackgroundJobService _backgroundService; 
 
-        public AccountController(ILogger<AuthController> logger,
+        public AccountController(ILogger<AccountController> logger,
             IUserService userService, IAuthService authService, IBackgroundJobService backgroundJobService)
         {
             _logger = logger;
@@ -55,7 +55,6 @@ namespace PureLifeClinic.API.Controllers.V1
             if (!ModelState.IsValid)
                 throw new BadRequestException("Invalid input: " + ModelStateHelper.GetErrors(ModelState), ErrorCode.InputValidateError);
 
-            string message = "";
             if (await _userService.IsExists("UserName", model.UserName, cancellationToken))
             {
                 throw new BadRequestException($"The user name- '{model.UserName}' already exists", ErrorCode.DuplicateUserNameError);
@@ -63,7 +62,7 @@ namespace PureLifeClinic.API.Controllers.V1
 
             if (await _userService.IsExists("Email", model.Email, cancellationToken))
             {
-                message = $"The user Email- '{model.Email}' already exists";
+                var message = $"The user Email- '{model.Email}' already exists";
                 throw new BadRequestException(message, ErrorCode.DuplicateUserNameError);
             }
             try
@@ -125,13 +124,12 @@ namespace PureLifeClinic.API.Controllers.V1
             return Ok(new ResponseViewModel
             {
                 Message = "Password reset successfully.",
-                Success = false
+                Success = true
             });
         }
 
         [HttpPost("forgot-password")]
         [AllowAnonymous]
-
         public async Task<IActionResult> ChangePassword([FromBody] ForgotPasswordRequestViewModel model)
         {
             try
@@ -140,7 +138,8 @@ namespace PureLifeClinic.API.Controllers.V1
                     throw new BadRequestException("Invalid input: " + ModelStateHelper.GetErrors(ModelState), ErrorCode.InputValidateError);
 
                 // get User by email
-                var user = await _userService.GetByEmail(model.Email, default) ?? throw new NotFoundException("email not found");
+                var user = await _userService.GetByEmail(model.Email, default) 
+                    ?? throw new NotFoundException("email not found");
 
                 // send email with refresh passwork link
                 var result = await _userService.GenerateResetPasswordTokenAsync(model);
@@ -172,8 +171,11 @@ namespace PureLifeClinic.API.Controllers.V1
             }
         }
 
+        [NonAction]
         private void SendConfirmationEmailAsync(string email, string confirmationLink, string userName)
         {
+            var test = Directory.GetCurrentDirectory();
+
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Template", "MailTemplate.html");
             var emailBody = MailHelper.ReadAndProcessHtmlTemplate(filePath, confirmationLink, userName);
 

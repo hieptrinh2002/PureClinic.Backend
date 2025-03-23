@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -24,5 +24,9 @@
 		<ProjectReference Include="..\PureLifeClinic.API\PureLifeClinic.API.csproj" />
 		<ProjectReference Include="..\PureLifeClinic.Core\PureLifeClinic.Core.csproj" />
 		<ProjectReference Include="..\PureLifeClinic.Infrastructure\PureLifeClinic.Infrastructure.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Middlewares\" />
 	</ItemGroup>
 </Project>

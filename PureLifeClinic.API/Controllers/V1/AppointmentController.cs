@@ -217,21 +217,7 @@ namespace PureLifeClinic.API.Controllers.V1
             try
             {
                 var result = await _appointmentService.UpdateAppointmentAsync(id, model, cancellationToken);
-
-                if (!result.Success)
-                {
-                    return Ok(new ResponseViewModel
-                    {
-                        Success = false,
-                        Message = result.Message,
-                    });
-                }
-
-                return Ok(new ResponseViewModel
-                {
-                    Success = true,
-                    Message = "Appointment updated successfully",
-                });
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -239,10 +225,6 @@ namespace PureLifeClinic.API.Controllers.V1
                 throw;
             }
         }
-
-        // customer update appointment when it's not approved
-
-
 
         [PermissionAuthorize(ResourceConstants.Appointment, PermissionAction.Update)]
         [ServiceFilter(typeof(ValidateInputViewModelFilter))]
@@ -252,21 +234,7 @@ namespace PureLifeClinic.API.Controllers.V1
             try
             {
                 var result = await _appointmentService.UpdateAppointmentStatusAsync(id, model.Status, cancellationToken);
-
-                if (!result.Success)
-                {
-                    return Ok(new ResponseViewModel
-                    {
-                        Success = false,
-                        Message = result.Message,
-                    });
-                }
-
-                return Ok(new ResponseViewModel
-                {
-                    Success = true,
-                    Message = "Appointment status updated successfully",
-                });
+                return Ok(result);
             }
             catch (Exception ex)
             {
