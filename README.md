@@ -1,19 +1,26 @@
+# 🏥 PureClinic.Backend
 
-# PureClinic.Backend
+**PureClinic.Backend** is a high-performance, scalable, and secure **ASP.NET Core Web API** designed to streamline clinic management operations. It offers robust features for managing **patients, doctors, appointments, bookings, medical services**, and more.
 
-**PureClinic.Backend** is an API system built with .NET designed to manage clinic operations. It provides features for managing patients, doctors, appointments, and medical services...
+With a **clean architecture** and **modern software design principles**, this system ensures flexibility, maintainability, and efficiency for medical institutions.
 
----
+## 🔧 **Key Features (In Progress)**
 
-## 🔧 **Key Features (In progress)**
+✔️ **Patient Management** – Seamless patient registration, record management, and history tracking.  
+✔️ **Doctor Management** – Maintain detailed doctor profiles, schedules, and specialties.  
+✔️ **Appointment/ Booking Management** – Efficient appointment scheduling, tracking, and notifications.  
+✔️ **Medical Services** – Manage clinic services, treatments, and billing.  
+✔️ **Real-time Notifications (SignalR)** – Instant updates for doctors, patients, and staff.  
+✔️ **Memory Cache & Redis Cache** – Optimized performance with caching strategies.  
+✔️ **Background Job Processing (Hangfire)** – Asynchronous task handling for better system responsiveness.  
+✔️ **File Storage with Cloudinary** – Securely store and manage medical records and images.  
+✔️ **SMTP Integration** – Automated email notifications for appointments and updates.  
+✔️ **Logging & Monitoring (Serilog)** – Robust logging mechanisms for debugging and analytics.  
+✔️ **Authentication & Authorization** – Secure access control with JWT & Binary Permissions.  
+✔️ **Repository & Unit of Work Design Pattern** – Maintainable and testable data access structure.  
+✔️ **Unit test (Xunit, Mock)** - for Code Reliability
 
-- **Patient Management**:
-- **Doctor Management**:
-- **Appointment Management**:
-- **Medical Services**:
-- **Realtime notification**:
-- ...............
-
+## 🏛 **Project Structure** 
 # ASP.NET Core Web API: Secure, Scalable, and Elegant (Clean Architecture)
 ## Project Structure
 ```
@@ -25,9 +32,15 @@
 │   ├── Core.Tests              # Contains unit tests for the core layer
 │   ├── Infrastructure.Tests    # Contains unit tests for the infrastructure layer
 │   └── API.Tests                # Contains unit tests for the API layer
-└── README.md                   # Project documentation (you are here!)
+└── README.md                   # Project documentation 
 ```
+![Clean architecture](https://github.com/hieptrinh2002/PureClinic.Backend/blob/master/CleanArchitecture.png)
 
+
+---
+
+## 🛠 **Clean Code & Best Practices in PureClinic.Backend**
+....
 
 ## 🚀 Getting Started
 
@@ -35,24 +48,3 @@
    ```bash
    git clone https://github.com/hieptrinh2002/PureClinic.Backend.git
    cd PureClinic.Backend
-
-## ✨ Features
-
-- **Clean architecture with SOLID principles.**
-- **CRUD operations** for managing patients, doctors, appointments, and services.
-- **Repository and Unit of Work patterns** for clean data access.
-- **Entity Framework Core** as the ORM.
-- **ASP.NET Core API** with JWT-based authentication.
-- **API versioning** for backward compatibility.
-- **Dependency injection** and modular design.
-- **Unit testing support.**
-
----
-
-## 📂 Key Components
-
-- **Models**: Domain entities for patients, doctors, and appointments.
-- **Repositories**: Data access abstraction using Entity Framework Core.
-- **Services**: Business logic and orchestration.
-- **Controllers**: RESTful API endpoints for CRUD operations.
-
