@@ -21,7 +21,7 @@ namespace PureLifeClinic.Core.Services
             var validatorType = typeof(IValidator<>).MakeGenericType(modelType);
 
             var validator = _serviceProvider.GetService(validatorType) as IValidator
-                ?? throw new Exception($"Validator for {modelType.Name} not found");
+               ?? throw new Exception($"Validator for {modelType.Name} not found");
 
             // Get method ValidateAsync
             var validateMethod = validatorType.GetMethod("ValidateAsync", new[] { modelType, typeof(CancellationToken) })
@@ -33,12 +33,5 @@ namespace PureLifeClinic.Core.Services
 
             return await task;
         }
-
-        //public async Task<ValidationResult> ValidateAsync<T>(T model)
-        //{
-        //    var validator = _serviceProvider.GetService<IValidator<T>>() ?? throw new Exception($"Validator for {typeof(T).Name} not found");
-        //    var validationResult = await validator.ValidateAsync(model);
-        //    return validationResult;
-        //}
     }
 }

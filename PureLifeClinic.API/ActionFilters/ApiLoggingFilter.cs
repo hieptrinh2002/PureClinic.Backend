@@ -17,12 +17,10 @@ namespace PureLifeClinic.API.ActionFilters
             var request = context.HttpContext.Request;
             var requestBody = await ReadRequestBodyAsync(request);
             _logger.LogInformation($"[API Request] {request.Method} {request.Path}\nHeaders: {string.Join(", ", request.Headers)}\nBody: {requestBody}");
-            var t = $"[API Request] {request.Method} {request.Path}\nHeaders: {string.Join(", ", request.Headers)}\nBody: {requestBody}";
             var executedContext = await next();
 
             var response = executedContext.HttpContext.Response;
             _logger.LogInformation($"[API Response] {request.Method} {request.Path} => Status Code: {response.StatusCode}");
-            t = $"[API Response] {request.Method} {request.Path} => Status Code: {response.StatusCode}";
         }
 
         private async Task<string> ReadRequestBodyAsync(HttpRequest request)

@@ -23,6 +23,5 @@ namespace PureLifeClinic.API.Helpers
             var email = Uri.EscapeDataString(userEmail);
             return $"{ClientUrl}?token={_token}&email={email}";
         }
-
     }
 }

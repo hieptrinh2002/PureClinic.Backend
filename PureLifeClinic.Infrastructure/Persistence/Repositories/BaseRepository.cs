@@ -29,7 +29,9 @@ namespace PureLifeClinic.Infrastructure.Persistence.Repositories
             return data;
         }
 
-        public async Task<IEnumerable<T>> GetAll(List<Expression<Func<T, object>>> includeExpressions, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<T>> GetAll(
+            List<Expression<Func<T, object>>> includeExpressions, 
+            CancellationToken cancellationToken = default)
         {
             var query = _dbContext.Set<T>().AsQueryable();
 
@@ -42,7 +44,10 @@ namespace PureLifeClinic.Infrastructure.Persistence.Repositories
             return entities;
         }
 
-        public async Task<IEnumerable<T>> GetAll(List<Expression<Func<T, object>>>? includeExpressions, List<ExpressionFilter> filters, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<T>> GetAll(
+            List<Expression<Func<T, object>>>? includeExpressions, 
+            List<ExpressionFilter> filters, 
+            CancellationToken cancellationToken = default)
         {
             var query = _dbContext.Set<T>().AsQueryable();
             if (includeExpressions != null)
@@ -58,7 +63,9 @@ namespace PureLifeClinic.Infrastructure.Persistence.Repositories
             return entities;
         }
 
-        public async Task<IEnumerable<T>> GetAll(List<ExpressionFilter> filters, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<T>> GetAll(
+            List<ExpressionFilter> filters, 
+            CancellationToken cancellationToken = default)
         {
             var query = _dbContext.Set<T>().AsQueryable();
             if (filters != null && filters.Any())
@@ -97,7 +104,10 @@ namespace PureLifeClinic.Infrastructure.Persistence.Repositories
         }
 
 
-        public virtual async Task<PaginatedDataViewModel<T>> GetPaginatedData(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
+        public virtual async Task<PaginatedDataViewModel<T>> GetPaginatedData(
+            int pageNumber, 
+            int pageSize,
+            CancellationToken cancellationToken = default)
         {
             var query = _dbContext.Set<T>()
                 .Skip((pageNumber - 1) * pageSize)
@@ -110,7 +120,11 @@ namespace PureLifeClinic.Infrastructure.Persistence.Repositories
             return new PaginatedDataViewModel<T>(data, totalCount);
         }
 
-        public async Task<PaginatedDataViewModel<T>> GetPaginatedData(int pageNumber, int pageSize, List<ExpressionFilter> filters, CancellationToken cancellationToken = default)
+        public async Task<PaginatedDataViewModel<T>> GetPaginatedData(
+            int pageNumber, 
+            int pageSize, 
+            List<ExpressionFilter> filters, 
+            CancellationToken cancellationToken = default)
         {
             var query = _dbContext.Set<T>().AsNoTracking();
 
@@ -133,7 +147,11 @@ namespace PureLifeClinic.Infrastructure.Persistence.Repositories
         }
 
         public virtual async Task<PaginatedDataViewModel<T>> GetPaginatedData(
-            List<Expression<Func<T, object>>> includeExpressions, int pageNumber, int pageSize, CancellationToken cancellationToken, List<ExpressionFilter>? filters = null)
+            List<Expression<Func<T, object>>> includeExpressions, 
+            int pageNumber, 
+            int pageSize, 
+            CancellationToken cancellationToken, 
+            List<ExpressionFilter>? filters = null)
         {
             var query = _dbContext.Set<T>().AsQueryable();
 
@@ -163,7 +181,12 @@ namespace PureLifeClinic.Infrastructure.Persistence.Repositories
         }
 
         public async Task<PaginatedDataViewModel<T>> GetPaginatedData(
-            int pageNumber, int pageSize, List<ExpressionFilter> filters, string sortBy, string sortOrder, CancellationToken cancellationToken = default)
+            int pageNumber, 
+            int pageSize, 
+            List<ExpressionFilter> filters, 
+            string sortBy, 
+            string sortOrder, 
+            CancellationToken cancellationToken = default)
         {
             var query = _dbContext.Set<T>().AsNoTracking();
 
@@ -203,11 +226,15 @@ namespace PureLifeClinic.Infrastructure.Persistence.Repositories
 
         public virtual async Task<T> GetById<Tid>(Tid id, CancellationToken cancellationToken = default)
         {
-            var data = await _dbContext.Set<T>().FindAsync(new object?[] { id, cancellationToken }, cancellationToken: cancellationToken);
+            var data = await _dbContext.Set<T>()
+                .FindAsync(new object?[] { id, cancellationToken }, cancellationToken: cancellationToken);
             return data == null ? throw new NotFoundException("No data found") : data;
         }
 
-        public async Task<T> GetById<Tid>(Tid id, List<Func<IQueryable<T>, IIncludableQueryable<T, object>>> includeExpressions, CancellationToken cancellationToken)
+        public async Task<T> GetById<Tid>(
+            Tid id, 
+            List<Func<IQueryable<T>, IIncludableQueryable<T, object>>> includeExpressions, 
+            CancellationToken cancellationToken)
         {
             var query = _dbContext.Set<T>().AsQueryable();
 
@@ -227,7 +254,10 @@ namespace PureLifeClinic.Infrastructure.Persistence.Repositories
             return data == null ? throw new NotFoundException("No data found") : data;
         }
 
-        public virtual async Task<T> GetById<Tid>(List<Expression<Func<T, object>>> includeExpressions, Tid id, CancellationToken cancellationToken = default)
+        public virtual async Task<T> GetById<Tid>(
+            List<Expression<Func<T, object>>> includeExpressions, 
+            Tid id, 
+            CancellationToken cancellationToken = default)
         {
             var query = _dbContext.Set<T>().AsQueryable();
 

@@ -156,34 +156,9 @@ namespace PureLifeClinic.API.Controllers.V1
             }
             catch (Exception ex)
             {
-                if (ex.Message == "No data found")
-                {
-                    return StatusCode(StatusCodes.Status404NotFound, new ResponseViewModel<DoctorViewModel>
-                    {
-                        Success = false,
-                        Message = "Doctor not found",
-                        Error = new ErrorViewModel
-                        {
-                            Code = "NOT_FOUND",
-                            Message = "Doctor not found"
-                        }
-                    });
-                }
-
-                _logger.LogError(ex, $"An error occurred while retrieving the user");
-
-                var errorResponse = new ResponseViewModel<DoctorViewModel>
-                {
-                    Success = false,
-                    Message = "Error retrieving Doctor",
-                    Error = new ErrorViewModel
-                    {
-                        Code = "ERROR_CODE",
-                        Message = ex.Message
-                    }
-                };
-
-                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
+              
+                _logger.LogError(ex, $"An error occurred while retrieving the doctor with id = {id}");
+                throw;
             }
         }
     }

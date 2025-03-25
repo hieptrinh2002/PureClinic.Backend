@@ -211,7 +211,7 @@ namespace PureLifeClinic.API.Controllers.V1
 
         [PermissionAuthorize(ResourceConstants.Appointment, PermissionAction.Update)]
         [ServiceFilter(typeof(ValidateInputViewModelFilter))]
-        [HttpPut("{id}")]
+        [HttpPut("update/{id}")]
         public async Task<IActionResult> UpdateAppointment(int id, [FromBody] AppointmentUpdateViewModel model, CancellationToken cancellationToken)
         {
             try

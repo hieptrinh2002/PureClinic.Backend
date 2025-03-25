@@ -1,9 +1,8 @@
 ﻿using AutoMapper;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Entities.General;
-using PureLifeClinic.Core.Services;
 
-namespace PureLifeClinic.API.Extensions
+namespace PureLifeClinic.Core.Mapper
 {
     public class MappingProfile : Profile
     {
@@ -31,7 +30,7 @@ namespace PureLifeClinic.API.Extensions
             CreateMap<WorkWeek, WorkWeekScheduleViewModel>().ReverseMap();
 
             CreateMap<User, DoctorViewModel>()
-             .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Role != null ? src.Role.Name : null)) 
+             .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Role != null ? src.Role.Name : null))
              .ForMember(dest => dest.Specialty, opt => opt.MapFrom(src => src.Doctor != null ? src.Doctor.Specialty : null))
              .ForMember(dest => dest.Qualification, opt => opt.MapFrom(src => src.Doctor != null ? src.Doctor.Qualification : null))
              .ForMember(dest => dest.ExperienceYears, opt => opt.MapFrom(src => src.Doctor != null ? src.Doctor.ExperienceYears : null))
@@ -41,8 +40,10 @@ namespace PureLifeClinic.API.Extensions
             //Appointment mappings
             CreateMap<Appointment, AppointmentCreateViewModel>().ReverseMap();
             CreateMap<Appointment, AppointmentUpdateViewModel>().ReverseMap();
-            CreateMap<Appointment, DoctorAppointmentViewModel>().ForMember(dest => dest.Patient, opt => opt.MapFrom(src => src.Patient.User)).ReverseMap();
-            CreateMap<Appointment, PatientAppointmentViewModel>().ForMember(dest => dest.Doctor, opt => opt.MapFrom(src => src.Doctor.User)).ReverseMap();
+            CreateMap<Appointment, DoctorAppointmentViewModel>()
+                .ForMember(dest => dest.Patient, opt => opt.MapFrom(src => src.Patient.User)).ReverseMap();
+            CreateMap<Appointment, PatientAppointmentViewModel>()
+                .ForMember(dest => dest.Doctor, opt => opt.MapFrom(src => src.Doctor.User)).ReverseMap();
             CreateMap<Appointment, AppointmentViewModel>()
               .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
               .ForMember(dest => dest.Patient, opt => opt.MapFrom(src => src.Patient.User))
@@ -51,7 +52,7 @@ namespace PureLifeClinic.API.Extensions
 
             //Medical report mappings
             CreateMap<MedicalReport, MedicalReportViewModel>()
-                .ForMember(dest => dest.MedicalFiles, opt => opt.MapFrom(src => src.MedicalFiles != null? src.MedicalFiles.Select(m => m.FilePath).ToList(): new List<string>()))
+                .ForMember(dest => dest.MedicalFiles, opt => opt.MapFrom(src => src.MedicalFiles != null ? src.MedicalFiles.Select(m => m.FilePath).ToList() : new List<string>()))
                 .ForMember(dest => dest.PrescriptionDetails, opt => opt.MapFrom(src => src.PrescriptionDetails))
                 .ReverseMap();
 

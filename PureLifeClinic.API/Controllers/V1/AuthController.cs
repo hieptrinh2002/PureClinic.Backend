@@ -1,6 +1,6 @@
 ﻿using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
-using PureLifeClinic.API.Helpers;
+using PureLifeClinic.API.ActionFilters;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Exceptions;
 using PureLifeClinic.Core.Interfaces.IServices;
@@ -34,84 +34,69 @@ namespace PureLifeClinic.API.Controllers.V1
 
         #region login/ logout
         [HttpPost, Route("login")]
+        [ServiceFilter(typeof(ValidateInputViewModelFilter))]
+
         public async Task<IActionResult> Login(LoginViewModel model, CancellationToken cancellationToken)
         {
-            if (ModelState.IsValid)
+            try
             {
-                try
+                var result = await _authService.Login(model.UserName, model.Password);
+                if (result.Success)
                 {
-                    var result = await _authService.Login(model.UserName, model.Password);
-                    if (result.Success)
+                    // get Token data
+                    var tokenData = await _tokenService.GenerateJwtToken(result.Data.Id);
+                    var refreshToken = tokenData.Data.RefreshToken;
+
+                    // insert Refresh Token
+                    RefreshTokenCreateViewModel refreshTokenModel = new RefreshTokenCreateViewModel
                     {
-                        // get Token data
-                        var tokenData = await _tokenService.GenerateJwtToken(result.Data.Id);
-                        var refreshToken = tokenData.Data.RefreshToken;
+                        Token = refreshToken.Token,
+                        CreateOn = refreshToken.CreateOn,
+                        ExpireOn = refreshToken.ExpireOn,
+                        AccessTokenId = tokenData.Data.AccessTokenId,
+                    };
 
-                        // insert Refresh Token
-                        RefreshTokenCreateViewModel refreshTokenModel = new RefreshTokenCreateViewModel
-                        {
-                            Token = refreshToken.Token,
-                            CreateOn = refreshToken.CreateOn,
-                            ExpireOn = refreshToken.ExpireOn,
-                            AccessTokenId = tokenData.Data.AccessTokenId,
-                        };
-
-                        var createdTokenResult = await _refreshTokenService.InsertRefreshToken(result.Data.Id, refreshTokenModel, default);
+                    var createdTokenResult = await _refreshTokenService.InsertRefreshToken(result.Data.Id, refreshTokenModel, default);
+                    if (createdTokenResult?.Data != null)
+                    {
                         SetRefreshTokenInCookies(createdTokenResult.Data.Token, createdTokenResult.Data.ExpireOn);
-
-                        return Ok(new ResponseViewModel<AuthResultViewModel>
-                        {
-                            Success = true,
-                            Data = new AuthResultViewModel
-                            {
-                                AccessToken = tokenData.Data.AccessToken,
-                                RefreshToken = createdTokenResult.Data,
-                                Role = result.Data.Role,
-                                UserEmail = result.Data.Email,
-                                UserId = result.Data.Id
-                            },
-                            Message = "Login successfully"
-                        });
                     }
 
-                    return Ok(result);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, $"An error occurred while login");
-                    string message = $"An error occurred while login- " + ex.Message;
-
-                    return StatusCode(StatusCodes.Status500InternalServerError, new ResponseViewModel
+                    return Ok(new ResponseViewModel<AuthResultViewModel>
                     {
-                        Success = false,
-                        Message = message,
-                        Error = new ErrorViewModel
+                        Success = true,
+                        Data = new AuthResultViewModel
                         {
-                            Code = "LOGIN_ERROR",
-                            Message = message
-                        }
+                            AccessToken = tokenData.Data.AccessToken,
+                            RefreshToken = createdTokenResult.Data,
+                            Role = result.Data.Role,
+                            UserEmail = result.Data.Email,
+                            UserId = result.Data.Id
+                        },
+                        Message = "Login successfully"
                     });
                 }
-            }
 
-            return BadRequest(new ResponseViewModel
+                return Ok(result);
+            }
+            catch (Exception ex)
             {
-                Success = false,
-                Message = "Invalid input",
-                Error = new ErrorViewModel
-                {
-                    Code = "INPUT_VALIDATION_ERROR",
-                    Message = ModelStateHelper.GetErrors(ModelState)
-                }
-            });
+                _logger.LogError(ex, $"An error occurred while login");
+                throw;
+            }
         }
 
         [HttpPost, Route("logout")]
         public async Task<IActionResult> Logout()
         {
             await _authService.Logout();
-            return Ok();
+            return Ok(new ResponseViewModel
+            {
+                Message = "Logout successfully",
+                Success = true
+            });
         }
+
         #endregion
 
         #region genarate Token
@@ -121,89 +106,68 @@ namespace PureLifeClinic.API.Controllers.V1
         {
             try
             {
-                if (Request.Cookies.TryGetValue("refreshTokenKey", out var refreshToken))
+                if (!Request.Cookies.TryGetValue("refreshTokenKey", out var refreshToken))
+                    throw new BadRequestException("RefreshToken key not found");
+
+                var result = await _refreshTokenService.RefreshTokenCheckAsync(refreshToken);
+
+                if (!result.Success)
                 {
-                    var result = await _refreshTokenService.RefreshTokenCheckAsync(refreshToken);
-
-                    if (!result.Success)
+                    return BadRequest(new ResponseViewModel
                     {
-                        return BadRequest(new ResponseViewModel
-                        {
-                            Message = "Invalid refresh token.",
-                            Success = false,
-                        });
-                    }
-
-                    var tokenData = await _tokenService.GenerateJwtToken(Convert.ToInt32(_userContext.UserId));
-                    var refreshTokenData = _tokenService.GenerateRefreshToken();
-
-                    if (tokenData == null || refreshTokenData == null)
-                    {
-                        throw new ErrorException("Token was genarated failed");
-                    }
-
-                    refreshTokenData.AccessTokenId = tokenData?.Data?.AccessTokenId;
-
-                    // autp mapper
-                    RefreshTokenCreateViewModel refreshTokenCreateModel = new RefreshTokenCreateViewModel
-                    {
-                        Token = refreshTokenData.Token,
-                        CreateOn = refreshTokenData.CreateOn,
-                        ExpireOn = refreshTokenData.ExpireOn,
-                        AccessTokenId = tokenData.Data?.AccessTokenId,
-                    };
-
-                    // insert refreshToken to db
-                    var createdTokenResult = await _refreshTokenService.InsertRefreshToken(Convert.ToInt32(_userContext.UserId), refreshTokenCreateModel, default);
-                    if (!createdTokenResult.Success || createdTokenResult.Data == null)
-                    {
-                        throw new ErrorException("Token was genarated failed");
-                    }
-                    SetRefreshTokenInCookies(createdTokenResult.Data.Token, createdTokenResult.Data.ExpireOn);
-
-                    return Ok(new ResponseViewModel<AuthResultViewModel>
-                    {
-                        Success = true,
-                        Data = new AuthResultViewModel
-                        {
-                            AccessToken = tokenData.Data.AccessToken,
-                            RefreshToken = createdTokenResult.Data //_refreshTokenViewModelMapper.MapModel(refreshTokenData)
-                        }
+                        Message = "Invalid refresh token.",
+                        Success = false,
                     });
                 }
-                return BadRequest(new ResponseViewModel
+
+                var tokenData = await _tokenService.GenerateJwtToken(Convert.ToInt32(_userContext.UserId));
+                var refreshTokenData = _tokenService.GenerateRefreshToken();
+
+                if (tokenData == null || refreshTokenData == null)
                 {
-                    Success = false,
-                    Message = "RefreshToken not found",
-                    Error = new ErrorViewModel
+                    throw new ErrorException("Token was genarated failed");
+                }
+
+                refreshTokenData.AccessTokenId = tokenData?.Data?.AccessTokenId;
+
+                // autp mapper
+                RefreshTokenCreateViewModel refreshTokenCreateModel = new RefreshTokenCreateViewModel
+                {
+                    Token = refreshTokenData.Token,
+                    CreateOn = refreshTokenData.CreateOn,
+                    ExpireOn = refreshTokenData.ExpireOn,
+                    AccessTokenId = tokenData.Data?.AccessTokenId,
+                };
+
+                // insert refreshToken to db
+                var createdTokenResult = await _refreshTokenService.InsertRefreshToken(Convert.ToInt32(_userContext.UserId), refreshTokenCreateModel, default);
+                if (!createdTokenResult.Success || createdTokenResult.Data == null)
+                {
+                    throw new ErrorException("Token was genarated failed");
+                }
+                SetRefreshTokenInCookies(createdTokenResult.Data.Token, createdTokenResult.Data.ExpireOn);
+
+                return Ok(new ResponseViewModel<AuthResultViewModel>
+                {
+                    Success = true,
+                    Data = new AuthResultViewModel
                     {
-                        Code = "NOT_FOUND_ERROR",
-                        Message = "RefreshToken not found"
+                        AccessToken = tokenData.Data.AccessToken,
+                        RefreshToken = createdTokenResult.Data //_refreshTokenViewModelMapper.MapModel(refreshTokenData)
                     }
                 });
+
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"An error occurred while refresh token");
-                string message = $"An error occurred while refresh token- " + ex.Message;
-
-                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseViewModel
-                {
-                    Success = false,
-                    Message = message,
-                    Error = new ErrorViewModel
-                    {
-                        Code = "REFRESH_ERROR",
-                        Message = message
-                    }
-                });
+                throw;
             }
         }
 
         #endregion
 
         #region SetRefreshTokenInCookies
-
         private void SetRefreshTokenInCookies(string refreshToken, DateTime expires)
         {
             var cookieOptions = new CookieOptions

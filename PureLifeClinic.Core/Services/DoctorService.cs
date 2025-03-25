@@ -45,8 +45,8 @@ namespace PureLifeClinic.Core.Services
 
         public async Task<DoctorViewModel> GetById(int id, CancellationToken cancellationToken)
         {
-            var resut = await _unitOfWork.Users.GetDoctorById(id, cancellationToken);
-            return _mapper.Map<DoctorViewModel>(resut);
+            var doctor = await _unitOfWork.Users.GetDoctorById(id, cancellationToken);
+            return _mapper.Map<DoctorViewModel>(doctor);
         }
 
         public async Task<IEnumerable<AppointmentSlotViewModel>> GetDoctorAvailableTimeSlots(int doctorId, DateTime weekStartDate, CancellationToken cancellationToken)

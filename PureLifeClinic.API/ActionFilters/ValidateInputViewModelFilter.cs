@@ -20,17 +20,13 @@ namespace PureLifeClinic.API.ActionFilters
                 if (actionArguments == null)
                     continue;
 
-                if (actionArguments.GetType().ToString().Contains("ViewModel", StringComparison.OrdinalIgnoreCase))
+                var validationResult = await _validationService.ValidateAsync(actionArguments);
+                if (!validationResult.IsValid)
                 {
-                    var validationResult = await _validationService.ValidateAsync(actionArguments);
-                    if (!validationResult.IsValid)
-                    {
-                        context.Result = new BadRequestObjectResult(ModelStateHelper.GetValidateProblemDetails(validationResult));
-                        return;
-                    }
+                    context.Result = new BadRequestObjectResult(ModelStateHelper.GetValidateProblemDetails(validationResult));
+                    return;
                 }
             }
-
             await next();
         }
     }
