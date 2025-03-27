@@ -37,6 +37,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\PeruLife.Clinic.Application\PureLife.Clinic.Application.csproj" />
+    <ProjectReference Include="..\PeruLife.Clinic.Application\PureLifeClinic.Application.csproj" />
     <ProjectReference Include="..\PureLifeClinic.Core\PureLifeClinic.Core.csproj" />
   </ItemGroup>
 

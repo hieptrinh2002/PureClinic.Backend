@@ -1,9 +1,13 @@
 ﻿using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using PureLifeClinic.API.Helpers;
-using PureLifeClinic.Core.Entities.Business;
+using PureLifeClinic.Application.BusinessObjects.ErrorViewModels;
+using PureLifeClinic.Application.BusinessObjects.MedicalReportViewModels;
+using PureLifeClinic.Application.BusinessObjects.ResponseViewModels;
+using PureLifeClinic.Application.BusinessObjects.RoleViewModels;
+using PureLifeClinic.Application.BusinessObjects.UserViewModels;
+using PureLifeClinic.Application.Interfaces.IServices;
 using PureLifeClinic.Core.Exceptions;
-using PureLifeClinic.Core.Interfaces.IServices;
 
 namespace PureLifeClinic.API.Controllers.V1
 {

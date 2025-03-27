@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Routing;
 using Moq;
 using PureLifeClinic.API.ActionFilters;
-using PureLifeClinic.Core.Interfaces.IServices;
+using PureLifeClinic.Application.Interfaces.IServices;
 using Xunit;
 
 namespace PeruLifeClinic.Api.Tests.ActionFilters

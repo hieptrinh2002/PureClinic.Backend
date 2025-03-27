@@ -1,6 +1,6 @@
 ﻿using Hangfire;
 using Microsoft.Extensions.DependencyInjection;
-using PureLifeClinic.Core.Interfaces.IBackgroundJobs;
+using PureLifeClinic.Application.Interfaces.IBackgroundJobs;
 
 namespace PureLifeClinic.Infrastructure.BackgroundServices.Schedulers
 {

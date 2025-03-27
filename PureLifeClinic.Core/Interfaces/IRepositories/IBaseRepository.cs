@@ -13,10 +13,10 @@ namespace PureLifeClinic.Core.Interfaces.IRepositories
         Task<IEnumerable<T>> GetAll(List<Expression<Func<T, object>>>? includeExpressions, List<ExpressionFilter> filters, CancellationToken cancellationToken = default);
         Task<IEnumerable<T>> GetAll(List<ExpressionFilter> filters, CancellationToken cancellationToken = default);
         Task<IEnumerable<T>> GetAll(List<Func<IQueryable<T>, IIncludableQueryable<T, object>>> includeExpressions, List<ExpressionFilter>? filters, CancellationToken cancellationToken = default);
-        Task<PaginatedDataViewModel<T>> GetPaginatedData(int pageNumber, int pageSize, CancellationToken cancellationToken);
-        Task<PaginatedDataViewModel<T>> GetPaginatedData(int pageNumber, int pageSize, List<ExpressionFilter> filters, CancellationToken cancellationToken);
-        Task<PaginatedDataViewModel<T>> GetPaginatedData(int pageNumber, int pageSize, List<ExpressionFilter> filters, string sortBy, string sortOrder, CancellationToken cancellationToken);
-        Task<PaginatedDataViewModel<T>> GetPaginatedData(List<Expression<Func<T, object>>> includeExpressions, int pageNumber, int pageSize, CancellationToken cancellationToken, List<ExpressionFilter>? filters = null);
+        Task<PaginatedData<T>> GetPaginatedData(int pageNumber, int pageSize, CancellationToken cancellationToken);
+        Task<PaginatedData<T>> GetPaginatedData(int pageNumber, int pageSize, List<ExpressionFilter> filters, CancellationToken cancellationToken);
+        Task<PaginatedData<T>> GetPaginatedData(int pageNumber, int pageSize, List<ExpressionFilter> filters, string sortBy, string sortOrder, CancellationToken cancellationToken);
+        Task<PaginatedData<T>> GetPaginatedData(List<Expression<Func<T, object>>> includeExpressions, int pageNumber, int pageSize, CancellationToken cancellationToken, List<ExpressionFilter>? filters = null);
         Task<T> GetById<Tid>(Tid id, CancellationToken cancellationToken);
         Task<T> GetById<Tid>(List<Expression<Func<T, object>>> includeExpressions, Tid id, CancellationToken cancellationToken);
         Task<T> GetById<Tid>(Tid id, List<Func<IQueryable<T>, IIncludableQueryable<T, object>>> includeExpressions, CancellationToken cancellationToken);

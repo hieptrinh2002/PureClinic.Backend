@@ -4,12 +4,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PureLifeClinic.API.ActionFilters;
 using PureLifeClinic.API.Attributes;
+using PureLifeClinic.Application.BusinessObjects.AppointmentViewModels;
+using PureLifeClinic.Application.BusinessObjects.ResponseViewModels;
+using PureLifeClinic.Application.Interfaces.IServices;
 using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Common.Constants;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Enums;
 using PureLifeClinic.Core.Exceptions;
-using PureLifeClinic.Core.Interfaces.IServices;
 
 namespace PureLifeClinic.API.Controllers.V1
 {
@@ -82,7 +84,7 @@ namespace PureLifeClinic.API.Controllers.V1
 
                 var appointments = await _appointmentService.GetPaginatedData(pageNumberValue, pageSizeValue, filters, sortBy, sortOrder, cancellationToken);
 
-                var response = new ResponseViewModel<PaginatedDataViewModel<AppointmentViewModel>>
+                var response = new ResponseViewModel<PaginatedData<AppointmentViewModel>>
                 {
                     Success = true,
                     Message = "Appointments retrieved successfully",

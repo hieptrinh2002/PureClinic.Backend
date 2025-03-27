@@ -3,12 +3,15 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using PureLifeClinic.API.Helpers;
+using PureLifeClinic.Application.BusinessObjects.ErrorViewModels;
+using PureLifeClinic.Application.BusinessObjects.MedicineViewModels;
+using PureLifeClinic.Application.BusinessObjects.ResponseViewModels;
+using PureLifeClinic.Application.Interfaces.IServices;
 using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Common.Constants;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Enums;
 using PureLifeClinic.Core.Exceptions;
-using PureLifeClinic.Core.Interfaces.IServices;
 
 namespace PureLifeClinic.API.Controllers.V1
 {
@@ -79,7 +82,7 @@ namespace PureLifeClinic.API.Controllers.V1
 
                 var medicines = await _medicineService.GetPaginatedData(pageNumberValue, pageSizeValue, filters, sortBy, sortOrder, cancellationToken);
 
-                var response = new ResponseViewModel<PaginatedDataViewModel<MedicineViewModel>>
+                var response = new ResponseViewModel<PaginatedData<MedicineViewModel>>
                 {
                     Success = true,
                     Message = "Medicine retrieved successfully",

@@ -15,11 +15,11 @@ namespace PureLifeClinic.Core.Entities.General
 
         [Required]
         [ValidateStartTimeAndEndTime]
-            public TimeSpan StartTime { get; set; }
+        public TimeSpan StartTime { get; set; }
 
-            [Required]
-            [ValidateStartTimeAndEndTime]
-            public TimeSpan EndTime { get; set; }
+        [Required]
+        [ValidateStartTimeAndEndTime]
+        public TimeSpan EndTime { get; set; }
 
         [NotMapped]
         public bool IsAvailable

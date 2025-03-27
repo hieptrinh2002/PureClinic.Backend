@@ -1,10 +1,10 @@
 ﻿using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Http;
-using PureLifeClinic.Core.Entities.Business;
+using PureLifeClinic.Application.BusinessObjects.FileViewModels;
+using PureLifeClinic.Application.Interfaces.IServices;
 using PureLifeClinic.Core.Entities.General;
 using PureLifeClinic.Core.Enums;
-using PureLifeClinic.Core.Interfaces.IServices;
 
 namespace PureLifeClinic.Infrastructure.ExternalServices
 {

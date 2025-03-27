@@ -2,9 +2,9 @@
 using MailKit.Security;
 using Microsoft.Extensions.Options;
 using MimeKit;
+using PureLifeClinic.Application.BusinessObjects.EmailViewModels;
+using PureLifeClinic.Application.Interfaces.IServices;
 using PureLifeClinic.Core.Common;
-using PureLifeClinic.Core.Entities.Business;
-using PureLifeClinic.Core.Interfaces.IServices;
 
 namespace PureLifeClinic.Infrastructure.ExternalServices
 {

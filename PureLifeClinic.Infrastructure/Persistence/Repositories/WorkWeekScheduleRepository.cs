@@ -25,7 +25,7 @@ namespace PureLifeClinic.Infrastructure.Persistence.Repositories
             return await _dbContext.WorkWeeks.AnyAsync(w => w.UserId == userId && w.WeekStartDate == weekStartDate, cancellationToken);
         }
 
-        public async Task<WorkWeekScheduleViewModel?> GetWorkSchedule(int userId, DateTime weekStartDate, CancellationToken cancellationToken)
+        public async Task<WorkWeek?> GetWorkSchedule(int userId, DateTime weekStartDate, CancellationToken cancellationToken)
         {
             var user = await _userManager.FindByIdAsync(userId.ToString()) ?? throw new NotFoundException("User not found");
 
@@ -34,13 +34,15 @@ namespace PureLifeClinic.Infrastructure.Persistence.Repositories
                 .Include(ww => ww.User)
                 .Include(ww => ww.WorkDays)
                 .Where(ww => ww.UserId == user.Id && ww.WeekStartDate == weekStartDate)
-                .Select(ww => new WorkWeekScheduleViewModel
+                .Select(ww => new WorkWeek
                 {
+                    Id = ww.Id, 
                     UserId = user.Id,
                     WeekStartDate = weekStartDate,
                     WeekEndDate = ww.WeekEndDate,
-                    WorkDays = ww.WorkDays.Select(wd => new WorkDayViewModel
+                    WorkDays = ww.WorkDays.Select(wd => new WorkDay
                     {
+                        Id = wd.Id, 
                         DayOfWeek = wd.DayOfWeek,
                         StartTime = wd.StartTime,
                         EndTime = wd.EndTime,

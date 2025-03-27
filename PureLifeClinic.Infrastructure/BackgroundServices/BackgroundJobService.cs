@@ -1,5 +1,5 @@
 ﻿using Hangfire;
-using PureLifeClinic.Core.Interfaces.IBackgroundJobs;
+using PureLifeClinic.Application.Interfaces.IBackgroundJobs;
 using System.Linq.Expressions;
 
 namespace PureLifeClinic.Infrastructure.BackgroundServices

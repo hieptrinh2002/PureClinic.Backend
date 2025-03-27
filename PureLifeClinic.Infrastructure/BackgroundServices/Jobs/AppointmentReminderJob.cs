@@ -1,8 +1,8 @@
-﻿using PureLifeClinic.Core.Entities.Business;
+﻿using PureLifeClinic.Application.BusinessObjects.EmailViewModels;
+using PureLifeClinic.Application.Interfaces.IBackgroundJobs;
+using PureLifeClinic.Application.Interfaces.IServices;
 using PureLifeClinic.Core.Entities.General;
-using PureLifeClinic.Core.Interfaces.IBackgroundJobs;
 using PureLifeClinic.Core.Interfaces.IRepositories;
-using PureLifeClinic.Core.Interfaces.IServices;
 
 namespace PureLifeClinic.Infrastructure.BackgroundServices.Jobs
 {

@@ -2,14 +2,19 @@
 using Microsoft.Extensions.Logging;
 using Moq;
 using PureLifeClinic.API.Controllers.V1;
-using PureLifeClinic.Core.Entities.Business;
+using PureLifeClinic.Application.BusinessObjects.AuthViewModels.Account;
+using PureLifeClinic.Application.BusinessObjects.AuthViewModels.ForgotPassword;
+using PureLifeClinic.Application.BusinessObjects.AuthViewModels.ResetPassword;
+using PureLifeClinic.Application.BusinessObjects.EmailViewModels;
+using PureLifeClinic.Application.BusinessObjects.ResponseViewModels;
+using PureLifeClinic.Application.BusinessObjects.UserViewModels;
+using PureLifeClinic.Application.Interfaces.IBackgroundJobs;
+using PureLifeClinic.Application.Interfaces.IServices;
 using PureLifeClinic.Core.Entities.General;
 using PureLifeClinic.Core.Exceptions;
-using PureLifeClinic.Core.Interfaces.IBackgroundJobs;
-using PureLifeClinic.Core.Interfaces.IServices;
 using Xunit;
 
-namespace PureLifeClinic.Tests.Controllers
+namespace PeruLifeClinic.Api.Tests.Controllers.V1
 {
     public class AccountControllerTests
     {
@@ -299,7 +304,7 @@ namespace PureLifeClinic.Tests.Controllers
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
-            var responseModel = Assert.IsType<ResponseViewModel>(okResult.Value); 
+            var responseModel = Assert.IsType<ResponseViewModel>(okResult.Value);
             Assert.True(responseModel.Success);
             Assert.Equal("Reset password mail was sent successfully.", responseModel.Message);
         }
@@ -372,13 +377,13 @@ namespace PureLifeClinic.Tests.Controllers
                 FullName = "Test User"
             };
 
-            var response = new ResponseViewModel<ResetPasswordViewModel> { Success = true, Data = null};
+            var response = new ResponseViewModel<ResetPasswordViewModel> { Success = true, Data = null };
 
             _mockUserService.Setup(s => s.GetByEmail(model.Email, default)).ReturnsAsync(user);
             _mockUserService.Setup(s => s.GenerateResetPasswordTokenAsync(model)).ReturnsAsync(response);
 
             // Act & Assert
-            Exception ex =  await Assert.ThrowsAsync<ErrorException>(() => _controller.ChangePassword(model));
+            Exception ex = await Assert.ThrowsAsync<ErrorException>(() => _controller.ChangePassword(model));
             Assert.Equal("Failed to generate reset password token", ex.Message);
         }
         #endregion

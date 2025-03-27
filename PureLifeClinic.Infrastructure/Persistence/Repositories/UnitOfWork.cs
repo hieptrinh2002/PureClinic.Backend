@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Storage;
+using PureLifeClinic.Application.Interfaces.IServices;
 using PureLifeClinic.Core.Entities.General;
 using PureLifeClinic.Core.Interfaces.IRepositories;
-using PureLifeClinic.Core.Interfaces.IServices;
 using PureLifeClinic.Infrastructure.Persistence.Data;
 
 namespace PureLifeClinic.Infrastructure.Persistence.Repositories

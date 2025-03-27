@@ -5,11 +5,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using PureLifeClinic.API.Attributes;
 using PureLifeClinic.API.Helpers;
+using PureLifeClinic.Application.BusinessObjects.ErrorViewModels;
+using PureLifeClinic.Application.BusinessObjects.ProductViewModels;
+using PureLifeClinic.Application.BusinessObjects.ResponseViewModels;
+using PureLifeClinic.Application.Interfaces.IServices;
 using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Common.Constants;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Enums;
-using PureLifeClinic.Core.Interfaces.IServices;
 
 namespace PureLifeClinic.API.Controllers.V1
 {
@@ -81,7 +84,7 @@ namespace PureLifeClinic.API.Controllers.V1
 
                 var products = await _productService.GetPaginatedData(pageNumberValue, pageSizeValue, filters, sortBy, sortOrder, cancellationToken);
 
-                var response = new ResponseViewModel<PaginatedDataViewModel<ProductViewModel>>
+                var response = new ResponseViewModel<PaginatedData<ProductViewModel>>
                 {
                     Success = true,
                     Message = "Products retrieved successfully",

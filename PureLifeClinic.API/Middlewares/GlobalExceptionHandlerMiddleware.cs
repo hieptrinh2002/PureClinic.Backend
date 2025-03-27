@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
-using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
-using PureLifeClinic.Core.Entities.Business;
+using PureLifeClinic.Application.BusinessObjects.ErrorViewModels;
+using PureLifeClinic.Application.BusinessObjects.ResponseViewModels;
 using PureLifeClinic.Core.Exceptions;
 
 namespace PureLifeClinic.API.Middlewares

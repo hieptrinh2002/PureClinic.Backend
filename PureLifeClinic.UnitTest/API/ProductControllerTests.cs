@@ -3,9 +3,11 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Moq;
 using PureLifeClinic.API.Controllers.V1;
+using PureLifeClinic.Application.BusinessObjects.ProductViewModels;
+using PureLifeClinic.Application.BusinessObjects.ResponseViewModels;
+using PureLifeClinic.Application.Interfaces.IServices;
 using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Entities.Business;
-using PureLifeClinic.Core.Interfaces.IServices;
 
 namespace PureLifeClinic.UnitTest.API
 {
@@ -34,7 +36,7 @@ namespace PureLifeClinic.UnitTest.API
                 new ProductViewModel { Id = 1, Name = "Product 1", Code = "P001" },
                 new ProductViewModel { Id = 2, Name = "Product 2", Code = "P002" }
             };
-            var paginatedData = new PaginatedDataViewModel<ProductViewModel>(mockProducts, mockProducts.Count);
+            var paginatedData = new PaginatedData<ProductViewModel>(mockProducts, mockProducts.Count);
 
             _mockProductService.Setup(service => service.GetPaginatedData(
                 It.IsAny<int>(),
@@ -53,7 +55,7 @@ namespace PureLifeClinic.UnitTest.API
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
-            var response = Assert.IsType<ResponseViewModel<PaginatedDataViewModel<ProductViewModel>>>(okResult.Value);
+            var response = Assert.IsType<ResponseViewModel<PaginatedData<ProductViewModel>>>(okResult.Value);
             Assert.True(response.Success);
             Assert.NotNull(response.Data);
             Assert.Equal(2, response.Data.Data.Count()); 
@@ -83,7 +85,7 @@ namespace PureLifeClinic.UnitTest.API
                 new ProductViewModel { Id = 1, Name = "Product 1", Code = "P001" },
                 new ProductViewModel { Id = 2, Name = "Product 2", Code = "P002" }
             };
-            var paginatedData = new PaginatedDataViewModel<ProductViewModel>(mockProducts, mockProducts.Count);
+            var paginatedData = new PaginatedData<ProductViewModel>(mockProducts, mockProducts.Count);
 
             _mockProductService.Setup(service => service.GetPaginatedData(
                 It.IsAny<int>(), It.IsAny<int>(), It.IsAny<List<ExpressionFilter>>(),
@@ -95,7 +97,7 @@ namespace PureLifeClinic.UnitTest.API
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
-            var response = Assert.IsType<ResponseViewModel<PaginatedDataViewModel<ProductViewModel>>>(okResult.Value);
+            var response = Assert.IsType<ResponseViewModel<PaginatedData<ProductViewModel>>>(okResult.Value);
             Assert.True(response.Success);
             Assert.Equal("Products retrieved successfully", response.Message);
             Assert.NotNull(response.Data);

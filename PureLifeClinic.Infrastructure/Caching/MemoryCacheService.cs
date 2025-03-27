@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
-using PureLifeClinic.Core.Interfaces.IServices;
+using PureLifeClinic.Application.Interfaces.IServices;
 
 namespace PureLifeClinic.Infrastructure.Caching
 {

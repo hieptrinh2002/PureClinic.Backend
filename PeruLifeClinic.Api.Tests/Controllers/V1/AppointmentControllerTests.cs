@@ -2,10 +2,12 @@
 using Microsoft.Extensions.Logging;
 using Moq;
 using PureLifeClinic.API.Controllers.V1;
+using PureLifeClinic.Application.BusinessObjects.AppointmentViewModels;
+using PureLifeClinic.Application.BusinessObjects.ResponseViewModels;
+using PureLifeClinic.Application.Interfaces.IServices;
 using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Enums;
-using PureLifeClinic.Core.Interfaces.IServices;
 using Xunit;
 
 namespace PeruLifeClinic.Api.Tests.Controllers.V1
@@ -49,7 +51,7 @@ namespace PeruLifeClinic.Api.Tests.Controllers.V1
         public async Task GetbyFilterCondition_WhenCalled_ReturnsOkResult()
         {
             //Arrange
-            var paginatedData = new PaginatedDataViewModel<AppointmentViewModel>(
+            var paginatedData = new PaginatedData<AppointmentViewModel>(
                 new List<AppointmentViewModel> {
                     new AppointmentViewModel()
                 }, 1);
@@ -66,7 +68,7 @@ namespace PeruLifeClinic.Api.Tests.Controllers.V1
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
-            var response = Assert.IsType<ResponseViewModel<PaginatedDataViewModel<AppointmentViewModel>>>(okResult.Value);
+            var response = Assert.IsType<ResponseViewModel<PaginatedData<AppointmentViewModel>>>(okResult.Value);
             Assert.True(response.Success);
         }
         #endregion
@@ -176,7 +178,8 @@ namespace PeruLifeClinic.Api.Tests.Controllers.V1
             ).ReturnsAsync(false);
 
             // Act
-            var result = await _controller.CreateInPersonAppointment(new InPersonAppointmentCreateViewModel(), CancellationToken.None);
+            var result = await _controller.CreateInPersonAppointment(
+                new InPersonAppointmentCreateViewModel(), CancellationToken.None);
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);

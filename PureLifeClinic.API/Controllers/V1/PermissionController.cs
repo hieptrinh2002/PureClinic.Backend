@@ -2,9 +2,10 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PureLifeClinic.Core.Entities.Business;
+using PureLifeClinic.Application.BusinessObjects.PermissionViewModels;
+using PureLifeClinic.Application.BusinessObjects.ResponseViewModels;
+using PureLifeClinic.Application.Interfaces.IServices;
 using PureLifeClinic.Core.Enums;
-using PureLifeClinic.Core.Interfaces.IServices;
 
 namespace PureLifeClinic.API.Controllers.V1
 {

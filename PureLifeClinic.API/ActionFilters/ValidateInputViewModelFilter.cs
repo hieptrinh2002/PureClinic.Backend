@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using PureLifeClinic.API.Helpers;
-using PureLifeClinic.Core.Interfaces.IServices;
+using PureLifeClinic.Application.Interfaces.IServices;
 
 namespace PureLifeClinic.API.ActionFilters
 {

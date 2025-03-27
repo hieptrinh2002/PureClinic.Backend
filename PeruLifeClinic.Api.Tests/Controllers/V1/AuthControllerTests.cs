@@ -3,14 +3,17 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using PureLifeClinic.API.Controllers.V1;
-using PureLifeClinic.Core.Entities.Business;
+using PureLifeClinic.Application.BusinessObjects.AuthViewModels;
+using PureLifeClinic.Application.BusinessObjects.AuthViewModels.Token;
+using PureLifeClinic.Application.BusinessObjects.ResponseViewModels;
+using PureLifeClinic.Application.BusinessObjects.UserViewModels;
+using PureLifeClinic.Application.Interfaces.IServices;
 using PureLifeClinic.Core.Entities.General;
 using PureLifeClinic.Core.Enums;
 using PureLifeClinic.Core.Exceptions;
-using PureLifeClinic.Core.Interfaces.IServices;
 using Xunit;
 
-namespace PureLifeClinic.API.Tests.Controllers.V1
+namespace PeruLifeClinic.Api.Tests.Controllers.V1
 {
     public class AuthControllerTests
     {
@@ -125,7 +128,7 @@ namespace PureLifeClinic.API.Tests.Controllers.V1
             var mockCookies = new Mock<IRequestCookieCollection>();
 
             mockCookies.Setup(c => c.TryGetValue("refreshTokenKey", out It.Ref<string>.IsAny))
-                       .Returns(false); // Giả lập không có refreshTokenKey
+                       .Returns(false); 
 
             mockRequest.Setup(r => r.Cookies).Returns(mockCookies.Object);
             mockHttpContext.Setup(ctx => ctx.Request).Returns(mockRequest.Object);
@@ -192,7 +195,6 @@ namespace PureLifeClinic.API.Tests.Controllers.V1
         public async Task RefreshTokenCheckAsync_ShouldReturnOk_WhenRefreshTokenIsValid()
         {
             // Arrange
-            var refreshTokenCheckResult = new ResponseViewModel<RefreshTokenViewModel> { Success = true };
             var tokenResult = new ResponseViewModel<GenarateTokenViewModel>
             {
                 Data = new GenarateTokenViewModel
@@ -237,7 +239,7 @@ namespace PureLifeClinic.API.Tests.Controllers.V1
             mockResponse.Setup(r => r.Cookies).Returns(responseCookies.Object);
 
             _mockRefreshTokenService.Setup(s => s.RefreshTokenCheckAsync(validToken))
-                .ReturnsAsync(refreshTokenCheckResult);
+                .ReturnsAsync(true);
             _mockTokenService.Setup(s => s.GenerateJwtToken(It.IsAny<int>()))
                 .ReturnsAsync(tokenResult);
             _mockTokenService.Setup(s => s.GenerateRefreshToken())
@@ -259,19 +261,12 @@ namespace PureLifeClinic.API.Tests.Controllers.V1
         public async Task RefreshTokenCheckAsync_ShouldReturnBadRequest_WhenRefreshTokenIsInvalid()
         {
             // Arrange
-            var refreshTokenResult = new ResponseViewModel<RefreshTokenViewModel>
-            {
-                Success = false,
-                Data = new RefreshTokenViewModel()
-            };
-
             string validToken = "valid_refresh_token";
             _mockCookies.Setup(c => c.TryGetValue("refreshTokenKey", out validToken)).Returns(true);
             _mockRequest.Setup(r => r.Cookies).Returns(_mockCookies.Object);
             _mockHttpContext.Setup(ctx => ctx.Request).Returns(_mockRequest.Object);
             _controller.ControllerContext = new ControllerContext { HttpContext = _mockHttpContext.Object };
-
-            _mockRefreshTokenService.Setup(s => s.RefreshTokenCheckAsync(validToken)).ReturnsAsync(refreshTokenResult);
+            _mockRefreshTokenService.Setup(s => s.RefreshTokenCheckAsync(validToken)).ReturnsAsync(false);
 
             // Act
             var result = await _controller.RefreshTokenCheckAsync();
@@ -284,4 +279,3 @@ namespace PureLifeClinic.API.Tests.Controllers.V1
         }
     }
 }
- 

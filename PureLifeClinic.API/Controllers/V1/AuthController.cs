@@ -1,9 +1,11 @@
 ﻿using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using PureLifeClinic.API.ActionFilters;
-using PureLifeClinic.Core.Entities.Business;
+using PureLifeClinic.Application.BusinessObjects.AuthViewModels;
+using PureLifeClinic.Application.BusinessObjects.AuthViewModels.Token;
+using PureLifeClinic.Application.BusinessObjects.ResponseViewModels;
+using PureLifeClinic.Application.Interfaces.IServices;
 using PureLifeClinic.Core.Exceptions;
-using PureLifeClinic.Core.Interfaces.IServices;
 
 namespace PureLifeClinic.API.Controllers.V1
 {
@@ -111,7 +113,7 @@ namespace PureLifeClinic.API.Controllers.V1
 
                 var result = await _refreshTokenService.RefreshTokenCheckAsync(refreshToken);
 
-                if (!result.Success)
+                if (!result)
                 {
                     return BadRequest(new ResponseViewModel
                     {
@@ -125,7 +127,7 @@ namespace PureLifeClinic.API.Controllers.V1
 
                 if (tokenData == null || refreshTokenData == null)
                 {
-                    throw new ErrorException("Token was genarated failed");
+                    throw new ErrorException("Token was generated failed");
                 }
 
                 refreshTokenData.AccessTokenId = tokenData?.Data?.AccessTokenId;

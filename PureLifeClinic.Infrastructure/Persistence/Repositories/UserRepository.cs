@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using PureLifeClinic.Core.Entities.Business;
+using PureLifeClinic.Application.BusinessObjects.AuthViewModels.ResetPassword;
+using PureLifeClinic.Application.Interfaces.IServices;
 using PureLifeClinic.Core.Entities.General;
 using PureLifeClinic.Core.Exceptions;
 using PureLifeClinic.Core.Interfaces.IRepositories;
-using PureLifeClinic.Core.Interfaces.IServices;
 using PureLifeClinic.Infrastructure.Persistence.Data;
 
 namespace PureLifeClinic.Infrastructure.Persistence.Repositories
@@ -47,76 +47,58 @@ namespace PureLifeClinic.Infrastructure.Persistence.Repositories
             return user;
         }
 
-        public async Task<IdentityResult> Create(UserCreateViewModel model)
+        public async Task<IdentityResult> Create(User model, string password)
         {
             // Check if the role exists by Id, if not, return an error
             var role = await _roleManager.FindByIdAsync(model.RoleId.ToString());
             if (role == null)
             {
-                return IdentityResult.Failed(new IdentityError { Code = "RoleNotFound", Description = $"Role with Id {model.RoleId} not found." });
+                return IdentityResult.Failed(new IdentityError
+                {
+                    Code = "RoleNotFound",
+                    Description = $"Role with Id {model.RoleId} not found."
+                });
             }
 
             if (!role.IsActive)
             {
-                return IdentityResult.Failed(new IdentityError { Code = "RoleInactive", Description = $"Inactive Role" });
+                return IdentityResult.Failed(new IdentityError
+                {
+                    Code = "RoleInactive",
+                    Description = $"Inactive Role"
+                }                    );
             }
 
-            var user = new User
-            {
-                FullName = model.FullName,
-                UserName = model.UserName,
-                Email = model.Email,
-                IsActive = true,
-                RoleId = model.RoleId,
-                EntryDate = DateTime.Now,
-                EntryBy = Convert.ToInt32(_userContext.UserId)
-            };
-            var result = await _userManager.CreateAsync(user, model.Password);
+            var result = await _userManager.CreateAsync(model, password);
 
             // If user creation is successful, assign the role to the user
             if (result.Succeeded)
             {
-                await _userManager.AddToRoleAsync(user, role.Name);
+                await _userManager.AddToRoleAsync(model, role.Name);
             }
 
             // handle doctor
             if (role.Name.ToLower().Contains("doctor"))
-                await _dbContext.Doctors.AddAsync(new Doctor { User = user, UserId = user.Id, Specialty = "polyclinic" });
+                await _dbContext.Doctors.AddAsync(new Doctor { User = model, UserId = model.Id, Specialty = "polyclinic" });
             // handle patient
             if (role.Name.ToLower().Contains("partient"))
-                await _dbContext.Patients.AddAsync(new Patient { User = user, UserId = user.Id });
+                await _dbContext.Patients.AddAsync(new Patient { User = model, UserId = model.Id });
 
             return result;
         }
 
-        public async Task<IdentityResult> Update(UserUpdateViewModel model)
+        public async Task<IdentityResult> Update(User user)
         {
-            var user = await _userManager.FindByIdAsync(model.Id.ToString());
-
-            if (user == null)
-            {
-                return IdentityResult.Failed(new IdentityError { Description = "User not found." });
-            }
-
-            // Check if the role exists by Id, if not, return an error
-            var role = await _roleManager.FindByIdAsync(model.RoleId.ToString());
+            var role = await _roleManager.FindByIdAsync(user.RoleId.ToString());
             if (role == null)
             {
-                return IdentityResult.Failed(new IdentityError { Code = "RoleNotFound", Description = $"Role with Id {model.RoleId} not found." });
+                return IdentityResult.Failed(
+                    new IdentityError
+                    {
+                        Code = "RoleNotFound",
+                        Description = $"Role with Id {user.RoleId} not found."
+                    });
             }
-
-            if (!role.IsActive)
-            {
-                return IdentityResult.Failed(new IdentityError { Code = "RoleInactive", Description = $"Inactive Role" });
-            }
-
-            // Update the user properties
-            user.FullName = model.FullName;
-            user.UserName = model.UserName;
-            user.Email = model.Email;
-            user.RoleId = model.RoleId;
-            user.UpdatedDate = DateTime.Now;
-            user.UpdatedBy = Convert.ToInt32(_userContext.UserId);
 
             var result = await _userManager.UpdateAsync(user);
 
@@ -155,18 +137,15 @@ namespace PureLifeClinic.Infrastructure.Persistence.Repositories
             return user;
         }
 
-        public async Task<EmailActivationViewModel> GenerateEmailConfirmationTokenAsync(string email)
+        public async Task<(int UserId, string Token)> GenerateEmailConfirmationTokenAsync(string email)
         {
             var user = await _userManager.FindByEmailAsync(email)
                 ?? throw new NotFoundException($"User with email - {email} not found");
 
-            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user)
+                ?? throw new ErrorException("generate email confirmation token failed");
 
-            return new EmailActivationViewModel
-            {
-                UserId = user.Id,
-                ActivationToken = token,
-            };
+            return (user.Id, token);
         }
 
         public async Task<bool> UnlockAccountAsync(User user)
@@ -199,12 +178,12 @@ namespace PureLifeClinic.Infrastructure.Persistence.Repositories
             return user ?? throw new NotFoundException("No data found");
         }
 
-        public Task<IdentityResult> CreateDoctor(DoctorCreateViewModel model)
+        public Task<IdentityResult> CreateDoctor(Doctor model)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<IdentityResult> CreatePatient(PatientCreateViewModel model)
+        public Task<IdentityResult> CreatePatient(Patient model)
         {
             throw new NotImplementedException();
         }

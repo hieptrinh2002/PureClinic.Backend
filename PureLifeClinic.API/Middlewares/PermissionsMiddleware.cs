@@ -1,5 +1,5 @@
 ﻿using PureLifeClinic.API.Extensions;
-using PureLifeClinic.Core.Interfaces.IServices;
+using PureLifeClinic.Application.Interfaces.IServices;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 

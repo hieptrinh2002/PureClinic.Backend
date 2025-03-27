@@ -1,4 +1,4 @@
-﻿using PureLifeClinic.Core.Interfaces.IServices;
+﻿using PureLifeClinic.Application.Interfaces.IServices;
 using System.Security.Claims;
 using System.Text;
 

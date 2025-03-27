@@ -5,6 +5,8 @@ namespace PureLifeClinic.Core.Interfaces.IRepositories
 {
     public interface IRefreshTokenRepository : IBaseRepository<RefreshToken>
     {
-        Task<ResponseViewModel<RefreshTokenViewModel>> ValidateRefreshToken(string refreshToken);
+        Task<bool> ValidateRefreshToken(string refreshToken);
+        Task<User?> GetUserByRefreshTokenAsync(string refreshToken);
+        Task<bool> RevokeRefreshToken(string rfToken);
     }
 }

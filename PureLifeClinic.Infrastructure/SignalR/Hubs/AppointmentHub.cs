@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using PureLifeClinic.Application.Interfaces.IMessageHub;
 using PureLifeClinic.Core.Enums;
-using PureLifeClinic.Core.Interfaces.IMessageHub;
 
 namespace PureLifeClinic.Infrastructure.SignalR.Hubs
 {
-   
+
     public class AppointmentHub : Hub<IAppointmentClient>
     {
         public async Task UpdateAppointmentStatus(int appointmentId, AppointmentStatus status, string message)

@@ -2,8 +2,9 @@
 using DinkToPdf;
 using DinkToPdf.Contracts;
 using Microsoft.AspNetCore.Mvc;
-using PureLifeClinic.Core.Entities.Business;
-using PureLifeClinic.Core.Interfaces.IServices;
+using PureLifeClinic.Application.BusinessObjects.InvoiceViewModels.File;
+using PureLifeClinic.Application.BusinessObjects.MedicalReportViewModels.File;
+using PureLifeClinic.Application.Interfaces.IServices;
 
 namespace PureLifeClinic.API.Controllers.V1
 {
@@ -21,8 +22,8 @@ namespace PureLifeClinic.API.Controllers.V1
             _cloudinaryService = cloudinaryService;
         }
 
-        [HttpPost("genarate-invoice")]
-        public async Task<IActionResult> GenarateInvoice(InvoiceFileCreateViewModel model)
+        [HttpPost("generate-invoice")]
+        public async Task<IActionResult> GenerateInvoice(InvoiceFileCreateViewModel model)
         {
             //var gen = new PdfInvoiceGenerator(_cloudinaryService);
             //string filepath = await gen.Test();
@@ -30,7 +31,7 @@ namespace PureLifeClinic.API.Controllers.V1
         }
 
         [HttpPost("medical-report/create")]
-        public async Task<IActionResult>GenarateMedicalFile(MedicalReportFileCreateViewModel model)
+        public async Task<IActionResult>GenerateMedicalFile(MedicalReportFileCreateViewModel model)
         {
            // clinic infor
            // test result

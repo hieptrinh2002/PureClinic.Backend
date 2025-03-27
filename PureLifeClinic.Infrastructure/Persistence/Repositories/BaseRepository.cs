@@ -104,7 +104,7 @@ namespace PureLifeClinic.Infrastructure.Persistence.Repositories
         }
 
 
-        public virtual async Task<PaginatedDataViewModel<T>> GetPaginatedData(
+        public virtual async Task<PaginatedData<T>> GetPaginatedData(
             int pageNumber, 
             int pageSize,
             CancellationToken cancellationToken = default)
@@ -117,10 +117,10 @@ namespace PureLifeClinic.Infrastructure.Persistence.Repositories
             var data = await query.ToListAsync(cancellationToken);
             var totalCount = await _dbContext.Set<T>().CountAsync(cancellationToken);
 
-            return new PaginatedDataViewModel<T>(data, totalCount);
+            return new PaginatedData<T>(data, totalCount);
         }
 
-        public async Task<PaginatedDataViewModel<T>> GetPaginatedData(
+        public async Task<PaginatedData<T>> GetPaginatedData(
             int pageNumber, 
             int pageSize, 
             List<ExpressionFilter> filters, 
@@ -143,10 +143,10 @@ namespace PureLifeClinic.Infrastructure.Persistence.Repositories
 
             var totalCount = await query.CountAsync(cancellationToken);
 
-            return new PaginatedDataViewModel<T>(data, totalCount);
+            return new PaginatedData<T>(data, totalCount);
         }
 
-        public virtual async Task<PaginatedDataViewModel<T>> GetPaginatedData(
+        public virtual async Task<PaginatedData<T>> GetPaginatedData(
             List<Expression<Func<T, object>>> includeExpressions, 
             int pageNumber, 
             int pageSize, 
@@ -177,10 +177,10 @@ namespace PureLifeClinic.Infrastructure.Persistence.Repositories
 
             var totalCount = await _dbContext.Set<T>().CountAsync(cancellationToken);
 
-            return new PaginatedDataViewModel<T>(data, totalCount);
+            return new PaginatedData<T>(data, totalCount);
         }
 
-        public async Task<PaginatedDataViewModel<T>> GetPaginatedData(
+        public async Task<PaginatedData<T>> GetPaginatedData(
             int pageNumber, 
             int pageSize, 
             List<ExpressionFilter> filters, 
@@ -212,7 +212,7 @@ namespace PureLifeClinic.Infrastructure.Persistence.Repositories
 
             var totalCount = await query.CountAsync(cancellationToken);
 
-            return new PaginatedDataViewModel<T>(data, totalCount);
+            return new PaginatedData<T>(data, totalCount);
         }
 
         private Expression<Func<T, object>> GetOrderByExpression<T>(string propertyName)

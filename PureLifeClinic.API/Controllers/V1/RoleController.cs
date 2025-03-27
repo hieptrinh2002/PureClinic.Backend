@@ -3,8 +3,11 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PureLifeClinic.API.Helpers;
+using PureLifeClinic.Application.BusinessObjects.ErrorViewModels;
+using PureLifeClinic.Application.BusinessObjects.ResponseViewModels;
+using PureLifeClinic.Application.BusinessObjects.RoleViewModels;
+using PureLifeClinic.Application.Interfaces.IServices;
 using PureLifeClinic.Core.Entities.Business;
-using PureLifeClinic.Core.Interfaces.IServices;
 
 namespace PureLifeClinic.API.Controllers.V1
 {
@@ -33,7 +36,7 @@ namespace PureLifeClinic.API.Controllers.V1
 
                 var roles = await _roleService.GetPaginatedData(pageNumberValue, pageSizeValue, cancellationToken);
 
-                var response = new ResponseViewModel<PaginatedDataViewModel<RoleViewModel>>
+                var response = new ResponseViewModel<PaginatedData<RoleViewModel>>
                 {
                     Success = true,
                     Message = "Roles retrieved successfully",

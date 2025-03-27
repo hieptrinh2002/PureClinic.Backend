@@ -1,5 +1,5 @@
-﻿using PureLifeClinic.Core.Enums;
-using PureLifeClinic.Core.Interfaces.IServices;
+﻿using PureLifeClinic.Application.Interfaces.IServices;
+using PureLifeClinic.Core.Enums;
 
 namespace PureLifeClinic.Infrastructure.Caching
 {

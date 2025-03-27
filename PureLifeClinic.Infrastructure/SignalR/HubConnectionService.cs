@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PureLifeClinic.Application.Interfaces.IServices.INotification;
 using PureLifeClinic.Core.Entities.General;
-using PureLifeClinic.Core.Interfaces.IServices.INotification;
 using PureLifeClinic.Infrastructure.Persistence.Data;
 
 namespace PureLifeClinic.Infrastructure.SignalR

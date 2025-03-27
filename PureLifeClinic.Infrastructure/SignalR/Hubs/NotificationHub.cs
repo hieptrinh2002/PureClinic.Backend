@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
-using PureLifeClinic.Core.Interfaces.IMessageHub;
-using PureLifeClinic.Core.Interfaces.IServices.INotification;
+using PureLifeClinic.Application.Interfaces.IMessageHub;
+using PureLifeClinic.Application.Interfaces.IServices.INotification;
 
 namespace PureLifeClinic.Infrastructure.SignalR.Hubs
 {

@@ -1,10 +1,10 @@
 using AutoMapper;
 using Moq;
-using PureLifeClinic.Core.Entities.Business;
+using PureLifeClinic.Application.BusinessObjects.ProductViewModels;
+using PureLifeClinic.Application.Interfaces.IServices;
+using PureLifeClinic.Application.Services;
 using PureLifeClinic.Core.Entities.General;
 using PureLifeClinic.Core.Interfaces.IRepositories;
-using PureLifeClinic.Core.Interfaces.IServices;
-using PureLifeClinic.Core.Services;
 
 namespace PureLifeClinic.UnitTest.Core
 {

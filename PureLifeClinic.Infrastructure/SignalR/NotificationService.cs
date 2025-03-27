@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using PureLifeClinic.Core.Interfaces.IServices.INotification;
+using PureLifeClinic.Application.Interfaces.IServices.INotification;
 using PureLifeClinic.Infrastructure.SignalR.Hubs;
 
 namespace PureLifeClinic.Infrastructure.SignalR

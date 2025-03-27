@@ -4,12 +4,17 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PureLifeClinic.API.Attributes;
 using PureLifeClinic.API.Helpers;
+using PureLifeClinic.Application.BusinessObjects.AuthViewModels.Account;
+using PureLifeClinic.Application.BusinessObjects.AuthViewModels.ForgotPassword;
+using PureLifeClinic.Application.BusinessObjects.AuthViewModels.ResetPassword;
+using PureLifeClinic.Application.BusinessObjects.EmailViewModels;
+using PureLifeClinic.Application.BusinessObjects.ResponseViewModels;
+using PureLifeClinic.Application.BusinessObjects.UserViewModels;
+using PureLifeClinic.Application.Interfaces.IBackgroundJobs;
+using PureLifeClinic.Application.Interfaces.IServices;
 using PureLifeClinic.Core.Common.Constants;
-using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Enums;
 using PureLifeClinic.Core.Exceptions;
-using PureLifeClinic.Core.Interfaces.IBackgroundJobs;
-using PureLifeClinic.Core.Interfaces.IServices;
 
 namespace PureLifeClinic.API.Controllers.V1
 {

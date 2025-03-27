@@ -1,10 +1,4 @@
-﻿using AutoMapper;
-using PureLifeClinic.Core.Entities.Business;
-using PureLifeClinic.Core.Entities.General;
-using PureLifeClinic.Core.Interfaces.IMapper;
-using PureLifeClinic.Core.Mapper;
-
-namespace PureLifeClinic.API.Extensions
+﻿namespace PureLifeClinic.API.Extensions
 {
     public static class MapperExtension
     {

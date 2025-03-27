@@ -3,11 +3,14 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PureLifeClinic.API.Attributes;
+using PureLifeClinic.Application.BusinessObjects.DoctorViewModels;
+using PureLifeClinic.Application.BusinessObjects.PatientsViewModels;
+using PureLifeClinic.Application.BusinessObjects.ResponseViewModels;
+using PureLifeClinic.Application.Interfaces.IServices;
 using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Common.Constants;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Enums;
-using PureLifeClinic.Core.Interfaces.IServices;
 
 namespace PureLifeClinic.API.Controllers.V1
 {
@@ -63,7 +66,7 @@ namespace PureLifeClinic.API.Controllers.V1
 
                 var patientViewModels = await _doctorService.GetPagtinatedPatientData(doctorId, pageNumberValue, pageSizeValue, filters, sortBy, sortOrder, cancellationToken);
 
-                var response = new ResponseViewModel<PaginatedDataViewModel<PatientViewModel>>
+                var response = new ResponseViewModel<PaginatedData<PatientViewModel>>
                 {
                     Success = true,
                     Message = "doctors retrieved successfully",
@@ -89,7 +92,7 @@ namespace PureLifeClinic.API.Controllers.V1
                 int pageNumberValue = pageNumber ?? 1;
 
                 var users = await _doctorService.GetPaginatedData(pageNumberValue, pageSizeValue, cancellationToken);
-                var response = new ResponseViewModel<PaginatedDataViewModel<DoctorViewModel>>
+                var response = new ResponseViewModel<PaginatedData<DoctorViewModel>>
                 {
                     Success = true,
                     Message = "Doctor retrieved successfully",

@@ -1,6 +1,6 @@
 ﻿using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
-using PureLifeClinic.Core.Entities.Business;
+using PureLifeClinic.Application.BusinessObjects.PrescriptionDetailViewModels;
 
 namespace PureLifeClinic.API.Controllers.V1
 {

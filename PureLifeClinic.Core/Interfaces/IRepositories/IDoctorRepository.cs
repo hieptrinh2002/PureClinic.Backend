@@ -8,7 +8,7 @@ namespace PureLifeClinic.Core.Interfaces.IRepositories
     {
         Task<IEnumerable<Appointment>> GetAllAppointmentOfWeek(int doctorId, DateTime weekStartDate, CancellationToken cancellationToken);
 
-        Task<IEnumerable<TimespanWorkDayViewModel>> GetDoctorWorkDaysTimespanOfWeek(int doctorId, DateTime weekStartDate, CancellationToken cancellationToken);
+        Task<IEnumerable<WorkDay>> GetDoctorWorkDaysTimespanOfWeek(int doctorId, DateTime weekStartDate, CancellationToken cancellationToken);
 
         Task<int> GetMaxAppointmentsPerDay(int doctorId, DateTime workDate);
 
@@ -16,7 +16,7 @@ namespace PureLifeClinic.Core.Interfaces.IRepositories
 
         Task<IEnumerable<Patient>> GetAllPatient(int doctorId, CancellationToken cancellationToken);
 
-        Task<PaginatedDataViewModel<Patient>> GetPaginatedPaitentData(
+        Task<PaginatedData<Patient>> GetPaginatedPaitentData(
             int doctorId, int pageNumber, int pageSize, List<ExpressionFilter>? filters, string sortBy, string sortOrder, CancellationToken cancellationToken);
         Task<bool> IsDoctorAvailableForAppointment(int doctorId, DateTime appointmentDate, CancellationToken cancellationToken);
 

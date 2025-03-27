@@ -5,13 +5,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using PureLifeClinic.API.ActionFilters;
 using PureLifeClinic.API.Attributes;
+using PureLifeClinic.Application.BusinessObjects.InvoiceViewModels;
+using PureLifeClinic.Application.BusinessObjects.InvoiceViewModels.File;
+using PureLifeClinic.Application.BusinessObjects.ResponseViewModels;
+using PureLifeClinic.Application.Interfaces.IBackgroundJobs;
+using PureLifeClinic.Application.Interfaces.IServices;
 using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Common.Constants;
-using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Enums;
 using PureLifeClinic.Core.Exceptions;
-using PureLifeClinic.Core.Interfaces.IBackgroundJobs;
-using PureLifeClinic.Core.Interfaces.IServices;
 
 namespace PureLifeClinic.API.Controllers.V1
 {
@@ -42,7 +44,7 @@ namespace PureLifeClinic.API.Controllers.V1
         [PermissionAuthorize(ResourceConstants.Invoice, PermissionAction.CreateDelete)]
         [ServiceFilter(typeof(ValidateInputViewModelFilter))]
         [HttpPost("generate")]
-        public async Task<IActionResult> GenarateInvoice(InvoiceFileCreateViewModel model, CancellationToken cancellationToken)
+        public async Task<IActionResult> GenerateInvoice(InvoiceFileCreateViewModel model, CancellationToken cancellationToken)
         {
             model.ClinicInfo.PhoneNumber = _appSettings.ClinicInfo.Phone;
             model.ClinicInfo.Address = _appSettings.ClinicInfo.Address;

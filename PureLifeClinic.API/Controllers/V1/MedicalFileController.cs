@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PureLifeClinic.API.Helpers;
-using PureLifeClinic.Core.Entities.Business;
-using PureLifeClinic.Core.Interfaces.IServices;
+using PureLifeClinic.Application.BusinessObjects.ErrorViewModels;
+using PureLifeClinic.Application.BusinessObjects.MedicalFileViewModels;
+using PureLifeClinic.Application.BusinessObjects.ProductViewModels;
+using PureLifeClinic.Application.BusinessObjects.ResponseViewModels;
+using PureLifeClinic.Application.Interfaces.IServices;
 
 namespace PureLifeClinic.API.Controllers.V1
 {

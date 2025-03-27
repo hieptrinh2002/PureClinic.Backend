@@ -22,42 +22,44 @@ namespace PureLifeClinic.Infrastructure.Persistence.Repositories
             var conversion = Expression.Convert(property, typeof(object));
 
             return Expression.Lambda<Func<T, object>>(conversion, parameter);
-
         }
-        public async Task<ResponseViewModel<List<Appointment>>> GetAllFilterAppointments(FilterAppointmentRequestViewModel model, CancellationToken cancellationToken)
+
+        public async Task<List<Appointment>> GetAllFilterAppointments(
+            DateTime? startTime, 
+            string? doctorId, 
+            string? patientId, 
+            DateTime? endTime, 
+            int top, 
+            AppointmentStatus status, 
+            string sortBy, 
+            string sortOrder, 
+            CancellationToken cancellationToken)
         {
-            if (model == null)
-                throw new ErrorException("Invalid input to get filter appointment");
-
             var query = _dbContext.Appointments.AsQueryable().AsNoTracking();
-            if (model.StartTime != null && model.EndTime != null)
-                query = query.Where(a => a.AppointmentDate >= model.StartTime && a.AppointmentDate < model.EndTime && a.Status == model.Status);
+            if (startTime != null && endTime != null)
+                query = query.Where(a => a.AppointmentDate >= startTime && a.AppointmentDate < endTime && a.Status == status);
 
-            if (!string.IsNullOrEmpty(model.DoctorId))
-                query = query.Where(a => a.DoctorId == int.Parse(model.DoctorId));
+            if (!string.IsNullOrEmpty(doctorId))
+                query = query.Where(a => a.DoctorId == int.Parse(doctorId));
 
-            if (!string.IsNullOrEmpty(model.PatientId))
-                query = query.Where(a => a.PatientId == int.Parse(model.PatientId));
+            if (!string.IsNullOrEmpty(patientId))
+                query = query.Where(a => a.PatientId == int.Parse(patientId));
 
-            if (!string.IsNullOrEmpty(model.SortBy))
+            if (!string.IsNullOrEmpty(sortBy))
             {
-                var orderByExpression = GetOrderByExpression<Appointment>(model.SortBy);
-                query = model.SortOrder?.ToLower() == "desc" ? query.OrderByDescending(orderByExpression) : query.OrderBy(orderByExpression);
+                var orderByExpression = GetOrderByExpression<Appointment>(sortBy);
+                query = sortOrder?.ToLower() == SortOrderType.DESC ? query.OrderByDescending(orderByExpression) : query.OrderBy(orderByExpression);
             }
-            if (model.Top > 0)
+            if (top > 0)
             {
-                query = query.Take(model.Top);
+                query = query.Take(top);
             }
 
             var result = await query.Include(a => a.Doctor).ThenInclude(u => u.User)
                                     .Include(a => a.Patient).ThenInclude(u => u.User)
                                     .ToListAsync(cancellationToken);
 
-            return new ResponseViewModel<List<Appointment>>()
-            {
-                Success = true,
-                Data = result
-            };
+            return result;
         }
 
         public async Task<bool> IsExistsAppointment(int doctorId, DateTime date, CancellationToken cancellationToken)
@@ -79,5 +81,6 @@ namespace PureLifeClinic.Infrastructure.Persistence.Repositories
                 .ToListAsync();
         }
 
+       
     }
 }

@@ -58,7 +58,7 @@ namespace PureLifeClinic.Infrastructure.Persistence.Repositories
             return !hasOverlappingAppointment;
         }
 
-        public async Task<IEnumerable<TimespanWorkDayViewModel>> GetDoctorWorkDaysTimespanOfWeek(
+        public async Task<IEnumerable<WorkDay>> GetDoctorWorkDaysTimespanOfWeek(
             int doctorId, DateTime weekStartDate, CancellationToken cancellationToken)
         {
             var workDays = await _dbContext.WorkDays
@@ -66,12 +66,7 @@ namespace PureLifeClinic.Infrastructure.Persistence.Repositories
            .Join(_dbContext.Users, ww_wd => ww_wd.ww.UserId, u => u.Id, (ww_wd, u) => new { ww_wd.wd, ww_wd.ww, u })
            .Join(_dbContext.Doctors, u_ww_wd => u_ww_wd.u.Id, d => d.UserId, (u_ww_wd, d) => new { u_ww_wd.wd, d })
            .Where(x => x.d.Id == doctorId && x.wd.Date >= weekStartDate && x.wd.Date < weekStartDate.AddDays(7))
-           .Select(x => new TimespanWorkDayViewModel
-           {
-               WeekDate = x.wd.Date,
-               StartTime = x.wd.StartTime,
-               EndTime = x.wd.EndTime
-           })
+           .Select(x => x.wd)
            .ToListAsync(cancellationToken);
             return workDays;
         }
@@ -162,7 +157,7 @@ namespace PureLifeClinic.Infrastructure.Persistence.Repositories
                  .ToListAsync(cancellationToken);
         }
 
-        public async Task<PaginatedDataViewModel<Patient>> GetPaginatedPaitentData(
+        public async Task<PaginatedData<Patient>> GetPaginatedPaitentData(
              int doctorId,
              int pageNumber,
              int pageSize,
@@ -203,7 +198,7 @@ namespace PureLifeClinic.Infrastructure.Persistence.Repositories
                 .Take(pageSize)
                 .ToListAsync(cancellationToken);
 
-            return new PaginatedDataViewModel<Patient>(data, totalCount);
+            return new PaginatedData<Patient>(data, totalCount);
         }
 
         private Expression<Func<T, object>> GetOrderByExpression<T>(string propertyName)
