@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using PureLifeClinic.Application.BusinessObjects.EmailViewModels;
-using PureLifeClinic.Application.BusinessObjects.InvoiceViewModels;
-using PureLifeClinic.Application.BusinessObjects.InvoiceViewModels.File;
+using PureLifeClinic.Application.BusinessObjects.InvoiceViewModels.Request;
+using PureLifeClinic.Application.BusinessObjects.InvoiceViewModels.Response;
 using PureLifeClinic.Application.BusinessObjects.ResponseViewModels;
 using PureLifeClinic.Application.Interfaces.IServices;
 using PureLifeClinic.Application.Interfaces.IServices.IFileGenarator;

@@ -4,7 +4,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PureLifeClinic.API.ActionFilters;
 using PureLifeClinic.API.Attributes;
-using PureLifeClinic.Application.BusinessObjects.AppointmentViewModels;
+using PureLifeClinic.Application.BusinessObjects.AppointmentViewModels.Request;
+using PureLifeClinic.Application.BusinessObjects.AppointmentViewModels.Response;
 using PureLifeClinic.Application.BusinessObjects.ResponseViewModels;
 using PureLifeClinic.Application.Interfaces.IServices;
 using PureLifeClinic.Core.Common;
@@ -156,7 +157,6 @@ namespace PureLifeClinic.API.Controllers.V1
         [ServiceFilter(typeof(ValidateInputViewModelFilter))]
         [HttpPost("app/create")]
         [PermissionAuthorize(ResourceConstants.Appointment, PermissionAction.CreateDelete)]
-
         public async Task<IActionResult> Create(AppointmentCreateViewModel model, CancellationToken cancellationToken)
         {
             try

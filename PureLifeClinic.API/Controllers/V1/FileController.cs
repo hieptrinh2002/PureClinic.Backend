@@ -2,7 +2,7 @@
 using DinkToPdf;
 using DinkToPdf.Contracts;
 using Microsoft.AspNetCore.Mvc;
-using PureLifeClinic.Application.BusinessObjects.InvoiceViewModels.File;
+using PureLifeClinic.Application.BusinessObjects.InvoiceViewModels.Request;
 using PureLifeClinic.Application.BusinessObjects.MedicalReportViewModels.File;
 using PureLifeClinic.Application.Interfaces.IServices;
 

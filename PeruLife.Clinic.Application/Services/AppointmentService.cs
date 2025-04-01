@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
-using PureLifeClinic.Application.BusinessObjects.AppointmentViewModels;
+using PureLifeClinic.Application.BusinessObjects.AppointmentViewModels.Request;
+using PureLifeClinic.Application.BusinessObjects.AppointmentViewModels.Response;
 using PureLifeClinic.Application.BusinessObjects.ResponseViewModels;
 using PureLifeClinic.Application.Interfaces.IBackgroundJobs;
 using PureLifeClinic.Application.Interfaces.IServices;
@@ -22,14 +23,12 @@ namespace PureLifeClinic.Application.Services
         private readonly IUserContext _userContext;
         private readonly ICacheServiceFactory _cacheServiceFactory;
         private readonly IDoctorService _doctorService;
-        private readonly INotificationService _notificationService;
         private readonly IBackgroundJobService _backgroundJobService;
         public AppointmentService(
             IMapper mapper,
             IUserContext userContext,
             ICacheServiceFactory cacheServiceFactory,
             IDoctorService doctorService,
-            INotificationService notificationService,
             IBackgroundJobService backgroundJobService,
             IUnitOfWork unitOfWork)
             : base(mapper, unitOfWork.Appointments)
@@ -39,7 +38,6 @@ namespace PureLifeClinic.Application.Services
             _userContext = userContext;
             _cacheServiceFactory = cacheServiceFactory;
             _doctorService = doctorService;
-            _notificationService = notificationService;
             _backgroundJobService = backgroundJobService;
         }
 
@@ -90,11 +88,8 @@ namespace PureLifeClinic.Application.Services
             await _unitOfWork.BeginTransactionAsync(cancellationToken);
             try
             {
-                if (model.Email != null)
-                {
-                    if (await _unitOfWork.Users.GetByEmail(model.Email, cancellationToken) != null)
-                        throw new ErrorException("Email was used");
-                }
+                if (model.Email != null && await _unitOfWork.Users.GetByEmail(model.Email, cancellationToken) != null)
+                    throw new ErrorException("Email was used");
 
                 // create patient 
                 var patient = new Patient

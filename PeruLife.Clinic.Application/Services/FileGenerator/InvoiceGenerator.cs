@@ -2,7 +2,7 @@
 using iText.Layout;
 using iText.Layout.Element;
 using iText.Layout.Properties;
-using PureLifeClinic.Application.BusinessObjects.InvoiceViewModels.File;
+using PureLifeClinic.Application.BusinessObjects.InvoiceViewModels.Request;
 
 namespace PureLifeClinic.Application.Services.FileGenerator;
 

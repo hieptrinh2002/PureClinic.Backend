@@ -27,7 +27,7 @@ namespace PureLifeClinic.Application.Services
             _userService = userService;
         }
 
-        public async Task<ResponseViewModel<GenarateTokenViewModel>> GenerateJwtToken(int userId)
+        public async Task<ResponseViewModel<GenerateTokenViewModel>> GenerateJwtToken(int userId)
         {
             try
             {
@@ -54,9 +54,9 @@ namespace PureLifeClinic.Application.Services
                 var token = jwtTokenHandler.CreateToken(tokenDescriptor);
                 var jwtToken = jwtTokenHandler.WriteToken(token);
 
-                return new ResponseViewModel<GenarateTokenViewModel>()
+                return new ResponseViewModel<GenerateTokenViewModel>()
                 {
-                    Data = new GenarateTokenViewModel
+                    Data = new GenerateTokenViewModel
                     {
                         RefreshToken = GenerateRefreshToken(),
                         AccessToken = jwtToken,

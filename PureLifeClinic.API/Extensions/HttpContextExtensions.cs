@@ -25,7 +25,7 @@ namespace PureLifeClinic.API.Extensions
                 Title = title ?? "Access denied",
                 Status = statusCode ?? (int)HttpStatusCode.Forbidden,    
             };
-            //context.Response.StatusCode = problem.Status.Value;
+            context.Response.StatusCode = problem.Status.Value;
 
             await context.Response.WriteAsync(JsonSerializer.Serialize(problem, JsonSerializerOptions),
                 cancellationToken);

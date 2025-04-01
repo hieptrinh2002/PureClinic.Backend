@@ -4,7 +4,7 @@ using PureLifeClinic.API.Helpers;
 using PureLifeClinic.Application.BusinessObjects.ErrorViewModels;
 using PureLifeClinic.Application.BusinessObjects.MedicalReportViewModels;
 using PureLifeClinic.Application.BusinessObjects.ResponseViewModels;
-using PureLifeClinic.Application.BusinessObjects.RoleViewModels;
+using PureLifeClinic.Application.BusinessObjects.RoleViewModels.Response;
 using PureLifeClinic.Application.BusinessObjects.UserViewModels;
 using PureLifeClinic.Application.Interfaces.IServices;
 using PureLifeClinic.Core.Exceptions;

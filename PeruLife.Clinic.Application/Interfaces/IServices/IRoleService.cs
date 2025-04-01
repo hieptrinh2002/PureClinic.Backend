@@ -1,4 +1,5 @@
-﻿using PureLifeClinic.Application.BusinessObjects.RoleViewModels;
+﻿using PureLifeClinic.Application.BusinessObjects.RoleViewModels.Request;
+using PureLifeClinic.Application.BusinessObjects.RoleViewModels.Response;
 
 namespace PureLifeClinic.Application.Interfaces.IServices
 {

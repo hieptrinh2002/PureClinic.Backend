@@ -1,7 +1,8 @@
-﻿using PureLifeClinic.Application.BusinessObjects.DoctorViewModels;
+﻿using PureLifeClinic.Application.BusinessObjects.AppointmentViewModels.Response;
+using PureLifeClinic.Application.BusinessObjects.DoctorViewModels.Request;
+using PureLifeClinic.Application.BusinessObjects.DoctorViewModels.Response;
 using PureLifeClinic.Application.BusinessObjects.PatientsViewModels;
 using PureLifeClinic.Application.BusinessObjects.ResponseViewModels;
-using PureLifeClinic.Application.BussinessObjects.AppointmentViewModels;
 using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Entities.General;

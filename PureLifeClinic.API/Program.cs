@@ -192,7 +192,7 @@ app.UseStaticFiles();
 app.UseRouting(); // Add this line to configure routing
 
 app.UseAuthentication();
-app.UseMiddleware<PermissionsMiddleware>();
+app.UseMiddleware<PermissionHandlerMiddleware>();
 app.UseAuthorization();
 
 app.UseHangfireDashboard();

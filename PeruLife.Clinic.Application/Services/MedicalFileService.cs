@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using PureLifeClinic.Application.BusinessObjects.FileViewModels;
-using PureLifeClinic.Application.BusinessObjects.MedicalFileViewModels;
+using PureLifeClinic.Application.BusinessObjects.MedicalFileViewModels.Request;
+using PureLifeClinic.Application.BusinessObjects.MedicalFileViewModels.Response;
 using PureLifeClinic.Application.BusinessObjects.ResponseViewModels;
 using PureLifeClinic.Application.Interfaces.IServices;
 using PureLifeClinic.Core.Entities.General;

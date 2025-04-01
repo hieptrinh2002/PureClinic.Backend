@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using PureLifeClinic.API.ActionFilters;
 using PureLifeClinic.API.Attributes;
 using PureLifeClinic.API.Helpers;
 using PureLifeClinic.Application.BusinessObjects.AuthViewModels.Account;
@@ -117,6 +119,8 @@ namespace PureLifeClinic.API.Controllers.V1
         }
 
         [HttpPost("reset-password")]
+        [ServiceFilter(typeof(ValidateInputViewModelFilter))]
+
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest model)
         {
 
@@ -135,6 +139,8 @@ namespace PureLifeClinic.API.Controllers.V1
 
         [HttpPost("forgot-password")]
         [AllowAnonymous]
+        [ServiceFilter(typeof(ValidateInputViewModelFilter))]
+
         public async Task<IActionResult> ChangePassword([FromBody] ForgotPasswordRequestViewModel model)
         {
             try

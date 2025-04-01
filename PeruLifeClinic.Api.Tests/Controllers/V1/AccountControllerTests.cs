@@ -99,8 +99,7 @@ namespace PeruLifeClinic.Api.Tests.Controllers.V1
             _mockUserService.Setup(s => s.IsExists("Email", model.Email, cancellationToken)).ReturnsAsync(false);
             _mockUserService.Setup(s => s.Create(model, cancellationToken)).ReturnsAsync(response);
             _mockUserService.Setup(s => s.GenerateEmailConfirmationTokenAsync(model.Email))
-                .ReturnsAsync(
-                new ResponseViewModel<EmailActivationViewModel>
+                .ReturnsAsync(new ResponseViewModel<EmailActivationViewModel>
                 {
                     Success = true,
                     Message = "Email confirmation token generated successfully",
@@ -110,8 +109,7 @@ namespace PeruLifeClinic.Api.Tests.Controllers.V1
                         ActivationToken = "token",
                         ActivationUrl = "http://example.com"
                     }
-                }
-            );
+                });
 
             // Act
             var result = await _controller.SendActivationEmail(model, clientUrl, cancellationToken);

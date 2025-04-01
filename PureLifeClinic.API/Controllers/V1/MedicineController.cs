@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using PureLifeClinic.API.ActionFilters;
 using PureLifeClinic.API.Helpers;
 using PureLifeClinic.Application.BusinessObjects.ErrorViewModels;
-using PureLifeClinic.Application.BusinessObjects.MedicineViewModels;
+using PureLifeClinic.Application.BusinessObjects.MedicineViewModels.Request;
+using PureLifeClinic.Application.BusinessObjects.MedicineViewModels.Response;
 using PureLifeClinic.Application.BusinessObjects.ResponseViewModels;
 using PureLifeClinic.Application.Interfaces.IServices;
 using PureLifeClinic.Core.Common;
@@ -154,6 +156,7 @@ namespace PureLifeClinic.API.Controllers.V1
 
 
         [HttpPost]
+        [ServiceFilter(typeof(ValidateInputViewModelFilter))]
         public async Task<IActionResult> Create(MedicineCreateViewModel model, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid) {
@@ -181,6 +184,7 @@ namespace PureLifeClinic.API.Controllers.V1
         }
 
         [HttpPut]
+        [ServiceFilter(typeof(ValidateInputViewModelFilter))]
         public async Task<IActionResult> Edit(MedicineUpdateViewModel model, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)

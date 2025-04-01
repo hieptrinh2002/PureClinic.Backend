@@ -67,9 +67,9 @@ namespace PeruLifeClinic.Api.Tests.Controllers.V1
                 }
             };
 
-            var tokenResult = new ResponseViewModel<GenarateTokenViewModel>
+            var tokenResult = new ResponseViewModel<GenerateTokenViewModel>
             {
-                Data = new GenarateTokenViewModel
+                Data = new GenerateTokenViewModel
                 {
                     AccessToken = "accessToken",
                     RefreshToken = new RefreshToken
@@ -195,9 +195,9 @@ namespace PeruLifeClinic.Api.Tests.Controllers.V1
         public async Task RefreshTokenCheckAsync_ShouldReturnOk_WhenRefreshTokenIsValid()
         {
             // Arrange
-            var tokenResult = new ResponseViewModel<GenarateTokenViewModel>
+            var tokenResult = new ResponseViewModel<GenerateTokenViewModel>
             {
-                Data = new GenarateTokenViewModel
+                Data = new GenerateTokenViewModel
                 {
                     AccessToken = "accessToken",
                     RefreshToken = new RefreshToken

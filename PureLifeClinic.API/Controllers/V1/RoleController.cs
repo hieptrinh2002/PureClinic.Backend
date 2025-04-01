@@ -2,12 +2,13 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PureLifeClinic.API.Helpers;
-using PureLifeClinic.Application.BusinessObjects.ErrorViewModels;
+using PureLifeClinic.API.ActionFilters;
 using PureLifeClinic.Application.BusinessObjects.ResponseViewModels;
-using PureLifeClinic.Application.BusinessObjects.RoleViewModels;
+using PureLifeClinic.Application.BusinessObjects.RoleViewModels.Request;
+using PureLifeClinic.Application.BusinessObjects.RoleViewModels.Response;
 using PureLifeClinic.Application.Interfaces.IServices;
 using PureLifeClinic.Core.Entities.Business;
+using PureLifeClinic.Core.Exceptions;
 
 namespace PureLifeClinic.API.Controllers.V1
 {
@@ -15,6 +16,7 @@ namespace PureLifeClinic.API.Controllers.V1
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+
     public class RoleController : ControllerBase
     {
         private readonly ILogger<RoleController> _logger;
@@ -48,19 +50,7 @@ namespace PureLifeClinic.API.Controllers.V1
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while retrieving roles");
-
-                var errorResponse = new ResponseViewModel<IEnumerable<RoleViewModel>>
-                {
-                    Success = false,
-                    Message = "Error retrieving roles",
-                    Error = new ErrorViewModel
-                    {
-                        Code = "ERROR_CODE",
-                        Message = ex.Message
-                    }
-                };
-
-                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
+                throw;
             }
         }
 
@@ -83,19 +73,7 @@ namespace PureLifeClinic.API.Controllers.V1
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while retrieving roles");
-
-                var errorResponse = new ResponseViewModel<IEnumerable<RoleViewModel>>
-                {
-                    Success = false,
-                    Message = "Error retrieving roles",
-                    Error = new ErrorViewModel
-                    {
-                        Code = "ERROR_CODE",
-                        Message = ex.Message
-                    }
-                };
-
-                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
+                throw;
             }
         }
 
@@ -117,192 +95,88 @@ namespace PureLifeClinic.API.Controllers.V1
             }
             catch (Exception ex)
             {
-                if (ex.Message == "No data found")
-                {
-                    return StatusCode(StatusCodes.Status404NotFound, new ResponseViewModel<RoleViewModel>
-                    {
-                        Success = false,
-                        Message = "Role not found",
-                        Error = new ErrorViewModel
-                        {
-                            Code = "NOT_FOUND",
-                            Message = "Role not found"
-                        }
-                    });
-                }
-
                 _logger.LogError(ex, $"An error occurred while retrieving the role");
-
-                var errorResponse = new ResponseViewModel<RoleViewModel>
-                {
-                    Success = false,
-                    Message = "Error retrieving role",
-                    Error = new ErrorViewModel
-                    {
-                        Code = "ERROR_CODE",
-                        Message = ex.Message
-                    }
-                };
-
-                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
+                throw;
             }
         }
 
         [HttpPost]
+        [ServiceFilter(typeof(ValidateInputViewModelFilter))]
         public async Task<IActionResult> Create(RoleCreateViewModel model, CancellationToken cancellationToken)
         {
-            if (ModelState.IsValid)
+
+            string message = "";
+            if (await _roleService.IsExists("Name", model.Name, cancellationToken))
             {
-                string message = "";
-                if (await _roleService.IsExists("Name", model.Name, cancellationToken))
-                {
-                    message = $"The role name- '{model.Name}' already exists";
-                    return StatusCode(StatusCodes.Status400BadRequest, new ResponseViewModel<RoleViewModel>
-                    {
-                        Success = false,
-                        Message = message,
-                        Error = new ErrorViewModel
-                        {
-                            Code = "DUPLICATE_NAME",
-                            Message = message
-                        }
-                    });
-                }
-
-                if (await _roleService.IsExists("Code", model.Code, cancellationToken))
-                {
-                    message = $"The role code- '{model.Code}' already exists";
-                    return StatusCode(StatusCodes.Status400BadRequest, new ResponseViewModel<RoleViewModel>
-                    {
-                        Success = false,
-                        Message = message,
-                        Error = new ErrorViewModel
-                        {
-                            Code = "DUPLICATE_CODE",
-                            Message = message
-                        }
-                    });
-                }
-
-                try
-                {
-                    var data = await _roleService.Create(model, cancellationToken);
-
-                    var response = new ResponseViewModel<RoleViewModel>
-                    {
-                        Success = true,
-                        Message = "Role created successfully",
-                        Data = data
-                    };
-
-                    return Ok(response);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, $"An error occurred while adding the role");
-                    message = $"An error occurred while adding the role- " + ex.Message;
-
-                    return StatusCode(StatusCodes.Status500InternalServerError, new ResponseViewModel<RoleViewModel>
-                    {
-                        Success = false,
-                        Message = message,
-                        Error = new ErrorViewModel
-                        {
-                            Code = "ADD_ROLE_ERROR",
-                            Message = message
-                        }
-                    });
-                }
+                message = $"The role name- '{model.Name}' already exists";
+                _logger.LogError(message);
+                throw new BadRequestException(message);
             }
 
-            return StatusCode(StatusCodes.Status400BadRequest, new ResponseViewModel<RoleViewModel>
+            if (await _roleService.IsExists("Code", model.Code, cancellationToken))
             {
-                Success = false,
-                Message = "Invalid input",
-                Error = new ErrorViewModel
+                message = $"The role code- '{model.Code}' already exists";
+                _logger.LogError(message);
+                throw new BadRequestException(message);
+            }
+
+            try
+            {
+                var data = await _roleService.Create(model, cancellationToken);
+
+                var response = new ResponseViewModel<RoleViewModel>
                 {
-                    Code = "INPUT_VALIDATION_ERROR",
-                    Message = ModelStateHelper.GetErrors(ModelState)
-                }
-            });
+                    Success = true,
+                    Message = "Role created successfully",
+                    Data = data
+                };
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"An error occurred while adding the role");
+                throw;
+            }
         }
 
         [HttpPut]
+        [ServiceFilter(typeof(ValidateInputViewModelFilter))]
         public async Task<IActionResult> Edit(RoleUpdateViewModel model, CancellationToken cancellationToken)
         {
-            if (ModelState.IsValid)
+
+            string message = "";
+            if (await _roleService.IsExistsForUpdate(model.Id, "Name", model.Name, cancellationToken))
             {
-                string message = "";
-                if (await _roleService.IsExistsForUpdate(model.Id, "Name", model.Name, cancellationToken))
-                {
-                    message = $"The role name- '{model.Name}' already exists";
-                    return StatusCode(StatusCodes.Status400BadRequest, new ResponseViewModel
-                    {
-                        Success = false,
-                        Message = message,
-                        Error = new ErrorViewModel
-                        {
-                            Code = "DUPLICATE_NAME",
-                            Message = message
-                        }
-                    });
-                }
-
-                if (await _roleService.IsExistsForUpdate(model.Id, "Code", model.Code, cancellationToken))
-                {
-                    message = $"The role code- '{model.Code}' already exists";
-                    return StatusCode(StatusCodes.Status400BadRequest, new ResponseViewModel
-                    {
-                        Success = false,
-                        Message = message,
-                        Error = new ErrorViewModel
-                        {
-                            Code = "DUPLICATE_CODE",
-                            Message = message
-                        }
-                    });
-                }
-
-                try
-                {
-                    await _roleService.Update(model, cancellationToken);
-
-                    var response = new ResponseViewModel
-                    {
-                        Success = true,
-                        Message = "Role updated successfully"
-                    };
-
-                    return Ok(response);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, $"An error occurred while updating the role");
-                    message = $"An error occurred while updating the role- " + ex.Message;
-
-                    return StatusCode(StatusCodes.Status500InternalServerError, new ResponseViewModel
-                    {
-                        Success = false,
-                        Message = message,
-                        Error = new ErrorViewModel
-                        {
-                            Code = "UPDATE_ROLE_ERROR",
-                            Message = message
-                        }
-                    });
-                }
+                message = $"The role name- '{model.Name}' already exists";
+                _logger.LogError(message);
+                throw new BadRequestException(message);
             }
 
-            return StatusCode(StatusCodes.Status400BadRequest, new ResponseViewModel
+            if (await _roleService.IsExistsForUpdate(model.Id, "Code", model.Code, cancellationToken))
             {
-                Success = false,
-                Message = "Invalid input",
-                Error = new ErrorViewModel
+                message = $"The role code- '{model.Code}' already exists";
+                _logger.LogError(message);
+                throw new BadRequestException(message);
+            }
+
+            try
+            {
+                await _roleService.Update(model, cancellationToken);
+
+                var response = new ResponseViewModel
                 {
-                    Code = "INPUT_VALIDATION_ERROR",
-                    Message = ModelStateHelper.GetErrors(ModelState)
-                }
-            });
+                    Success = true,
+                    Message = "Role updated successfully"
+                };
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"An error occurred while updating the role");
+                throw;
+            }
         }
 
         [HttpDelete("{id}")]
@@ -322,33 +196,9 @@ namespace PureLifeClinic.API.Controllers.V1
             }
             catch (Exception ex)
             {
-                if (ex.Message == "No data found")
-                {
-                    return StatusCode(StatusCodes.Status404NotFound, new ResponseViewModel
-                    {
-                        Success = false,
-                        Message = "Role not found",
-                        Error = new ErrorViewModel
-                        {
-                            Code = "NOT_FOUND",
-                            Message = "Role not found"
-                        }
-                    });
-                }
-
+              
                 _logger.LogError(ex, "An error occurred while deleting the role");
-
-                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseViewModel
-                {
-                    Success = false,
-                    Message = "Error deleting the role",
-                    Error = new ErrorViewModel
-                    {
-                        Code = "DELETE_ROLE_ERROR",
-                        Message = ex.Message
-                    }
-                });
-
+                throw;
             }
         }
     }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using PureLifeClinic.Application.BusinessObjects.MedicineViewModels;
+using PureLifeClinic.Application.BusinessObjects.MedicineViewModels.Request;
+using PureLifeClinic.Application.BusinessObjects.MedicineViewModels.Response;
 using PureLifeClinic.Application.Interfaces.IServices;
 using PureLifeClinic.Core.Entities.General;
 using PureLifeClinic.Core.Exceptions;

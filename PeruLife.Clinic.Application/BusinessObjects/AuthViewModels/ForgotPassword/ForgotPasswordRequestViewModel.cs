@@ -4,11 +4,8 @@ namespace PureLifeClinic.Application.BusinessObjects.AuthViewModels.ForgotPasswo
 {
     public class ForgotPasswordRequestViewModel
     {
-        [Required]
-        [EmailAddress]
         public string Email { get; set; }
 
-        [Required]
         public string ClientUrl { get; set; }
     }
 }

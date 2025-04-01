@@ -2,7 +2,8 @@
 using Microsoft.Extensions.Logging;
 using Moq;
 using PureLifeClinic.API.Controllers.V1;
-using PureLifeClinic.Application.BusinessObjects.AppointmentViewModels;
+using PureLifeClinic.Application.BusinessObjects.AppointmentViewModels.Request;
+using PureLifeClinic.Application.BusinessObjects.AppointmentViewModels.Response;
 using PureLifeClinic.Application.BusinessObjects.ResponseViewModels;
 using PureLifeClinic.Application.Interfaces.IServices;
 using PureLifeClinic.Core.Common;

@@ -6,7 +6,7 @@ namespace PureLifeClinic.Application.Interfaces.IServices
 {
     public interface ITokenService
     {
-        Task<ResponseViewModel<GenarateTokenViewModel>> GenerateJwtToken(int userId);
+        Task<ResponseViewModel<GenerateTokenViewModel>> GenerateJwtToken(int userId);
         RefreshToken GenerateRefreshToken();
     }
 

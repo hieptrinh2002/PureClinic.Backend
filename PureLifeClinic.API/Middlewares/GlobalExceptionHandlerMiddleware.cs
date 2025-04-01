@@ -10,12 +10,10 @@ namespace PureLifeClinic.API.Middlewares
     {
         private readonly RequestDelegate _next;
         private readonly ILogger<GlobalExceptionHandlerMiddleware> _logger;
-        private readonly IWebHostEnvironment _env;   
-        public GlobalExceptionHandlerMiddleware(RequestDelegate next, ILogger<GlobalExceptionHandlerMiddleware> logger, IWebHostEnvironment env)
+        public GlobalExceptionHandlerMiddleware(RequestDelegate next, ILogger<GlobalExceptionHandlerMiddleware> logger)
         {
             _next = next;
             _logger = logger;
-            _env = env;
         }
 
         public async Task Invoke(HttpContext context)
@@ -85,13 +83,6 @@ namespace PureLifeClinic.API.Middlewares
             context.Response.StatusCode = statusCode;
             context.Response.ContentType = "application/json";
             await context.Response.WriteAsync(JsonConvert.SerializeObject(response));
-        }
-    }
-    public static class GlobalExceptionHandlerMiddlewareExtensions
-    {
-        public static IApplicationBuilder UseGlobalExceptionHandler(this IApplicationBuilder builder)
-        {
-            return builder.UseMiddleware<GlobalExceptionHandlerMiddleware>();
         }
     }
 }

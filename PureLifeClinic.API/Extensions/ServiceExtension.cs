@@ -2,7 +2,7 @@ using CloudinaryDotNet;
 using Microsoft.Extensions.Options;
 using PeruLife.Clinic.Application.Services;
 using PureLifeClinic.API.ActionFilters;
-using PureLifeClinic.Application.BusinessObjects.InvoiceViewModels.File;
+using PureLifeClinic.Application.BusinessObjects.InvoiceViewModels.Request;
 using PureLifeClinic.Application.Interfaces.IBackgroundJobs;
 using PureLifeClinic.Application.Interfaces.IServices;
 using PureLifeClinic.Application.Interfaces.IServices.IFileGenarator;

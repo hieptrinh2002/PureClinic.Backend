@@ -1,5 +1,5 @@
-﻿using PureLifeClinic.Application.BusinessObjects.InvoiceViewModels;
-using PureLifeClinic.Application.BusinessObjects.InvoiceViewModels.File;
+﻿using PureLifeClinic.Application.BusinessObjects.InvoiceViewModels.Request;
+using PureLifeClinic.Application.BusinessObjects.InvoiceViewModels.Response;
 using PureLifeClinic.Application.BusinessObjects.ResponseViewModels;
 
 namespace PureLifeClinic.Application.Interfaces.IServices

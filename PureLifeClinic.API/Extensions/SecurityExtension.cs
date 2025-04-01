@@ -60,13 +60,13 @@ namespace PureLifeClinic.API.Extensions
                         var accessToken = context.Request.Query["access_token"];
                         var path = context.HttpContext.Request.Path;
 
-                       // Lấy token từ Query String (cho Long Polling / SSE)
+                       // Get token from Query String (cho Long Polling / SSE)
                        if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/NotificationHub"))
                        {
                            context.Token = accessToken;
                        }
 
-                       // Nếu dùng WebSockets, lấy token từ Header
+                       // if using WebSockets, get token from Header
                        if (string.IsNullOrEmpty(accessToken) && context.HttpContext.Request.Headers.ContainsKey("Authorization"))
                        {
                            accessToken = context.HttpContext.Request.Headers["Authorization"]

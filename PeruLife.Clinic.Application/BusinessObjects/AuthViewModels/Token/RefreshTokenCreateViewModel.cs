@@ -4,11 +4,10 @@ namespace PureLifeClinic.Application.BusinessObjects.AuthViewModels.Token
 {
     public class RefreshTokenCreateViewModel
     {
-        [Required]
         public int UserId { get; set; }
 
-        [Required, StringLength(maximumLength: 100, MinimumLength = 2)]
         public string Token { get; set; }
+
         public string? AccessTokenId { get; set; }
 
         public DateTime ExpireOn { get; set; }

@@ -1,4 +1,5 @@
-﻿using PureLifeClinic.Application.BusinessObjects.MedicalFileViewModels;
+﻿using PureLifeClinic.Application.BusinessObjects.MedicalFileViewModels.Request;
+using PureLifeClinic.Application.BusinessObjects.MedicalFileViewModels.Response;
 using PureLifeClinic.Application.BusinessObjects.ResponseViewModels;
 using PureLifeClinic.Core.Entities.General;
 

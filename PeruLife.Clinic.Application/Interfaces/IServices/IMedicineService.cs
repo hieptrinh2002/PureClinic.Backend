@@ -1,4 +1,5 @@
-﻿using PureLifeClinic.Application.BusinessObjects.MedicineViewModels;
+﻿using PureLifeClinic.Application.BusinessObjects.MedicineViewModels.Request;
+using PureLifeClinic.Application.BusinessObjects.MedicineViewModels.Response;
 
 namespace PureLifeClinic.Application.Interfaces.IServices
 {

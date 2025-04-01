@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PureLifeClinic.API.Attributes;
-using PureLifeClinic.Application.BusinessObjects.DoctorViewModels;
+using PureLifeClinic.Application.BusinessObjects.DoctorViewModels.Response;
 using PureLifeClinic.Application.BusinessObjects.PatientsViewModels;
 using PureLifeClinic.Application.BusinessObjects.ResponseViewModels;
 using PureLifeClinic.Application.Interfaces.IServices;
