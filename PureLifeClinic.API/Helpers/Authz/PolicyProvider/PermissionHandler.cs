@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using PureLifeClinic.Core.Enums;
+using PureLifeClinic.Core.Enums.PermissionEnums;
 
 namespace PureLifeClinic.API.Helpers.Authz.PolicyProvider
 {

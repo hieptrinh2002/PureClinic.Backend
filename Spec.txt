@@ -1,0 +1,68 @@
+﻿Waiting queue design: 
+    participant Employee
+    participant Patient
+    participant Doctor
+    participant API
+    participant Counter
+    participant Display
+    participant VoiceSystem
+
+Đã booking: 
+    => đến thẳng phòng khám đã booking => vào queue hàng đợi ( ưu tiên chờ < 15p )
+sequenceDiagram
+    Employee => API: Cập nhật trạng thái bệnh nhân đã đến
+    API->>Display: Cập nhật danh sách chờ tại chính queue bệnh nhân cho bác sĩ đó (SignalR)
+    Doctor => API: xác nhận hoàn tất khám => remove patient và cập nhật hàng đợi (SignalR) 
+                                          => đơn thuốc, dịch vụ sức khỏe yêu cầu từ doctor (sét nghiệm của bệnh nhân) (A)
+                                          => nếu A tồn tại  => + Bệnh nhân còn khám và sét trang thái là vẫn trong quá trình in progress
+
+in-person: 
+Khi đền phòng khám sẽ lấy ph lấy phiếu chờ tư vấn
+sequenceDiagram
+    Patient->>API: logic sinh ra 1 số => Lấy số thứ tự (Check-in)
+    API->>Patient: Trả về số (VD: A001)
+    API->>Display: Cập nhật danh sách chờ (SignalR)
+    Counter->>API: Gọi số tiếp theo
+    API->>Counter: Trả về thông tin số và quầy
+    API->>Display: Cập nhật số đang gọi (SignalR)
+    API->>VoiceSystem: Gửi text thông báo (VD: "A001 đến quầy số 3")
+    VoiceSystem-->>Patient: Phát âm thanh
+
+    - Sau khi được employee tư vấn và lấy thông tin nếu làn lần khám đầu (sđt, mail, name, ....) 
+                                    => Assign bệnh nhân vào bác sĩ đúng chuyên môn hiện đang trống hoặc có thể có khám 
+                                    (logic ở đây là bác sĩ có ít bệnh nhân đặt trước trong khung giờ này hoặc đang rảnh và không có cuộc hẹn đặt trước nào sau 15p nữa  
+    - Sau khi cập nhật có bệnh nhân vào queue bệnh nhân của bác sĩ đã chọn, các bươc tiếp theo y như đã booking.
+    
+**** Cải tiến
+- Priority Rules:
+    => Bệnh nhân booking mất ưu tiên nếu đến trễ >15 phút, Tự động điều chỉnh thứ tự queue dựa trên thời gian thực tế.
+- Xử lý đa nhiệm	
+    + Khi bệnh nhân cần xét nghiệm (A), trạng thái "in progress" chưa rõ ràng: Có tái nhập queue sau khi xét nghiệm?
+    + Thêm trạng thái chi tiết: Đang khám → Chờ kết quả xét nghiệm → Hoàn thành. Queue chỉ remove khi trạng thái là Hoàn thành.
+
+- Phân bổ bác sĩ	
+    + Logic gán bác sĩ "ít bệnh nhận đặt trước hoặc đang rảnh" chưa đủ mạnh → Khó cân bằng tải.	
+    + Triển khai thuật toán load balancing: Ưu tiên bác sĩ có ít cuộc hẹn nhất trong 2 giờ tới hoặc có thời gian trống >15 phút sau khung hiện tại.
+
+- Xử lý walk-in	Walk-in được gán bác sĩ ngay nhưng không rõ ưu tiên so với booking → Có thể gây trễ cho booking.	
+    + Thêm rule: Walk-in chỉ được xếp vào slot trống không ảnh hưởng đến booking hoặc Đưa vào hàng chờ riêng với mức ưu tiên thấp hơn.
+
+- Voice System:
+    + Thiếu cơ chế fallback nếu Voice System lỗi (ví dụ: hiển thị mã QR để bệnh nhân tự theo dõi qua điện thoại).	
+    + Tích hợp SMS/App notification song song với Voice System.
+
+- Data Integrity	
+    + Dùng SignalR real-time nhưng chưa đề cập lưu trữ queue → Nếu server restart, dữ liệu queue có thể mất.	
+    + Lưu trạng thái queue vào database (Redis hoặc SQL), kết hợp transaction để đảm bảo consistency.
+
+- Quản lý Dữ liệu
+    + Real-Time Data: Lưu trạng thái queue trong Redis + đồng bộ với PostgreSQL mỗi 30s.
+    + Audit Log: Ghi lại mọi thay đổi trạng thái (user, thời gian, action).
+
+*** Bảo mật
+RBAC:
+Patient: Chỉ xem thông tin cá nhân qua mã số.
+Doctor: Chỉ truy cập queue của mình.
+Admin: Toàn quyền.
+
+** Scenario Tests

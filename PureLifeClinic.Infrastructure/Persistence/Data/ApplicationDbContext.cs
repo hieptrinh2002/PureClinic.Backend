@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PureLifeClinic.Core.Entities.General;
+using PureLifeClinic.Core.Entities.General.Queues;
 
 namespace PureLifeClinic.Infrastructure.Persistence.Data
 {
@@ -30,10 +31,15 @@ namespace PureLifeClinic.Infrastructure.Persistence.Data
         public DbSet<PrescriptionDetail> PrescriptionDetails { get; set; }
         public DbSet<Permission> Permissions { get; set; }
         public DbSet<UserPermission> UserPermissions { get; set; }
-
         public DbSet<Invoice> Invoices { get; set; }
-
-        public DbSet<UserConnection> UserConnections { get; set; }    
+        public DbSet<UserConnection> UserConnections { get; set; }
+        public DbSet<ConsultationQueue> ConsultationQueues { get; set; }
+        public DbSet<Counter> Counters { get; set; }
+        public DbSet<ExaminationQueue> ExaminationQueues { get; set; }
+        public DbSet<ActionOnResource> ActionOnResources { get; set; }
+        public DbSet<Resource> Resources { get; set; }
+        public DbSet<Feedback> Feedbacks { get; set; }
+        public DbSet<Specialization> Specializations { get; set; }
         #endregion
 
         protected override void OnModelCreating(ModelBuilder builder)

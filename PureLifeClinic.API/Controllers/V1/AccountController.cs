@@ -14,7 +14,7 @@ using PureLifeClinic.Application.BusinessObjects.UserViewModels;
 using PureLifeClinic.Application.Interfaces.IBackgroundJobs;
 using PureLifeClinic.Application.Interfaces.IServices;
 using PureLifeClinic.Core.Common.Constants;
-using PureLifeClinic.Core.Enums;
+using PureLifeClinic.Core.Enums.PermissionEnums;
 using PureLifeClinic.Core.Exceptions;
 
 namespace PureLifeClinic.API.Controllers.V1

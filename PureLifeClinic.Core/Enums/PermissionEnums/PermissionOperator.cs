@@ -1,4 +1,4 @@
-﻿namespace PureLifeClinic.Core.Enums
+﻿namespace PureLifeClinic.Core.Enums.PermissionEnums
 {
     public enum PermissionOperator
     {

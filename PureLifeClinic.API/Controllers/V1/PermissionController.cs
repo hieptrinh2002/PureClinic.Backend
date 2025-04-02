@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using PureLifeClinic.Application.BusinessObjects.PermissionViewModels;
 using PureLifeClinic.Application.BusinessObjects.ResponseViewModels;
 using PureLifeClinic.Application.Interfaces.IServices;
-using PureLifeClinic.Core.Enums;
+using PureLifeClinic.Core.Enums.PermissionEnums;
 
 namespace PureLifeClinic.API.Controllers.V1
 {

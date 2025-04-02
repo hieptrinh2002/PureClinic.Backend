@@ -1,6 +1,6 @@
 ﻿namespace PureLifeClinic.Core.Entities.General
 {
-    public class Resources : Base<int>
+    public class Resource : Base<int>
     {
         public string Name { get; set; }
 

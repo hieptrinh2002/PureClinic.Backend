@@ -13,6 +13,7 @@ using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Common.Constants;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Enums;
+using PureLifeClinic.Core.Enums.PermissionEnums;
 
 namespace PureLifeClinic.API.Controllers.V1
 {

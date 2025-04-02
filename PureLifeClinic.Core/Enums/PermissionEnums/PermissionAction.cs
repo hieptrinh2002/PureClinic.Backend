@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace PureLifeClinic.Core.Enums
+namespace PureLifeClinic.Core.Enums.PermissionEnums
 {
     [Flags]
     public enum PermissionAction

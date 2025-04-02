@@ -5,6 +5,7 @@ using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Common.Constants;
 using PureLifeClinic.Core.Entities.General;
 using PureLifeClinic.Core.Enums;
+using PureLifeClinic.Core.Enums.PermissionEnums;
 using PureLifeClinic.Core.Exceptions;
 using PureLifeClinic.Core.Interfaces.IRepositories;
 using System.Security.Claims;

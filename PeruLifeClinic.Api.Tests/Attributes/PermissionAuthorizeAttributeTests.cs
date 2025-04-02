@@ -1,5 +1,5 @@
 ﻿using PureLifeClinic.API.Attributes;
-using PureLifeClinic.Core.Enums;
+using PureLifeClinic.Core.Enums.PermissionEnums;
 using Xunit;
 
 namespace PeruLifeClinic.Api.Tests.Attributes

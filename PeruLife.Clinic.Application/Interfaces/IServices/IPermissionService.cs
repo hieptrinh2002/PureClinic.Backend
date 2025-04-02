@@ -1,5 +1,5 @@
 ﻿using PureLifeClinic.Application.BusinessObjects.PermissionViewModels;
-using PureLifeClinic.Core.Enums;
+using PureLifeClinic.Core.Enums.PermissionEnums;
 using System.Security.Claims;
 
 namespace PureLifeClinic.Application.Interfaces.IServices
