@@ -16,11 +16,11 @@ namespace PureLifeClinic.Infrastructure.BackgroundServices.Schedulers
                 Cron.Daily
             );
 
-            recurringJobService.AddOrUpdate<IReportGenerationJob>(
-                "monthly-report-generation",
-                x => x.GenerateMonthlyReportAsync(),
-                Cron.Weekly
-            );
+            //recurringJobService.AddOrUpdate<IReportGenerationJob>(
+            //    "monthly-report-generation",
+            //    x => x.GenerateMonthlyReportAsync(),
+            //    Cron.Weekly
+            //);
         }
     }
 }

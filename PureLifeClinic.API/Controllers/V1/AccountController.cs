@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
 using PureLifeClinic.API.ActionFilters;
 using PureLifeClinic.API.Attributes;
 using PureLifeClinic.API.Helpers;

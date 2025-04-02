@@ -12,6 +12,7 @@ using PureLifeClinic.Application.Services.FileGenerator;
 using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Interfaces.IRepositories;
 using PureLifeClinic.Infrastructure.BackgroundServices;
+using PureLifeClinic.Infrastructure.BackgroundServices.Jobs;
 using PureLifeClinic.Infrastructure.ExternalServices;
 using PureLifeClinic.Infrastructure.Persistence.Repositories;
 using PureLifeClinic.Infrastructure.SignalR;
@@ -54,10 +55,11 @@ namespace PureLifeClinic.API.Extensions
             services.AddScoped<ValidateInputViewModelFilter>();
             services.AddScoped<IBackgroundJobService, BackgroundJobService>();
             services.AddScoped<IRecurringJobService, RecurringJobService>();
-
+            services.AddScoped<IAppointmentReminderJob, AppointmentReminderJob>();
+            //services.AddScoped<IReportGenerationJob, ReportGenerationJob>();
 
             services.AddScoped<INotificationService, NotificationService>();
-            services.AddScoped<IHubConnectionService, HubConnectionService>();  
+            services.AddScoped<IHubConnectionService, HubConnectionService>();
 
             #region RabbitMQ
             //services.AddSingleton<IRabbitMQConnection>(new RabbitMQConnection());

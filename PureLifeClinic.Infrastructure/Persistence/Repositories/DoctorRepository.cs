@@ -44,7 +44,7 @@ namespace PureLifeClinic.Infrastructure.Persistence.Repositories
                 }
             }
             if (!isWorking)
-                throw new ErrorException($"Doctor is not working on {DateOnly.FromDateTime(appointmentDate)} at {appointmentStartTime}");
+                throw new BadRequestException($"Doctor is not working on {DateOnly.FromDateTime(appointmentDate)} at {appointmentStartTime}");
 
             // check time range in apointmnetdate - default appointment time is 30 minutes   
             var appointmentEndTime = appointmentStartTime.Add(TimeSpan.FromMinutes(Constants.AvgAppointmentTimeInMinute));

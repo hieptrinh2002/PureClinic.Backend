@@ -19,8 +19,8 @@ namespace PureLifeClinic.Application.Services
             var modelType = model.GetType();
             var validatorType = typeof(IValidator<>).MakeGenericType(modelType);
 
-            var validator = _serviceProvider.GetService(validatorType) as IValidator
-               ?? throw new Exception($"Validator for {modelType.Name} not found");
+            if (_serviceProvider.GetService(validatorType) is not IValidator validator)
+                return new ValidationResult();
 
             // Get method ValidateAsync
             var validateMethod = validatorType.GetMethod("ValidateAsync", new[] { modelType, typeof(CancellationToken) })

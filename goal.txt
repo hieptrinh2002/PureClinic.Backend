@@ -220,3 +220,6 @@ plan:
 		Xử lý chat real-time giữa bệnh nhân và bác sĩ.
 		Lưu trữ lịch sử trò chuyện vào database.
 		Thông báo khi có tin nhắn mới
+
+- Hàng đợi => bệnh nhân đã đặt lịch khám 
+- Hàng đợi => bệnh nhân đến khám lần đầu/ chưa có đặt lich
