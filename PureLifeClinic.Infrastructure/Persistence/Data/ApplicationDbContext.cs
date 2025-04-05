@@ -8,9 +8,7 @@ namespace PureLifeClinic.Infrastructure.Persistence.Data
     public class ApplicationDbContext : IdentityDbContext<User, Role, int>
     {
 
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
-        {
-        }
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) {}
 
         #region DbSet Section
         public DbSet<Product> Products { get; set; }
@@ -40,6 +38,7 @@ namespace PureLifeClinic.Infrastructure.Persistence.Data
         public DbSet<Resource> Resources { get; set; }
         public DbSet<Feedback> Feedbacks { get; set; }
         public DbSet<Specialization> Specializations { get; set; }
+
         #endregion
 
         protected override void OnModelCreating(ModelBuilder builder)

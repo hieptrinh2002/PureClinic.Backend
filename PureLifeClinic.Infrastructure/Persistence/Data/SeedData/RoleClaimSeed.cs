@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using PureLifeClinic.Core.Common.Constants;
 using PureLifeClinic.Core.Enums.PermissionEnums;
-using PureLifeClinic.Infrastructure.Persistence.Data;
 
 namespace PureLifeClinic.Infrastructure.Persistence.Data.SeedData
 {

@@ -1,4 +1,4 @@
-﻿using PureLifeClinic.Core.Enums;
+﻿using PureLifeClinic.Core.Enums.Queues;
 
 namespace PureLifeClinic.Core.Entities.General.Queues
 {
@@ -10,12 +10,10 @@ namespace PureLifeClinic.Core.Entities.General.Queues
 
         public required string QueueNumber { get; set; } // Ex: A001
 
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
         public QueueStatus Status { get; set; } // Waiting, InProgress, Completed
 
         public  Patient? Patient { get; set; }
 
-        public  Counter Counter { get; set; }
+        public  Counter? Counter { get; set; }
     }
 }

@@ -19,7 +19,9 @@
         IInvoiceRepository Invoices { get; }
         IRoleClaimRepository RoleClaims { get; }
         IUserClaimRepository UserClaims { get; }
-
+        IConsultationQueueRepository ConsultationQueues { get; }
+        IExaminationQueueRepository ExaminationQueues{ get; }
+        ICounterRepository Counters { get; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
         Task BeginTransactionAsync(CancellationToken cancellationToken = default);

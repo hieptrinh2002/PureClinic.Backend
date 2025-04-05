@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PureLifeClinic.Core.Entities.General.Queues;
 using PureLifeClinic.Core.Enums;
+using PureLifeClinic.Core.Enums.Queues;
 
 namespace PureLifeClinic.Infrastructure.Persistence.EntityConfigurations
 {

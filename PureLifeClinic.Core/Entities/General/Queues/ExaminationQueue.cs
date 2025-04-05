@@ -1,4 +1,5 @@
 ﻿using PureLifeClinic.Core.Enums;
+using PureLifeClinic.Core.Enums.Queues;
 
 namespace PureLifeClinic.Core.Entities.General.Queues
 {

@@ -66,3 +66,26 @@ Doctor: Chỉ truy cập queue của mình.
 Admin: Toàn quyền.
 
 ** Scenario Tests
+
+
+
+
+sequenceDiagram
+    participant Patient
+    participant API
+    participant Redis
+    participant DB
+    participant SignalR
+    participant TTS
+
+    Patient->>API: POST /checkin (Appointment/WalkIn)
+    API->>DB: Validate & Create Ticket
+    API->>Redis: Cache Sequence Number
+    API->>SignalR: Broadcast New Ticket
+    SignalR->>Patient: Update Display Screen
+    API->>TTS: Generate Voice Notification (If called)
+    TTS-->>Patient: Play Audio
+    loop Hangfire Job
+        API->>DB: Check Expired Tickets
+        API->>DB: Auto Cancel
+    end

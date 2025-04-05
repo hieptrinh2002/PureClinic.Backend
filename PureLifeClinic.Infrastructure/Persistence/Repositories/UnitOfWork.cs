@@ -35,6 +35,9 @@ namespace PureLifeClinic.Infrastructure.Persistence.Repositories
         public IInvoiceRepository Invoices { get; }
         public IRoleClaimRepository RoleClaims { get; }
         public IUserClaimRepository UserClaims { get; }
+        public IConsultationQueueRepository ConsultationQueues { get; }
+        public IExaminationQueueRepository ExaminationQueues { get; }
+        public ICounterRepository Counters { get; }
 
         public UnitOfWork(
             ApplicationDbContext dbContext,
@@ -68,6 +71,9 @@ namespace PureLifeClinic.Infrastructure.Persistence.Repositories
             Invoices = new InvoiceRepository(_dbContext);
             RoleClaims = new RoleClaimRepository(_dbContext);
             UserClaims = new UserClaimRepository(_dbContext);
+            ConsultationQueues = new ConsultationQueueRepository(_dbContext);
+            ExaminationQueues = new ExaminationQueueRepository(_dbContext);
+            Counters = new CounterRepository(_dbContext);
         }
         public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {

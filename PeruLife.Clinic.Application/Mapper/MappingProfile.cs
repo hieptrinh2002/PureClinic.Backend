@@ -2,6 +2,7 @@
 using PureLifeClinic.Application.BusinessObjects.AppointmentViewModels.Request;
 using PureLifeClinic.Application.BusinessObjects.AppointmentViewModels.Response;
 using PureLifeClinic.Application.BusinessObjects.AuthViewModels.Token;
+using PureLifeClinic.Application.BusinessObjects.CounterViewModels.Response;
 using PureLifeClinic.Application.BusinessObjects.DoctorViewModels.Response;
 using PureLifeClinic.Application.BusinessObjects.InvoiceViewModels.Request;
 using PureLifeClinic.Application.BusinessObjects.InvoiceViewModels.Response;
@@ -18,6 +19,7 @@ using PureLifeClinic.Application.BusinessObjects.Schedule.WorkDays;
 using PureLifeClinic.Application.BusinessObjects.Schedule.WorkWeeks;
 using PureLifeClinic.Application.BusinessObjects.UserViewModels;
 using PureLifeClinic.Core.Entities.General;
+using PureLifeClinic.Core.Entities.General.Queues;
 
 namespace PureLifeClinic.Application.Mapper
 {
@@ -107,6 +109,9 @@ namespace PureLifeClinic.Application.Mapper
             //Invoice mappings
             CreateMap<Invoice, InvoiceViewModel>().ReverseMap();
             CreateMap<Invoice, InvoiceCreateViewModel>().ReverseMap();
+
+            //Counter mappings
+            CreateMap<Counter, CounterViewModel>().ReverseMap();
         }
     }
 }

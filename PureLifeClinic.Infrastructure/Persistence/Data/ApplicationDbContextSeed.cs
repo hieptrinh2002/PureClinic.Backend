@@ -124,7 +124,6 @@ namespace PureLifeClinic.Infrastructure.Persistence.Data
                 {
                     using var transaction = appContext.Database.BeginTransaction();
                     appContext.Appointments.AddRange(AppointmentSeed.SeedAppointmentData(serviceProvider));
-
                     await appContext.SaveChangesAsync();
                     transaction.Commit();
                 }
@@ -156,6 +155,14 @@ namespace PureLifeClinic.Infrastructure.Persistence.Data
                     var appointmentHealthServices = AppointmentHealthServiceSeed.SeedAppointmentHealthServicesData(appointments, healthServices);
                     appContext.AppointmentHealthServices.AddRange(appointmentHealthServices);
                     await appContext.SaveChangesAsync();
+                    transaction.Commit();
+                }
+
+                //  Adding RoleClaims
+                if (!appContext.Counters.Any())
+                {
+                    using var transaction = appContext.Database.BeginTransaction();
+                    await CounterSeed.SeedCounterData(appContext);
                     transaction.Commit();
                 }
             }

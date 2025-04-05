@@ -10,7 +10,7 @@ namespace PureLifeClinic.Core.Entities.General
 
         public int? EntryBy { get; set; }
 
-        public DateTime? EntryDate { get; set; }
+        public DateTime? EntryDate { get; set; } = DateTime.UtcNow;
 
         public int? UpdatedBy { get; set; }
 

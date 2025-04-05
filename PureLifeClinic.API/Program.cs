@@ -12,6 +12,7 @@ using PureLifeClinic.API.Middlewares;
 using PureLifeClinic.Application.Interfaces.IServices;
 using PureLifeClinic.Core.Common;
 using PureLifeClinic.Infrastructure.Caching;
+using PureLifeClinic.Infrastructure.ExternalServices;
 using PureLifeClinic.Infrastructure.Persistence.Data;
 using PureLifeClinic.Infrastructure.SignalR.Hubs;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -37,15 +38,22 @@ builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("C
 // Add caching services
 builder.Services.AddMemoryCache();
 builder.Services.AddSingleton<MemoryCacheService>();
-builder.Services.AddSingleton<RedisCacheService>(sp =>
-{
-    var connectionString = builder.Configuration.GetConnectionString("RedisConnection");
-    if (string.IsNullOrEmpty(connectionString))
-    {
-        throw new InvalidOperationException("Redis connection string is missing or empty.");
-    }
-    return new RedisCacheService(connectionString);
-});
+
+//builder.Services.AddSingleton<RedisCacheService>(sp =>
+//{
+//    var connectionString = builder.Configuration.GetConnectionString("RedisConnection");
+//    if (string.IsNullOrEmpty(connectionString))
+//    {
+//        throw new InvalidOperationException("Redis connection string is missing or empty.");
+//    }
+//    return new RedisCacheService(connectionString);
+//});
+
+var redisConnectionString = builder.Configuration.GetConnectionString("RedisConnection")
+    ?? throw new InvalidOperationException("Redis connection string is missing or empty.");
+
+builder.Services.AddSingleton(new RedisCacheService(redisConnectionString));
+
 builder.Services.AddSingleton<IFileValidator, FileValidator>(); 
 
 // Add CacheServiceFactory

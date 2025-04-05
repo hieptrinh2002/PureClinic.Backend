@@ -3,12 +3,15 @@ using Microsoft.Extensions.Options;
 using PeruLife.Clinic.Application.Services;
 using PureLifeClinic.API.ActionFilters;
 using PureLifeClinic.Application.BusinessObjects.InvoiceViewModels.Request;
+using PureLifeClinic.Application.Interfaces;
 using PureLifeClinic.Application.Interfaces.IBackgroundJobs;
+using PureLifeClinic.Application.Interfaces.IQueue;
 using PureLifeClinic.Application.Interfaces.IServices;
 using PureLifeClinic.Application.Interfaces.IServices.IFileGenarator;
 using PureLifeClinic.Application.Interfaces.IServices.INotification;
 using PureLifeClinic.Application.Services;
 using PureLifeClinic.Application.Services.FileGenerator;
+using PureLifeClinic.Application.Services.Queues;
 using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Interfaces.IRepositories;
 using PureLifeClinic.Infrastructure.BackgroundServices;
@@ -24,6 +27,7 @@ namespace PureLifeClinic.API.Extensions
         public static IServiceCollection RegisterService(this IServiceCollection services)
         {
             #region Services
+
             services.AddSingleton<IUserContext, UserContext>();
             services.AddSingleton<ICloudinaryService, CloudinaryService>();
             services.AddScoped<IProductService, ProductService>();
@@ -38,10 +42,16 @@ namespace PureLifeClinic.API.Extensions
             services.AddTransient<IWorkWeekScheduleService, WorkWeekScheduleService>();
             services.AddTransient<IAppointmentService, AppointmentService>();
             services.AddTransient<IMedicalReportService, MedicalReportService>();
+            services.AddTransient<ICounterService, CounterService>();
             services.AddTransient<IMedicineService, MedicineService>();
             services.AddTransient<IPrescriptionDetailService, PrescriptionDetailService>();
             services.AddTransient<IMedicalFileService, MedicalFileService>();
             services.AddTransient<IInvoiceService, InvoiceService>();
+            services.AddTransient<IWaitingQueueService, WaitingQueueService>();
+            services.AddTransient<IConsultationQueueService, ConsultationQueueService>();
+            services.AddTransient<IExaminationQueueService, ExaminationQueueService>();
+            services.AddSingleton<IRedisQueueService, RedisQueueService>();
+
             #endregion
 
             #region FileGenaratorService  
