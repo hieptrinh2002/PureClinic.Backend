@@ -1,7 +1,6 @@
 ﻿using PureLifeClinic.Application.BusinessObjects.AppointmentViewModels.Request;
 using PureLifeClinic.Application.BusinessObjects.AppointmentViewModels.Response;
 using PureLifeClinic.Application.BusinessObjects.ResponseViewModels;
-using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Enums;
 
 namespace PureLifeClinic.Application.Interfaces.IServices

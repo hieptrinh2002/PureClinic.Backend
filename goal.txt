@@ -223,3 +223,7 @@ plan:
 
 - Hàng đợi => bệnh nhân đã đặt lịch khám 
 - Hàng đợi => bệnh nhân đến khám lần đầu/ chưa có đặt lich
+
+// backgroud job => handle auto update , cancel late appointment 
+// Nếu không đến khám -> run background job Cập nhật trạng thái lịch là "Không đến", send mail reminder
+// Nếu bệnh nhân vắng mặt 3 lần liên tục -> Hệ thống có thể yêu cầu đặt cọc trước cho lần đặt lịch tiếp theo.

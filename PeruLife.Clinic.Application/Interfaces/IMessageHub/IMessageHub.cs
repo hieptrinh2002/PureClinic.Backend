@@ -8,5 +8,4 @@ namespace PureLifeClinic.Application.Interfaces.IMessageHub
         Task OnNewAppointmentReceived(string message);
         Task OnAppointmentStatusUpdated(int appointmentId, AppointmentStatus status, string message);
     }
-
 }

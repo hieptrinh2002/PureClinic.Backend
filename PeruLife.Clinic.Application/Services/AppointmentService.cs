@@ -83,6 +83,7 @@ namespace PureLifeClinic.Application.Services
 
             return _mapper.Map<AppointmentViewModel>(result);
         }
+
         public async Task<AppointmentViewModel> CreateInPersonAppointment(InPersonAppointmentCreateViewModel model, CancellationToken cancellationToken)
         {
             await _unitOfWork.BeginTransactionAsync(cancellationToken);

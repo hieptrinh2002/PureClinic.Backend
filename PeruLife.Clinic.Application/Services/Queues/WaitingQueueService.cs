@@ -2,7 +2,7 @@
 using PureLifeClinic.Application.Interfaces.IBackgroundJobs;
 using PureLifeClinic.Application.Interfaces.IQueue;
 using PureLifeClinic.Application.Interfaces.IServices;
-using PureLifeClinic.Core.Entities.General;
+using PureLifeClinic.Application.Interfaces.IServices.INotification;
 using PureLifeClinic.Core.Entities.General.Queues;
 using PureLifeClinic.Core.Enums;
 using PureLifeClinic.Core.Enums.Queues;
@@ -17,17 +17,19 @@ namespace PureLifeClinic.Application.Services.Queues
         private readonly IRedisQueueService _redisQueueService;
         private readonly IUserContext _userContext;
         private readonly IBackgroundJobService _backgroundJobService;
+        private readonly INotificationService _notificationService;
         public WaitingQueueService(
             IUnitOfWork unitOfWork,
             IRedisQueueService redisQueueService,
             IUserContext userContext,
             IBackgroundJobService backgroundJobService,
-            ICounterService counterService)
+            INotificationService notificationService)
         {
             _userContext = userContext;
             _unitOfWork = unitOfWork;
             _redisQueueService = redisQueueService;
             _backgroundJobService = backgroundJobService;
+            _notificationService = notificationService; 
         }
 
         public async Task<string> CheckInPatient(CancellationToken cancellationToken)
@@ -190,16 +192,19 @@ namespace PureLifeClinic.Application.Services.Queues
         //        await NotifyQueueUpdate("examination", queueNumber, status, entry.DoctorId);
         //    }
         //}
-        //private async Task NotifyQueueUpdate(string queueType, string queueNumber, string status, int? doctorId)
-        //{
-        //    await _hubContext.Clients.Group($"{queueType}-{doctorId}")
-        //        .SendAsync("QueueUpdated", new QueueUpdateEvent
-        //        {
-        //            QueueType = queueType,
-        //            QueueNumber = queueNumber,
-        //            Status = status,
-        //            DoctorId = doctorId
-        //        });
-        //}
+
+        private async Task NotifyQueueUpdate(string queueType, string queueNumber, string status, int? doctorId, DateTime date)
+        {
+            string groupName = $"{queueType}-{doctorId}-{date:yyyy-MM-dd}";
+
+            await _notificationService.SendToGroupAsync(groupName, "QueueUpdated", new
+            {
+                QueueType = queueType,
+                QueueNumber = queueNumber,
+                Status = status,
+                DoctorId = doctorId,
+                Date = date.ToString("yyyy-MM-dd")
+            });
+        }
     }
 }

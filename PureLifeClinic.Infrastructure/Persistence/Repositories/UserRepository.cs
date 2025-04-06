@@ -133,8 +133,7 @@ namespace PureLifeClinic.Infrastructure.Persistence.Repositories
 
         public async Task<User> GetByEmail(string email, CancellationToken cancellationToken)
         {
-            var user = await _userManager.FindByEmailAsync(email);
-            return user;
+            return await _userManager.FindByEmailAsync(email);
         }
 
         public async Task<(int UserId, string Token)> GenerateEmailConfirmationTokenAsync(string email)

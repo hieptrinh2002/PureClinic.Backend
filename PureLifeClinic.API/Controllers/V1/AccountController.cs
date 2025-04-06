@@ -29,15 +29,21 @@ namespace PureLifeClinic.API.Controllers.V1
         private readonly IUserService _userService;
         private readonly IAuthService _authService;
         private readonly ILogger<AccountController> _logger;
-        private readonly IBackgroundJobService _backgroundService; 
+        private readonly IBackgroundJobService _backgroundService;
+        private readonly IEmailTemplateService _emailTemplateService;
 
-        public AccountController(ILogger<AccountController> logger,
-            IUserService userService, IAuthService authService, IBackgroundJobService backgroundJobService)
+        public AccountController(
+            ILogger<AccountController> logger,
+            IUserService userService, 
+            IAuthService authService,
+            IBackgroundJobService backgroundJobService,
+            IEmailTemplateService emailTemplateService)
         {
             _logger = logger;
             _userService = userService;
             _authService = authService;
             _backgroundService = backgroundJobService;  
+            _emailTemplateService = emailTemplateService;
         }
 
         [HttpPost("unlock-account")]
@@ -83,7 +89,7 @@ namespace PureLifeClinic.API.Controllers.V1
 
                     var token = Uri.EscapeDataString(result.Data.ActivationToken);
                     var email = Uri.EscapeDataString(model.Email);
-                    var confirmationLink = MailHelper.GenerateConfirmationLink(email, clientUrl, token);
+                    var confirmationLink = $"{clientUrl}?token={Uri.EscapeDataString(token)}&email={Uri.EscapeDataString(email)}";
 
                     SendConfirmationEmailAsync(model.Email, confirmationLink, model.UserName);
                     return Ok(response);
@@ -139,7 +145,6 @@ namespace PureLifeClinic.API.Controllers.V1
         [HttpPost("forgot-password")]
         [AllowAnonymous]
         [ServiceFilter(typeof(ValidateInputViewModelFilter))]
-
         public async Task<IActionResult> ChangePassword([FromBody] ForgotPasswordRequestViewModel model)
         {
             try
@@ -182,12 +187,24 @@ namespace PureLifeClinic.API.Controllers.V1
         }
 
         [NonAction]
-        private void SendConfirmationEmailAsync(string email, string confirmationLink, string userName)
+        private async void SendConfirmationEmailAsync(string email, string confirmationLink, string userName)
         {
             var test = Directory.GetCurrentDirectory();
 
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Template", "MailTemplate.html");
-            var emailBody = MailHelper.ReadAndProcessHtmlTemplate(filePath, confirmationLink, userName);
+
+            //var emaailBody = MailHelper.ReadAndProcessHtmlTemplate(filePath, confirmationLink, userName);
+
+            var dict = new Dictionary<string, string>()
+            {
+                { "{{UserName}}", userName },
+                { "{{ActivationLink}}", confirmationLink},
+                { "{{ResetPasswordLink}}", "" },
+                { "{{Year}}", DateTime.Now.Year.ToString() },
+                { "{{UserEmail}}", "johndoe@example.com" }
+            };
+
+            var emailBody = await _emailTemplateService.RenderTemplateAsync("MailTemplate.html", dict);
 
             var mailRequestViewModel = new MailRequestViewModel
             {

@@ -16,6 +16,11 @@ namespace PureLifeClinic.Infrastructure.BackgroundServices.Schedulers
                 Cron.Daily
             );
 
+            recurringJobService.AddOrUpdate<IAutoUpdateLateAppointmentJob>(
+                "update-late-appointments",
+                methodCall: job => job.ExecAutoUpdateLateAppointmentJob(),
+                cronExpression: Cron.Hourly);
+
             //recurringJobService.AddOrUpdate<IReportGenerationJob>(
             //    "monthly-report-generation",
             //    x => x.GenerateMonthlyReportAsync(),

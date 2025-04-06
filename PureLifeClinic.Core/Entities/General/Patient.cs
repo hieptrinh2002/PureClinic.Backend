@@ -21,6 +21,8 @@ namespace PureLifeClinic.Core.Entities.General
         [ForeignKey(nameof(PrimaryDoctorId))]
         public  Doctor? PrimaryDoctor { get; set; }
 
+        public bool RequireDeposit { get; set; } = false;
+
         // new 
         public PatientStatus PatientStatus { get; set; } = PatientStatus.New;
         public ICollection<LabResult>? LabResults { get; set; }

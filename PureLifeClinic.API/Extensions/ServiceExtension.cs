@@ -17,6 +17,7 @@ using PureLifeClinic.Core.Interfaces.IRepositories;
 using PureLifeClinic.Infrastructure.BackgroundServices;
 using PureLifeClinic.Infrastructure.BackgroundServices.Jobs;
 using PureLifeClinic.Infrastructure.ExternalServices;
+using PureLifeClinic.Infrastructure.ExternalServices.Email;
 using PureLifeClinic.Infrastructure.Persistence.Repositories;
 using PureLifeClinic.Infrastructure.SignalR;
 
@@ -37,6 +38,7 @@ namespace PureLifeClinic.API.Extensions
             services.AddScoped<IAuthService, AuthService>();
             services.AddTransient<ITokenService, TokenService>();
             services.AddTransient<IMailService, EmailService>();
+            services.AddSingleton<IEmailTemplateService, EmailTemplateService>();
             services.AddScoped<IPermissionService, PermissionService>();
             services.AddTransient<IRefreshTokenService, RefreshTokenService>();
             services.AddTransient<IWorkWeekScheduleService, WorkWeekScheduleService>();
@@ -66,6 +68,8 @@ namespace PureLifeClinic.API.Extensions
             services.AddScoped<IBackgroundJobService, BackgroundJobService>();
             services.AddScoped<IRecurringJobService, RecurringJobService>();
             services.AddScoped<IAppointmentReminderJob, AppointmentReminderJob>();
+            services.AddScoped<IAutoUpdateLateAppointmentJob, AutoUpdateLateAppointmentJob>();
+
             //services.AddScoped<IReportGenerationJob, ReportGenerationJob>();
 
             services.AddScoped<INotificationService, NotificationService>();

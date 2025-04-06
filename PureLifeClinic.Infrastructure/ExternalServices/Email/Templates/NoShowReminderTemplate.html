@@ -1,0 +1,73 @@
+﻿<html>
+<head>
+    <style>
+        .container {
+            font-family: 'Segoe UI', sans-serif;
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background-color: #fafafa;
+        }
+
+        .header {
+            background-color: #2d89ef;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .content {
+            padding: 20px;
+            color: #333;
+        }
+
+        .footer {
+            font-size: 12px;
+            color: #888;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 15px;
+            background-color: #2d89ef;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class='container'>
+        <div class='header'>
+            <h2>MISSED APPOINTMENT NOTICE</h2>
+        </div>
+        <div class='content'>
+            <p>Hello,</p>
+            <p>
+                You missed your scheduled appointment on
+                <strong>{{AppointmentDate}}</strong>.
+            </p>
+            <p>We’re sorry you couldn’t make it.</p>
+            <p>If you still need consultation, please reschedule your appointment by clicking the button below:</p>
+
+            <a class='btn' href='https://yourclinic.com/booking'>Reschedule Appointment</a>
+
+            <p style="margin-top: 20px;">
+                <strong>Important Notice:</strong> If you miss <strong>3 appointments in a row</strong>,
+                a deposit will be required for future bookings.
+            </p>
+
+            <p>We appreciate your understanding. Wishing you good health!</p>
+            <p>Sincerely,<br>ABC Clinic</p>
+        </div>
+        <div class='footer'>
+            © 2025 PureClinic. All rights reserved.
+        </div>
+    </div>
+</body>
+</html>

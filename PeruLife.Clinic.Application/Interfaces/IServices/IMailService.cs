@@ -6,5 +6,6 @@ namespace PureLifeClinic.Application.Interfaces.IServices
     {
         Task SendEmailAsync(MailRequestViewModel mailRequest);
         Task SendEmailBatchAsync(List<MailRequestViewModel> emailList);
+        Task SendNoShowReminder(string email, DateTime appointmentDate);
     }
 }

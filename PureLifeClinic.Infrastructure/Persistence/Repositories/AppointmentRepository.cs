@@ -1,8 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Entities.General;
 using PureLifeClinic.Core.Enums;
-using PureLifeClinic.Core.Exceptions;
 using PureLifeClinic.Core.Interfaces.IRepositories;
 using PureLifeClinic.Infrastructure.Persistence.Data;
 using System.Linq.Expressions;
@@ -81,6 +79,22 @@ namespace PureLifeClinic.Infrastructure.Persistence.Repositories
                 .ToListAsync();
         }
 
-       
+        public async Task<List<Appointment>> GetLateAppointments(DateTime now)
+        {
+            return await _dbContext.Appointments
+                .Include(a => a.Patient)    
+                .ThenInclude(p => p.User)   
+                .Where(apt => apt.AppointmentDate > now && apt.Status == AppointmentStatus.Approved).ToListAsync();
+        }
+
+        public async Task<int> CountConsecutiveMissedAppointments(int patientId)
+        {
+            var result =  await _dbContext.Appointments
+            .Where(a => a.PatientId == patientId && a.Status == AppointmentStatus.NoShowCanceled)
+            .OrderByDescending(a => a.AppointmentDate)
+            .Take(3)
+            .ToListAsync();
+            return result.Count;
+        }
     }
 }

@@ -1,19 +1,25 @@
 ﻿using MailKit.Net.Smtp;
 using MailKit.Security;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using PureLifeClinic.Application.BusinessObjects.EmailViewModels;
 using PureLifeClinic.Application.Interfaces.IServices;
 using PureLifeClinic.Core.Common;
 
-namespace PureLifeClinic.Infrastructure.ExternalServices
+namespace PureLifeClinic.Infrastructure.ExternalServices.Email
 {
     public class EmailService : IMailService
     {
         private readonly AppSettings _appSettings;
-        public EmailService(IOptions<AppSettings> appSettings)
+        private readonly IEmailTemplateService _emailTemplateService;
+        private readonly IWebHostEnvironment _env;
+
+        public EmailService(IOptions<AppSettings> appSettings, IEmailTemplateService emailTemplateService, IWebHostEnvironment env)
         {
             _appSettings = appSettings.Value;
+            _emailTemplateService = emailTemplateService;
+            _env = env;
         }
 
         public async Task SendEmailAsync(MailRequestViewModel mailRequest)
@@ -54,6 +60,24 @@ namespace PureLifeClinic.Infrastructure.ExternalServices
             {
                 await SendEmailAsync(email);
             }
+        }
+
+        public async Task SendNoShowReminder(string email, DateTime appointmentDate)
+        {
+            var subject = "Your appointment booking has been cancelled.";
+
+            var body = await _emailTemplateService.RenderTemplateAsync("NoShowReminderTemplate.html",
+                new Dictionary<string, string>
+                {
+                    { "AppointmentDate", appointmentDate.ToString("HH:mm dd/MM/yyyy") }
+                });
+
+            await SendEmailAsync(new MailRequestViewModel
+            {
+                ToEmail = email,
+                Subject = subject,
+                Body = body
+            });
         }
     }
 }

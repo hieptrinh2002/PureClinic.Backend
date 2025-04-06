@@ -25,6 +25,7 @@ namespace PureLifeClinic.Core.Entities.General
         public Patient Patient { get; set; }
 
         public int DoctorId { get; set; }
+
         [ForeignKey(nameof(DoctorId))]
         public Doctor Doctor { get; set; }
 

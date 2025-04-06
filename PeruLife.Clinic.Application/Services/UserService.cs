@@ -20,12 +20,18 @@ namespace PureLifeClinic.Application.Services
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IUserContext _userContext;
+        private readonly IEmailTemplateService _emailTemplateService;
 
-        public UserService(IMapper mapper, IUserContext userContext, IUnitOfWork unitOfWork) : base(mapper, unitOfWork.Users)
+        public UserService(
+            IMapper mapper, 
+            IUserContext userContext, 
+            IUnitOfWork unitOfWork,
+            IEmailTemplateService emailTemplateService) : base(mapper, unitOfWork.Users)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _userContext = userContext;
+            _emailTemplateService = emailTemplateService;
         }
 
         public new async Task<IEnumerable<UserViewModel>> GetAll(CancellationToken cancellationToken)
@@ -155,20 +161,13 @@ namespace PureLifeClinic.Application.Services
         public async Task<bool> UnlockAccountAsync(int userId)
         {
             var user = await _unitOfWork.Users.GetById(userId, default);
-            if (user == null)
-            {
-                throw new NotFoundException("User not found.");
-            }
-            return await _unitOfWork.Users.UnlockAccountAsync(user);
+            return user == null ? throw new NotFoundException("User not found.") : await _unitOfWork.Users.UnlockAccountAsync(user);
         }
 
         public async Task<ResponseViewModel> ResetPasswordAsync(string email, string token, string newPassword)
         {
-            var user = await _unitOfWork.Users.GetByEmail(email, default);
-            if (user == null)
-            {
-                throw new NotFoundException("User not found.");
-            }
+            var user = await _unitOfWork.Users.GetByEmail(email, default) 
+                ?? throw new NotFoundException("User not found.");
 
             var result = await _unitOfWork.Users.ResetPasswordAsync(user, token, newPassword);
             if (result.Succeeded)
@@ -194,14 +193,15 @@ namespace PureLifeClinic.Application.Services
             var email = Uri.EscapeDataString(model.Email);
             var resetLink = $"{model.ClientUrl}?token={_token}&email={email}";
 
-            // get mail body
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Template", "ForgotPassword.html");
-            var emailBody = File.ReadAllText(filePath);
-            emailBody = emailBody
-                .Replace("{{UserName}}", user.UserName)
-                .Replace("{{ResetPasswordLink}}", resetLink)
-                .Replace("{{Year}}", DateTime.Now.Year.ToString())
-                .Replace("{{UserEmail}}", user.Email);
+            var dictVariables = new Dictionary<string, string>
+            {
+                {"{{UserName}}", user.UserName },
+                {"{{ResetPasswordLink}}", resetLink },
+                {"{{Year}}", DateTime.Now.Year.ToString() },
+                {"{{UserEmail}}", user.Email }
+            };
+
+            var emailBody = await _emailTemplateService.RenderTemplateAsync("ForgotPassword.html", dictVariables);
 
             return new ResponseViewModel<ResetPasswordViewModel>
             {

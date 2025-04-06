@@ -22,6 +22,7 @@ namespace PeruLifeClinic.Api.Tests.Controllers.V1
         private readonly Mock<IAuthService> _mockAuthService;
         private readonly Mock<ILogger<AccountController>> _mockLogger;
         private readonly Mock<IBackgroundJobService> _mockBackgroundService;
+        private readonly Mock<IEmailTemplateService> _emailTemplateService;
         private readonly AccountController _controller;
 
         public AccountControllerTests()
@@ -30,12 +31,13 @@ namespace PeruLifeClinic.Api.Tests.Controllers.V1
             _mockAuthService = new Mock<IAuthService>();
             _mockLogger = new Mock<ILogger<AccountController>>();
             _mockBackgroundService = new Mock<IBackgroundJobService>();
-
+            _emailTemplateService = new Mock<IEmailTemplateService>();
             _controller = new AccountController(
                 _mockLogger.Object,
                 _mockUserService.Object,
                 _mockAuthService.Object,
-                _mockBackgroundService.Object
+                _mockBackgroundService.Object,
+                _emailTemplateService.Object
             );
         }
 

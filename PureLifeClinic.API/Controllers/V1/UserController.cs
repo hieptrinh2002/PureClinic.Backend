@@ -11,6 +11,7 @@ using PureLifeClinic.Application.Interfaces.IBackgroundJobs;
 using PureLifeClinic.Application.Interfaces.IServices;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Exceptions;
+using PureLifeClinic.Infrastructure.ExternalServices.Email;
 
 namespace PureLifeClinic.API.Controllers.V1
 {
@@ -24,12 +25,19 @@ namespace PureLifeClinic.API.Controllers.V1
         private readonly IUserService _userService;
         private readonly IMailService _emailService;    
         private readonly IBackgroundJobService _backgroundJobService;
-        public UserController(ILogger<UserController> logger, IUserService userService, IMailService emailService, IBackgroundJobService backgroundJobService)
+        private readonly IEmailTemplateService _emailTemplateService;
+        public UserController(
+            ILogger<UserController> logger, 
+            IUserService userService, 
+            IMailService emailService, 
+            IBackgroundJobService backgroundJobService,
+            IEmailTemplateService emailTemplateService)
         {
             _logger = logger;
             _userService = userService;
             _emailService = emailService;
             _backgroundJobService = backgroundJobService;
+            _emailTemplateService = emailTemplateService;
         }
 
         [HttpGet("paginated")]
@@ -202,8 +210,19 @@ namespace PureLifeClinic.API.Controllers.V1
                             throw new ErrorException(result.Message);    
                         var confirmationLink = Url.Action("ConfirmEmail", "Register", new { result.Data.ActivationToken, email = model.Email }, Request.Scheme);
 
-                        var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Template", "MailTemplate.html");
-                        var emailBody = MailHelper.ReadAndProcessHtmlTemplate(filePath, confirmationLink, model.UserName);
+                        //var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Template", "MailTemplate.html");
+                        //var emailBody = MailHelper.ReadAndProcessHtmlTemplate(filePath, confirmationLink, model.UserName);
+
+                        var dict = new Dictionary<string, string>()
+                        {
+                            { "{{UserName}}", model.UserName },
+                            { "{{ActivationLink}}", confirmationLink},
+                            { "{{ResetPasswordLink}}", "" },
+                            { "{{Year}}", DateTime.Now.Year.ToString() },
+                            { "{{UserEmail}}", "johndoe@example.com" }
+                        };
+
+                        var emailBody = await _emailTemplateService.RenderTemplateAsync("MailTemplate.html", dict);
 
                         var mailRequestViewModel = new MailRequestViewModel
                         {

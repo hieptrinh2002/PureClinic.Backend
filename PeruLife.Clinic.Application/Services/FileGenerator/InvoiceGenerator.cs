@@ -10,9 +10,9 @@ public class InvoiceGenerator : FileGeneratorBase<InvoiceFileCreateViewModel>
 {
     protected override async Task CreatePdfAsync(Stream stream, InvoiceFileCreateViewModel invoice, CancellationToken cancellationToken)
     {
-        using (PdfWriter writer = new PdfWriter(stream))
-        using (PdfDocument pdfDocument = new PdfDocument(writer))
-        using (Document document = new Document(pdfDocument))
+        using (var writer = new PdfWriter(stream))
+        using (var pdfDocument = new PdfDocument(writer))
+        using (var document = new Document(pdfDocument))
         {
             writer.SetCloseStream(false);
 

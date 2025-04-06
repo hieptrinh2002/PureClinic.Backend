@@ -67,9 +67,6 @@ Admin: Toàn quyền.
 
 ** Scenario Tests
 
-
-
-
 sequenceDiagram
     participant Patient
     participant API
