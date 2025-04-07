@@ -27,7 +27,6 @@
 		<ProjectReference Include="..\PureLifeClinic.API\PureLifeClinic.API.csproj" />
 		<ProjectReference Include="..\PureLifeClinic.Core\PureLifeClinic.Core.csproj" />
 		<ProjectReference Include="..\PureLifeClinic.Infrastructure\PureLifeClinic.Infrastructure.csproj" />
-		<ProjectReference Include="..\PureLifeClinic.UnitTest\PureLifeClinic.Application.Tests.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
