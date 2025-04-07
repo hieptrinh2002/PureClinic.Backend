@@ -78,6 +78,8 @@ builder.Services.AddLogging(loggingBuilder =>
 
 //builder.Host.UseSerilog(); // Sử dụng Serilog thay vì logging mặc định
 
+builder.Services.AddHttpContextAccessor();
+
 // Register Services
 builder.Services.RegisterSecurityService(builder.Configuration);
 builder.Services.RegisterService();

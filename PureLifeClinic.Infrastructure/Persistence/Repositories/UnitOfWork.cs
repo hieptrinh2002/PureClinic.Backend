@@ -38,7 +38,8 @@ namespace PureLifeClinic.Infrastructure.Persistence.Repositories
         public IConsultationQueueRepository ConsultationQueues { get; }
         public IExaminationQueueRepository ExaminationQueues { get; }
         public ICounterRepository Counters { get; }
-
+        public IAuditLogRepository AuditLog { get; } 
+        
         public UnitOfWork(
             ApplicationDbContext dbContext,
             UserManager<User> userManager,
@@ -74,6 +75,7 @@ namespace PureLifeClinic.Infrastructure.Persistence.Repositories
             ConsultationQueues = new ConsultationQueueRepository(_dbContext);
             ExaminationQueues = new ExaminationQueueRepository(_dbContext);
             Counters = new CounterRepository(_dbContext);
+            AuditLog = new AuditLogRepository(_dbContext);
         }
         public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
