@@ -8,8 +8,11 @@ With a **clean architecture** and **modern software design principles**, this sy
 
 ✔️ **Patient Management** – Seamless patient registration, record management, and history tracking.  
 ✔️ **Doctor Management** – Maintain detailed doctor profiles, schedules, and specialties.  
-✔️ **Appointment/ Booking Management** – Efficient appointment scheduling, tracking, and notifications.  
+✔️ **Appointment/Booking Management** – Efficient appointment scheduling, tracking, and notifications.  
 ✔️ **Medical Services** – Manage clinic services, treatments, and billing.  
+✔️ **Auto Queue & Number Calling System** – Smart patient flow management with real-time queue updates, audio callouts, and dynamic prioritization for booking and walk-in patients.  
+✔️ **Voice Notification System** – Converts queue numbers into voice announcements and supports multi-channel fallback via display screens, SMS, or app notifications.  
+✔️ **Queue Data Persistence** – Ensures queue integrity using Redis for real-time state and SqlServer for long-term storage with audit logging and recovery support.  
 ✔️ **Real-time Notifications (SignalR)** – Instant updates for doctors, patients, and staff.  
 ✔️ **Memory Cache & Redis Cache** – Optimized performance with caching strategies.  
 ✔️ **Background Job Processing (Hangfire)** – Asynchronous task handling for better system responsiveness.  
@@ -18,7 +21,7 @@ With a **clean architecture** and **modern software design principles**, this sy
 ✔️ **Logging & Monitoring (Serilog)** – Robust logging mechanisms for debugging and analytics.  
 ✔️ **Authentication & Authorization** – Secure access control with JWT & Binary Permissions.  
 ✔️ **Repository & Unit of Work Design Pattern** – Maintainable and testable data access structure.  
-✔️ **Unit test (Xunit, Mock)** - for Code Reliability
+✔️ **Unit Test (Xunit, Mock)** – for Code Reliability.  
 
 ## 🏛 **Project Structure** 
 # ASP.NET Core Web API: Secure, Scalable, and Elegant (Clean Architecture)
