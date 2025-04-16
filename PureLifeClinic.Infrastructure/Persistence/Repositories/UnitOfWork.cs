@@ -4,7 +4,9 @@ using Microsoft.EntityFrameworkCore.Storage;
 using PureLifeClinic.Application.Interfaces.IServices;
 using PureLifeClinic.Core.Entities.General;
 using PureLifeClinic.Core.Interfaces.IRepositories;
+using PureLifeClinic.Core.Interfaces.IRepositories.FeedBack;
 using PureLifeClinic.Infrastructure.Persistence.Data;
+using PureLifeClinic.Infrastructure.Persistence.Repositories.Feedback;
 
 namespace PureLifeClinic.Infrastructure.Persistence.Repositories
 {
@@ -38,8 +40,11 @@ namespace PureLifeClinic.Infrastructure.Persistence.Repositories
         public IConsultationQueueRepository ConsultationQueues { get; }
         public IExaminationQueueRepository ExaminationQueues { get; }
         public ICounterRepository Counters { get; }
-        public IAuditLogRepository AuditLog { get; } 
-        
+        public IAuditLogRepository AuditLog { get; }
+        public IDoctorFeedbackRepository DoctorFeedbacks { get; }
+        public IClinicFeedbackRepository ClinicFeedbacks { get; }
+        public IHealthServiceFeedbackRepository HealthServiceFeedbacks { get; }
+
         public UnitOfWork(
             ApplicationDbContext dbContext,
             UserManager<User> userManager,
@@ -76,6 +81,9 @@ namespace PureLifeClinic.Infrastructure.Persistence.Repositories
             ExaminationQueues = new ExaminationQueueRepository(_dbContext);
             Counters = new CounterRepository(_dbContext);
             AuditLog = new AuditLogRepository(_dbContext);
+            DoctorFeedbacks = new DoctorFeedbackRepository(_dbContext);
+            ClinicFeedbacks = new ClinicFeedbackRepository(_dbContext);
+            HealthServiceFeedbacks = new HealthServiceFeedbackRepository(_dbContext);   
         }
         public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {

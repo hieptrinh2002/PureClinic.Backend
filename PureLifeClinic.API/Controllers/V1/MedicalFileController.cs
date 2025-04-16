@@ -64,18 +64,7 @@ namespace PureLifeClinic.API.Controllers.V1
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, $"An error occurred while uploading the medical file");
-                    message = $"An error occurred while uploading the medical file- " + ex.Message;
-
-                    return StatusCode(StatusCodes.Status500InternalServerError, new ResponseViewModel<ProductViewModel>
-                    {
-                        Success = false,
-                        Message = message,
-                        Error = new ErrorViewModel
-                        {
-                            Code = "UPLOAD_ERROR",
-                            Message = message
-                        }
-                    });
+                    throw;
                 }
             }
             return StatusCode(StatusCodes.Status400BadRequest, new ResponseViewModel<ProductViewModel>

@@ -132,19 +132,8 @@ namespace PureLifeClinic.API.Controllers.V1
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, $"An error occurred while adding the medical report");
-                    message = $"An error occurred while adding the medical report- " + ex.Message;
-
-                    return StatusCode(StatusCodes.Status500InternalServerError, new ResponseViewModel<MedicalReportViewModel>
-                    {
-                        Success = false,
-                        Message = message,
-                        Error = new ErrorViewModel
-                        {
-                            Code = "ADD_ERROR",
-                            Message = message
-                        }
-                    });
+                    _logger.LogError(ex, $"An error occurred while adding the medical report => {ex.Message}");
+                    throw;
                 }
             }
 

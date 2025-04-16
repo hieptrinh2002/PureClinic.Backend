@@ -476,6 +476,4 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-PureLifeClinic.Infrastructure/Migrations/
-
 .codegpt

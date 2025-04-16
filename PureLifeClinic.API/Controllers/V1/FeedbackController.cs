@@ -1,5 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PureLifeClinic.Core.Entities.General;
+using PureLifeClinic.Application.BusinessObjects.Feedbacks.Doctor.Response;
+using PureLifeClinic.Application.BusinessObjects.ResponseViewModels;
+using PureLifeClinic.Application.Interfaces.IServices.FeedBack;
+using PureLifeClinic.Core.Entities.General.Feedback;
+using PureLifeClinic.Core.Exceptions;
 
 namespace PureLifeClinic.API.Controllers.V1
 {
@@ -7,15 +11,25 @@ namespace PureLifeClinic.API.Controllers.V1
     [ApiController]
     public class FeedbackController : ControllerBase
     {
+        private readonly IDoctorFeedbackService _feedbackService;
+        public FeedbackController(IDoctorFeedbackService feedbackService)
+        {
+            _feedbackService = feedbackService;
+        }
         /// <summary>
         /// Retrieves all feedbacks for a specific patient.
         /// </summary>
         /// <param name="patientId">Patient's unique identifier.</param>
-        /// <returns>List of feedbacks related to the patient.</returns>
+        /// <returns>List of feedbacks related to the patient.</returns>r
         [HttpGet("patients/{patientId}/feedbacks")]
-        public IActionResult GetFeedbacksByPatient(int patientId)
+        public async Task<IActionResult> GetFeedbacksByPatient(int patientId, CancellationToken cancellationToken)
         {
-            return Ok();
+            return Ok(new ResponseViewModel<List<DoctorFeedbackViewModel>>
+            {
+                Success = true,
+                Message = "Feedbacks retrieved successfully",
+                Data = (List<DoctorFeedbackViewModel>)await _feedbackService.GetFeedbacksByPatientAsync(patientId, cancellationToken)
+            });
         }
 
         /// <summary>
@@ -24,9 +38,14 @@ namespace PureLifeClinic.API.Controllers.V1
         /// <param name="doctorId">Doctor's unique identifier.</param>
         /// <returns>List of feedbacks related to the doctor.</returns>
         [HttpGet("doctors/{doctorId}/feedbacks")]
-        public IActionResult GetFeedbacksByDoctor(int doctorId)
+        public async Task<IActionResult> GetFeedbacksByDoctor(int doctorId, CancellationToken cancellationToken)
         {
-            return Ok();
+            return Ok(new ResponseViewModel<List<DoctorFeedbackViewModel>>
+            {
+                Success = true,
+                Message = "Feedbacks retrieved successfully",
+                Data = (List<DoctorFeedbackViewModel>)await _feedbackService.GetFeedbacksByDoctorAsync(doctorId, cancellationToken)
+            });
         }
 
         /// <summary>
@@ -35,9 +54,14 @@ namespace PureLifeClinic.API.Controllers.V1
         /// <param name="doctorId">Doctor's unique identifier.</param>
         /// <returns>Aggregated feedback data including ratings and counts.</returns>
         [HttpGet("doctors/{doctorId}/feedback-summary")]
-        public IActionResult GetDoctorFeedbackSummary(int doctorId)
+        public async Task<IActionResult> GetDoctorFeedbackSummary(int doctorId, CancellationToken cancellationToken)
         {
-            return Ok();
+            return Ok(new ResponseViewModel<DoctorFeedbackSummaryViewModel>
+            {
+                Success = true,
+                Message = "Feedbacks retrieved successfully",
+                Data = await _feedbackService.GetDoctorFeedbackSummaryAsync(doctorId, cancellationToken)
+            });
         }
 
         /// <summary>
@@ -47,9 +71,14 @@ namespace PureLifeClinic.API.Controllers.V1
         /// <param name="endDate">End date for filtering feedbacks.</param>
         /// <returns>List of feedbacks within the date range.</returns>
         [HttpGet("date-range")]
-        public IActionResult GetFeedbacksByDateRange([FromQuery] DateTime startDate, [FromQuery] DateTime endDate)
+        public async Task<IActionResult> GetFeedbacksByDateRange(int doctorId, [FromQuery] DateTime startDate, [FromQuery] DateTime endDate)
         {
-            return Ok();
+            return Ok(new ResponseViewModel<List<DoctorFeedbackViewModel>>
+            {
+                Success = true,
+                Message = "Feedbacks retrieved successfully",
+                Data = (List<DoctorFeedbackViewModel>)await _feedbackService.GetDoctorFeedbacksByDateRangeAsync(doctorId, startDate, endDate)
+            });
         }
 
         /// <summary>
@@ -69,9 +98,16 @@ namespace PureLifeClinic.API.Controllers.V1
         /// <param name="id">Feedback's unique identifier.</param>
         /// <returns>Response indicating the result of the report action.</returns>
         [HttpPost("{id}/report")]
-        public IActionResult ReportFeedback(int id)
+        public async Task<IActionResult> ReportFeedback(int feedbackId)
         {
-            return Ok();
+            if (!await _feedbackService.ReportFeedbackAsync(feedbackId))
+                throw new BadRequestException("Failed to report feedback.");
+
+            return Ok(new ResponseViewModel
+            {
+                Success = true,
+                Message = "report successfully",
+            });
         }
     }
 }

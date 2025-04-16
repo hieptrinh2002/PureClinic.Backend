@@ -1,4 +1,6 @@
-﻿namespace PureLifeClinic.Core.Interfaces.IRepositories
+﻿using PureLifeClinic.Core.Interfaces.IRepositories.FeedBack;
+
+namespace PureLifeClinic.Core.Interfaces.IRepositories
 {
     public interface IUnitOfWork : IDisposable
     {
@@ -23,6 +25,9 @@
         IExaminationQueueRepository ExaminationQueues{ get; }
         ICounterRepository Counters { get; }
         IAuditLogRepository AuditLog { get; }
+        IDoctorFeedbackRepository DoctorFeedbacks { get; }
+        IClinicFeedbackRepository ClinicFeedbacks { get; }
+        IHealthServiceFeedbackRepository HealthServiceFeedbacks { get; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
         Task BeginTransactionAsync(CancellationToken cancellationToken = default);

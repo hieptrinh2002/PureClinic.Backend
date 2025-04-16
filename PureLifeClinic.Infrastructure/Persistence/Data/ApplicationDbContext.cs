@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using PureLifeClinic.Core.Entities.General;
+using PureLifeClinic.Core.Entities.General.Feedback;
 using PureLifeClinic.Core.Entities.General.Queues;
 using System.Security.Claims;
 using System.Text;
@@ -44,6 +45,10 @@ namespace PureLifeClinic.Infrastructure.Persistence.Data
         public DbSet<ActionOnResource> ActionOnResources { get; set; }
         public DbSet<Resource> Resources { get; set; }
         public DbSet<Feedback> Feedbacks { get; set; }
+        public DbSet<DoctorFeedback> DoctorFeedbacks { get; set; }
+        public DbSet<ClinicFeedBack> ClinicFeedBacks { get; set; }
+        public DbSet<HealthServiceFeedback> HealthServiceFeedbacks { get; set; }
+
         public DbSet<Specialization> Specializations { get; set; }
         public DbSet<AuditLog> AuditLogs { get; set; }  
 
