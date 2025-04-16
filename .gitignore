@@ -477,3 +477,6 @@ $RECYCLE.BIN/
 *.lnk
 
 .codegpt
+
+appsettings.json
+appsettings.*.json

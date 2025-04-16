@@ -44,7 +44,8 @@ namespace PureLifeClinic.Infrastructure.Persistence.Data
         public DbSet<ExaminationQueue> ExaminationQueues { get; set; }
         public DbSet<ActionOnResource> ActionOnResources { get; set; }
         public DbSet<Resource> Resources { get; set; }
-        public DbSet<Feedback> Feedbacks { get; set; }
+
+        //public DbSet<Feedback> Feedbacks { get; set; }
         public DbSet<DoctorFeedback> DoctorFeedbacks { get; set; }
         public DbSet<ClinicFeedBack> ClinicFeedBacks { get; set; }
         public DbSet<HealthServiceFeedback> HealthServiceFeedbacks { get; set; }
