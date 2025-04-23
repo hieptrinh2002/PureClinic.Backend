@@ -32,6 +32,7 @@ namespace PureLifeClinic.Core.Entities.General
         public AppointmentStatus Status { get; set; } = AppointmentStatus.Pending;
 
         public ICollection<MedicalReport>? MedicalReports { get; set; } = new List<MedicalReport>();
+
         public ICollection<AppointmentHealthService>? HealthServices { get; set; } = new List<AppointmentHealthService>();
     }
 }

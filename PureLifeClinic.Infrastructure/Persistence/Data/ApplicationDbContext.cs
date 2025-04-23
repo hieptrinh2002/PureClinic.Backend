@@ -52,6 +52,8 @@ namespace PureLifeClinic.Infrastructure.Persistence.Data
 
         public DbSet<Specialization> Specializations { get; set; }
         public DbSet<AuditLog> AuditLogs { get; set; }  
+        public DbSet<Room> Rooms { get; set; }
+        public DbSet<RoomType> RoomTypes { get; set; }
 
         #endregion
 

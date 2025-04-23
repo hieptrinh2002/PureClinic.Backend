@@ -22,6 +22,10 @@ namespace PureLifeClinic.Core.Entities.General
         [ForeignKey(nameof(UserId))]
         public required User User { get; set; }
 
+        [ForeignKey(nameof(RoomId))]
+        public Room? WorkingRoom { get; set; }
+        public int? RoomId { get; set; } // FK to Room
+
         public ICollection<Patient> PrimaryPatients { get; set; } = new List<Patient>(); // Bệnh nhân chịu trách nhiệm chính
 
         public ICollection<Specialization> Specializations { get; set; } = new List<Specialization>();
