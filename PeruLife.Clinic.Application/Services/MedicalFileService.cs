@@ -43,12 +43,13 @@ namespace PureLifeClinic.Application.Services
                 Data = result.FilePath,
             };
         }
+
         public async Task<ResponseViewModel<List<MedicalFile>>> CreateMultipleAsync(MedicalFileMultiCreateViewModel model, CancellationToken cancellationToken)
         {
-            var uploadedFiles = await _cloudinaryService.UploadFilesAsync(new FileMultiUploadViewModel
-            {
-                Files = model.Files
-            });
+            var medicalReport = await _unitOfWork.MedicalReports.GetById(model.MedicalReportId, cancellationToken)
+                ?? throw new NotFoundException("Medical report not found");
+
+            var uploadedFiles = await _cloudinaryService.UploadFilesAsync(model.Files);
 
             foreach (var medicalFile in uploadedFiles)
             {
@@ -57,12 +58,13 @@ namespace PureLifeClinic.Application.Services
                 medicalFile.EntryBy = Convert.ToInt32(_userContext.UserId);
             }
 
-            foreach (var medicalFile in uploadedFiles)
-            {
-                await _unitOfWork.MedicalFiles.Create(medicalFile, cancellationToken);
-            }
+            await _unitOfWork.BeginTransactionAsync(cancellationToken);
+
+            var createTasks = uploadedFiles.Select(file => _unitOfWork.MedicalFiles.Create(file, cancellationToken));
+            await Task.WhenAll(createTasks);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+            await _unitOfWork.CommitTransactionAsync(cancellationToken);
 
             return new ResponseViewModel<List<MedicalFile>>
             {

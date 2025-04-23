@@ -63,19 +63,61 @@ namespace PureLifeClinic.Infrastructure.ExternalServices
         }
 
         // Upload multiple files
-        public async Task<List<MedicalFile>> UploadFilesAsync(FileMultiUploadViewModel model)
+        //public async Task<List<MedicalFile>> UploadFilesAsync(FileMultiUploadViewModel model)
+        //{
+        //    var files = model.Files.Select(f => f.FileDetails).ToList();
+        //    var medicalFiles = new List<MedicalFile>();
+
+        //    foreach (var file in files)
+        //    {
+        //        var medicalFile = await UploadFileAsync(file); 
+        //        medicalFiles.Add(medicalFile);
+        //    }
+        //    return medicalFiles;
+        //}
+
+
+        // way 1: Upload multiple files in parallel
+        public async Task<List<MedicalFile>> UploadFilesAsync(List<FileUploadViewModel> modelFiles)
         {
-            var files = model.Files.Select(f => f.FileDetails).ToList();
-            var medicalFiles = new List<MedicalFile>();
+            var files = modelFiles.Select(f => f.FileDetails).ToList();
 
-            foreach (var file in files)
-            {
-                var medicalFile = await UploadFileAsync(file); 
-                medicalFiles.Add(medicalFile);
-            }
+            var uploadTasks = files.Select(file => UploadFileAsync(file)); // create list Task<MedicalFile>
 
-            return medicalFiles;
+            var medicalFiles = await Task.WhenAll(uploadTasks); // parallel upload all files
+
+            return medicalFiles.ToList();
         }
+
+        // way 2: Upload multiple files with limit ( dùng cho nhiều file ) 
+        //public async Task<List<MedicalFile>> UploadFilesAsync(FileMultiUploadViewModel model)
+        //{
+        //    var files = model.Files.Select(f => f.FileDetails).ToList();
+        //    var medicalFiles = new List<MedicalFile>();
+        //    var semaphore = new SemaphoreSlim(15); // tối đa 5 upload song song
+
+        //    var tasks = files.Select(async file =>
+        //    {
+        //        await semaphore.WaitAsync();
+        //        try
+        //        {
+        //            var medicalFile = await UploadFileAsync(file);
+        //            lock (medicalFiles) // tránh conflict khi nhiều task add vào list
+        //            {
+        //                medicalFiles.Add(medicalFile);
+        //            }
+        //        }
+        //        finally
+        //        {
+        //            semaphore.Release();
+        //        }
+        //    });
+
+        //    await Task.WhenAll(tasks);
+
+        //    return medicalFiles;
+        //}
+
 
         // Delete a single file
         public async Task<bool> DeleteFileAsync(string publicId)
