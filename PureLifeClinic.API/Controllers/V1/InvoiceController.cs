@@ -44,13 +44,13 @@ namespace PureLifeClinic.API.Controllers.V1
         [PermissionAuthorize(ResourceConstants.Invoice, PermissionAction.CreateDelete)]
         [ServiceFilter(typeof(ValidateInputViewModelFilter))]
         [HttpPost("generate")]
-        public async Task<IActionResult> GenerateInvoice(InvoiceFileCreateViewModel model, CancellationToken cancellationToken)
+        public IActionResult GenerateInvoice(InvoiceFileCreateViewModel model, CancellationToken cancellationToken)
         {
             model.ClinicInfo.PhoneNumber = _appSettings.ClinicInfo.Phone;
             model.ClinicInfo.Address = _appSettings.ClinicInfo.Address;
             model.ClinicInfo.ClinicName = _appSettings.ClinicInfo.Name;
 
-            var file = await _invoiceService.CreateInvoiceFileAsync(model, cancellationToken);
+            var file = _invoiceService.CreateInvoiceFileAsync(model, cancellationToken);
 
             if (file == null || file?.Data == null)
             {

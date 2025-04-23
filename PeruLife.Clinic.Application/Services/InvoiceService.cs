@@ -47,10 +47,10 @@ namespace PureLifeClinic.Application.Services
             return _mapper.Map<InvoiceViewModel>(result);
         }
 
-        public async Task<ResponseViewModel<Stream>> CreateInvoiceFileAsync(
+        public ResponseViewModel<Stream> CreateInvoiceFileAsync(
             InvoiceFileCreateViewModel invoice, CancellationToken cancellationToken)
         {
-            return await _fileGenerator.GenerateFileAsync(invoice, cancellationToken);
+            return _fileGenerator.GenerateFileAsync(invoice, cancellationToken);
         }
 
         private IFormFile ConvertStreamToIFormFile(Stream stream, string fileName, string contentType)

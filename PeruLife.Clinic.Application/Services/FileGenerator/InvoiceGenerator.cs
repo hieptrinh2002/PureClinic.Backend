@@ -8,7 +8,7 @@ namespace PureLifeClinic.Application.Services.FileGenerator;
 
 public class InvoiceGenerator : FileGeneratorBase<InvoiceFileCreateViewModel>
 {
-    protected override async Task CreatePdfAsync(Stream stream, InvoiceFileCreateViewModel invoice, CancellationToken cancellationToken)
+    protected override bool CreatePdfAsync(Stream stream, InvoiceFileCreateViewModel invoice, CancellationToken cancellationToken)
     {
         using (var writer = new PdfWriter(stream))
         using (var pdfDocument = new PdfDocument(writer))
@@ -161,6 +161,6 @@ public class InvoiceGenerator : FileGeneratorBase<InvoiceFileCreateViewModel>
             document.Add(methodPara);
         }
 
-        await Task.CompletedTask;
+        return true;
     }
 }
