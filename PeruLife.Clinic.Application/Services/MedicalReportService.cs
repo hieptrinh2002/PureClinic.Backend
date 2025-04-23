@@ -56,7 +56,8 @@ namespace PureLifeClinic.Application.Services
 
         public async Task<ResponseViewModel<IEnumerable<MedicalReportViewModel>>> GetByPatientId(int patientId, CancellationToken cancellationToken)
         {
-            var patient = await _unitOfWork.Patients.GetById(patientId, cancellationToken) ?? throw new ErrorException("Patient not found");
+            var patient = await _unitOfWork.Patients.GetById(patientId, cancellationToken) 
+                ?? throw new ErrorException("Patient not found");
 
             var medicalReports = await _unitOfWork.MedicalReports.GetMedicalReportByPatientId(patient.Id, cancellationToken);
 
@@ -83,13 +84,16 @@ namespace PureLifeClinic.Application.Services
             };
             var paginatedData = await _unitOfWork.MedicalReports.GetPaginatedData(includeList, pageNumber, pageSize, cancellationToken, filters);
 
-            var paginatedDataViewModel = new PaginatedData<MedicalReportViewModel>(_mapper.Map<IEnumerable<MedicalReportViewModel>>(paginatedData.Data), paginatedData.TotalCount);
+            var paginatedDataViewModel = new PaginatedData<MedicalReportViewModel>(
+                _mapper.Map<IEnumerable<MedicalReportViewModel>>(paginatedData.Data), paginatedData.TotalCount);
             return paginatedDataViewModel;
         }
 
         public async Task<ResponseViewModel<MedicalReportViewModel>> GetById(int id, CancellationToken cancellationToken)
         {
-            var patient = await _unitOfWork.MedicalReports.GetById(id, cancellationToken) ?? throw new ErrorException("Medical report not found");
+            var patient = await _unitOfWork.MedicalReports.GetById(id, cancellationToken) 
+                ?? throw new ErrorException("Medical report not found");
+
             var includeExpressions = new List<Func<IQueryable<MedicalReport>, IIncludableQueryable<MedicalReport, object>>>
             {
                 query => query.Include(m => m.PrescriptionDetails).ThenInclude(p => p.Medicine),

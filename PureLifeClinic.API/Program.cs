@@ -155,6 +155,8 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -197,9 +199,16 @@ if (app.Environment.IsDevelopment())
         }
     });
 }
+else
+{
+    app.UseHsts();
+}
+
 
 app.UseStaticFiles();
 app.UseRouting(); // Add this line to configure routing
+
+app.UseCors("AllowReactApp");
 
 app.UseAuthentication();
 app.UseMiddleware<PermissionHandlerMiddleware>();
@@ -212,10 +221,8 @@ using (var scope = app.Services.CreateScope())
     RecurringJobScheduler.ConfigureJobs(scope.ServiceProvider);
 }
 
-app.UseCors("AllowReactApp");
 
 #region Custom Middleware
-app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 app.UseMiddleware<RequestResponseLoggingMiddleware>();
 #endregion
 

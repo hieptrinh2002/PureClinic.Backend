@@ -21,7 +21,11 @@ namespace PureLifeClinic.API.Controllers.V1
         private readonly ILogger<MedicalReportController> _logger;
         private readonly IUserService _userService;
 
-        public MedicalReportController(IMedicalReportService medicalReportService, ILogger<MedicalReportController> logger, IAppointmentService appointmentService, IUserService userService)
+        public MedicalReportController(
+            IMedicalReportService medicalReportService, 
+            ILogger<MedicalReportController> logger, 
+            IAppointmentService appointmentService, 
+            IUserService userService)
         {
             _medicalReportService = medicalReportService;
             _logger = logger;
@@ -55,18 +59,7 @@ namespace PureLifeClinic.API.Controllers.V1
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"An error occurred while getting the medical report by id-{id}");
-                message = $"An error occurred while getting the medical report- " + ex.Message;
-
-                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseViewModel<MedicalReportViewModel>
-                {
-                    Success = false,
-                    Message = message,
-                    Error = new ErrorViewModel
-                    {
-                        Code = "GET_ERROR",
-                        Message = message
-                    }
-                });
+                throw;
             }
         }
 
@@ -81,33 +74,8 @@ namespace PureLifeClinic.API.Controllers.V1
             }
             catch (Exception ex)
             {
-                if (ex.Message == "No data found")
-                {
-                    return StatusCode(StatusCodes.Status404NotFound, new ResponseViewModel<RoleViewModel>
-                    {
-                        Success = false,
-                        Message = "Patinent not found",
-                        Error = new ErrorViewModel
-                        {
-                            Code = "NOT_FOUND",
-                            Message = "Patinent not found"
-                        }
-                    });
-                }
-
                 _logger.LogError(ex, $"An error occurred while getting the medical report by patient id-{patientId}");
-                message = $"An error occurred while getting the medical report- " + ex.Message;
-
-                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseViewModel<MedicalReportViewModel>
-                {
-                    Success = false,
-                    Message = message,
-                    Error = new ErrorViewModel
-                    {
-                        Code = "GET_ERROR",
-                        Message = message
-                    }
-                });
+                throw;
             }
         }
 
@@ -152,21 +120,9 @@ namespace PureLifeClinic.API.Controllers.V1
         [HttpPut]
         public async Task<IActionResult> Edit(MedicalReportUpdateViewModel model, CancellationToken cancellationToken)
         {
-            string message = string.Empty;
-
             if(!await _medicalReportService.IsExists("Id", model.Id, cancellationToken))
             {
-                message = $"Medical report Id - '{model.Id}' not found";
-                return StatusCode(StatusCodes.Status400BadRequest, new ResponseViewModel<UserViewModel>
-                {
-                    Success = false,
-                    Message = message,
-                    Error = new ErrorViewModel
-                    {
-                        Code = "DUPLICATE_CODE",
-                        Message = message
-                    }
-                });
+                throw new BadRequestException($"Medical report Id - '{model.Id}' not found");
             }
             if (ModelState.IsValid)
             {
@@ -185,18 +141,7 @@ namespace PureLifeClinic.API.Controllers.V1
                 catch(Exception ex)
                 {
                     _logger.LogError(ex, $"An error occurred while updating the medical report");
-                    message = $"An error occurred while updating the medical report- " + ex.Message;
-
-                    return StatusCode(StatusCodes.Status500InternalServerError, new ResponseViewModel
-                    {
-                        Success = false,
-                        Message = message,
-                        Error = new ErrorViewModel
-                        {
-                            Code = "UPDATE_ROLE_ERROR",
-                            Message = message
-                        }
-                    });
+                    throw;
                 }
             }
 
