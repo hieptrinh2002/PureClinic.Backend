@@ -323,5 +323,11 @@ namespace PureLifeClinic.Infrastructure.Persistence.Repositories
             _dbContext.Set<T>().Remove(model);
             //await _dbContext.SaveChangesAsync(cancellationToken);
         }
+
+        public async Task DeleteRange(List<T> models, CancellationToken cancellationToken = default)
+        {
+            _dbContext.Set<T>().RemoveRange(models);
+            //await _dbContext.SaveChangesAsync(cancellationToken);
+        }
     }
 }

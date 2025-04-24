@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using PureLifeClinic.Core.Entities.General;
 using PureLifeClinic.Core.Enums;
-using PureLifeClinic.Infrastructure.Persistence.Data;
 
 namespace PureLifeClinic.Infrastructure.Persistence.Data.SeedData
 {

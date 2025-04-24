@@ -32,6 +32,7 @@ namespace PureLifeClinic.Infrastructure.Persistence.Data
                     await appContext.SaveChangesAsync();
                     transaction.Commit();
                 }
+
                 //  Adding RoleClaims
                 if (!appContext.RoleClaims.Any())
                 {

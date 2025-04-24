@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PureLifeClinic.API.ActionFilters;
 using PureLifeClinic.API.Attributes;
+using PureLifeClinic.Application.BusinessObjects.AppointmentHealthServices;
 using PureLifeClinic.Application.BusinessObjects.AppointmentViewModels.Request;
 using PureLifeClinic.Application.BusinessObjects.AppointmentViewModels.Response;
 using PureLifeClinic.Application.BusinessObjects.ResponseViewModels;
@@ -11,6 +12,7 @@ using PureLifeClinic.Application.Interfaces.IServices;
 using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Common.Constants;
 using PureLifeClinic.Core.Entities.Business;
+using PureLifeClinic.Core.Entities.General;
 using PureLifeClinic.Core.Enums;
 using PureLifeClinic.Core.Enums.PermissionEnums;
 using PureLifeClinic.Core.Exceptions;
@@ -27,7 +29,7 @@ namespace PureLifeClinic.API.Controllers.V1
         private readonly ILogger<AppointmentController> _logger;
 
         public AppointmentController(
-            IAppointmentService appointmentService, 
+            IAppointmentService appointmentService,
             ILogger<AppointmentController> logger)
         {
             _appointmentService = appointmentService;
@@ -182,9 +184,9 @@ namespace PureLifeClinic.API.Controllers.V1
 
         // add new appointment
         [Authorize(Roles = RoleConstant.Employee)]
-        [PermissionAuthorize(ResourceConstants.Appointment, PermissionAction.CreateDelete)] 
-        [ServiceFilter(typeof(ValidateInputViewModelFilter))] 
-        [HttpPost("in-person/create")] 
+        [PermissionAuthorize(ResourceConstants.Appointment, PermissionAction.CreateDelete)]
+        [ServiceFilter(typeof(ValidateInputViewModelFilter))]
+        [HttpPost("in-person/create")]
         public async Task<IActionResult> CreateInPersonAppointment([FromBody] InPersonAppointmentCreateViewModel model, CancellationToken cancellationToken)
         {
             if (await _appointmentService.IsExists(model.DoctorId, model.AppointmentDate, cancellationToken))
@@ -242,8 +244,61 @@ namespace PureLifeClinic.API.Controllers.V1
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"An error occurred while updating the appointment status");
-               throw;
+                throw;
             }
+        }
+
+        [HttpPost("{appointmentId}/health-services")]
+        public async Task<IActionResult> AssignServiceToAppointment(
+            int appointmentId, [FromBody] List<AppointmentHealthServiceCreateViewModel> model, CancellationToken cancellationToken)
+        {
+            List<AppointmentHealthServiceViewModel> result = await _appointmentService.AssignServiceToAppointment(appointmentId, model, cancellationToken);
+            return Ok(new ResponseViewModel<List<AppointmentHealthServiceViewModel>>
+            {
+                Success = true,
+                Message = "Services assigned successfully",
+                Data = result
+            });
+        }
+
+        [HttpGet("{appointmentId}/health-services/{serviceId}")]
+        public async Task<IActionResult> GetAppointmentHealthService(int appointmentId, int serviceId, CancellationToken cancellationToken)
+        {
+            var result = await _appointmentService.GetAppointmentHealthService(appointmentId, serviceId, cancellationToken);
+            return Ok(new ResponseViewModel<List<AppointmentHealthServiceViewModel>>
+            {
+                Success = true,
+                Message = "Services retrieved successfully",
+                Data = result
+            });
+        }
+
+        [HttpDelete("{appointmentId}/health-services/{serviceId}")]
+        public async Task<IActionResult> 
+            DeleteAppointmentHealthService(int appointmentId, [FromBody] List<int> serviceIds, CancellationToken cancellationToken)
+        {
+            await _appointmentService.DeleteAppointmentHealthService(appointmentId, serviceIds, cancellationToken);
+            return Ok(new ResponseViewModel
+            {
+                Success = true,
+                Message = "Services deleted successfully",
+            });
+        }
+
+        [HttpPatch("{appointmentId}/health-services")] 
+        public async Task<IActionResult> UpdateAppointmentHealthService(
+            int appointmentId, AppointmentHealthServiceStatus status, [FromBody] List<int> serviceIds, CancellationToken cancellationToken)
+        {
+            if (!Enum.IsDefined(typeof(AppointmentHealthServiceStatus), status))
+            {
+                throw new BadRequestException("Invalid status value");
+            }
+            await _appointmentService.UpdateAppointmentHealthService(appointmentId, status, serviceIds, cancellationToken);
+            return Ok(new ResponseViewModel
+            {
+                Success = true,
+                Message = "Services updated successfully",
+            });
         }
     }
 }

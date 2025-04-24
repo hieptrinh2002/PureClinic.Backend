@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
+using PureLifeClinic.Application.BusinessObjects.AppointmentHealthServices;
 using PureLifeClinic.Application.BusinessObjects.AppointmentViewModels.Request;
 using PureLifeClinic.Application.BusinessObjects.AppointmentViewModels.Response;
 using PureLifeClinic.Application.BusinessObjects.ResponseViewModels;
+using PureLifeClinic.Application.Extentions.Mapping;
 using PureLifeClinic.Application.Interfaces.IBackgroundJobs;
 using PureLifeClinic.Application.Interfaces.IServices;
 using PureLifeClinic.Application.Interfaces.IServices.INotification;
@@ -13,6 +15,7 @@ using PureLifeClinic.Core.Entities.General;
 using PureLifeClinic.Core.Enums;
 using PureLifeClinic.Core.Exceptions;
 using PureLifeClinic.Core.Interfaces.IRepositories;
+using static iText.IO.Util.IntHashtable;
 
 namespace PureLifeClinic.Application.Services
 {
@@ -175,8 +178,6 @@ namespace PureLifeClinic.Application.Services
 
         public async Task<ResponseViewModel<IEnumerable<DoctorAppointmentViewModel>>> GetAllAppointmentsByDoctorIdAsync(int doctorId, CancellationToken cancellationToken)
         {
-            //var includeList = new List<Expression<Func<Appointment, object>>> { x => x.Doctor, x => x.Patient };
-
             var patient = await _unitOfWork.Doctors.GetById(doctorId, cancellationToken) ?? throw new ErrorException("Doctor not found");
 
             var filters = new List<ExpressionFilter>
@@ -245,7 +246,8 @@ namespace PureLifeClinic.Application.Services
             return response;
         }
 
-        public async Task<ResponseViewModel<IEnumerable<AppointmentViewModel>>> GetAllFilterAppointments(FilterAppointmentRequestViewModel model, CancellationToken cancellationToken)
+        public async Task<ResponseViewModel<IEnumerable<AppointmentViewModel>>> GetAllFilterAppointments(
+            FilterAppointmentRequestViewModel model, CancellationToken cancellationToken)
         {
             var result = await _unitOfWork.Appointments.GetAllFilterAppointments(
                 model.StartTime,
@@ -256,7 +258,7 @@ namespace PureLifeClinic.Application.Services
                 model.SortBy,
                 model.SortOrder,
                 cancellationToken
-                );
+            );
 
 
             return new ResponseViewModel<IEnumerable<AppointmentViewModel>>
@@ -264,6 +266,66 @@ namespace PureLifeClinic.Application.Services
                 Success = true,
                 Data = _mapper.Map<List<AppointmentViewModel>>(result),
             };
+        }
+
+        public async Task<List<AppointmentHealthServiceViewModel>> AssignServiceToAppointment(
+            int appointmentId, 
+            List<AppointmentHealthServiceCreateViewModel> services, 
+            CancellationToken cancellationToken)
+        {
+            var appointment = await _unitOfWork.Appointments.GetById(appointmentId, cancellationToken)
+                ?? throw new NotFoundException("Appointment not found");
+
+            // map to appointment health service
+            var appointmentHealthServices = services.Select(x => x.MapToAppointmentHealthService()).ToList();
+
+            appointmentHealthServices.ForEach(x =>
+            {
+                x.EntryBy = Convert.ToInt32(_userContext.UserId);
+            });
+
+            await _unitOfWork.AppointmentHealthServices.CreateRange(appointmentHealthServices, cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            var healthServiceList = await _unitOfWork.AppointmentHealthServices.GetAllByAppointmentId(appointmentId, cancellationToken);
+
+            return healthServiceList.MapToAppointmentHealthServiceViewModelList();
+        }
+
+        public async Task<List<AppointmentHealthServiceViewModel>> GetAppointmentHealthService(
+            int appointmentId,
+            int serviceId, 
+            CancellationToken cancellationToken)
+        {
+            var appointment = await _unitOfWork.Appointments.GetById(appointmentId, cancellationToken)      
+                ?? throw new NotFoundException("Appointment not found");
+
+            var healthServiceList = await _unitOfWork.AppointmentHealthServices.GetAllByAppointmentId(appointmentId, cancellationToken);
+
+            return healthServiceList.MapToAppointmentHealthServiceViewModelList();
+        }
+
+        public async Task DeleteAppointmentHealthService(int appointmentId, List<int> serviceIds, CancellationToken cancellationToken)
+        {
+            var appointment = await _unitOfWork.Appointments.GetById(appointmentId, cancellationToken)
+              ?? throw new NotFoundException("Appointment not found");
+
+            var appointmentHealthServices = await _unitOfWork.AppointmentHealthServices.GetAllByAppointmentId(appointmentId, cancellationToken);
+            await _unitOfWork.AppointmentHealthServices.DeleteRange(appointmentHealthServices, cancellationToken);
+        }
+
+        public async Task UpdateAppointmentHealthService(int appointmentId, AppointmentHealthServiceStatus status, List<int> serviceIds, CancellationToken cancellationToken)
+        {
+            var appointment = await _unitOfWork.Appointments.GetById(appointmentId, cancellationToken)
+             ?? throw new NotFoundException("Appointment not found");
+
+            var appointmentHealthServices = await _unitOfWork.AppointmentHealthServices.GetAllByAppointmentId(appointmentId, cancellationToken);
+            appointmentHealthServices.ForEach(x =>
+            {
+                x.Status = status;
+                x.UpdatedBy = Convert.ToInt32(_userContext.UserId);
+            });
+            await _unitOfWork.SaveChangesAsync(cancellationToken);  
         }
     }
 }
