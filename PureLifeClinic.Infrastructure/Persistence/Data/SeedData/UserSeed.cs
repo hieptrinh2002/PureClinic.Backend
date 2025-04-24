@@ -1,7 +1,6 @@
 ﻿using Bogus;
 using PureLifeClinic.Core.Entities.General;
 using PureLifeClinic.Core.Enums;
-using PureLifeClinic.Infrastructure.Persistence.Data;
 
 namespace PureLifeClinic.Infrastructure.Persistence.Data.SeedData
 {
@@ -14,7 +13,7 @@ namespace PureLifeClinic.Infrastructure.Persistence.Data.SeedData
 
             // Lấy danh sách role từ database
             var roleMapping = appContext.Roles
-                .Where(r => new[] { "ADMIN", "DOCTOR", "CUSTOMER", "EMPLOYEE" }.Contains(r.Code))
+                .Where(r => new[] { "ADMIN", "DOCTOR", "PATIENT", "EMPLOYEE" }.Contains(r.Code))
                 .ToDictionary(r => r.Code, r => r.Id);
 
             var faker = new Faker();
@@ -24,7 +23,7 @@ namespace PureLifeClinic.Infrastructure.Persistence.Data.SeedData
                 new User
                 {
                     FullName = faker.Name.FullName(),
-                    UserName = "Admin!123",
+                    UserName = "Admin123",
                     Email = GenerateUniqueEmail(faker, existingEmails),
                     Address = faker.Address.FullAddress(),
                     IsActive = true,
@@ -37,7 +36,7 @@ namespace PureLifeClinic.Infrastructure.Persistence.Data.SeedData
                 new User
                 {
                     FullName = faker.Name.FullName(),
-                    UserName = "Doctor!123",
+                    UserName = "Doctor123",
                     Email = GenerateUniqueEmail(faker, existingEmails),
                     Address = faker.Address.FullAddress(),
                     IsActive = true,
@@ -50,11 +49,11 @@ namespace PureLifeClinic.Infrastructure.Persistence.Data.SeedData
                 new User
                 {
                     FullName = faker.Name.FullName(),
-                    UserName = "Customer!123",//GenerateUniqueUsername(faker, existingUsernames),
+                    UserName = "Patient123",//GenerateUniqueUsername(faker, existingUsernames),
                     Email = GenerateUniqueEmail(faker, existingEmails),
                     Address = faker.Address.FullAddress(),
                     IsActive = true,
-                    RoleId = roleMapping["CUSTOMER"],
+                    RoleId = roleMapping["PATIENT"],
                     DateOfBirth = faker.Date.Past(40, DateTime.Now.AddYears(-18)),
                     Gender = faker.PickRandom<Gender>(),
                     EntryDate = DateTime.Now,
@@ -63,7 +62,7 @@ namespace PureLifeClinic.Infrastructure.Persistence.Data.SeedData
                 new User
                 {
                     FullName = faker.Name.FullName(),
-                    UserName = "Employee!123",//GenerateUniqueUsername(faker, existingUsernames),
+                    UserName = "Employee123",//GenerateUniqueUsername(faker, existingUsernames),
                     Email = GenerateUniqueEmail(faker, existingEmails),
                     Address = faker.Address.FullAddress(),
                     IsActive = true,

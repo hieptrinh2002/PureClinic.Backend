@@ -63,42 +63,53 @@ namespace PureLifeClinic.Infrastructure.Persistence.Data
                     }
                     var roles = appContext.Roles.ToList();
                     var users = UserSeed.SeedUserData(appContext).ToList();
-                    foreach (var user in users)
+
+                    // handle parallel
+                    int maxConcurrency = Environment.ProcessorCount * 2;
+                    using var semaphore = new SemaphoreSlim(maxConcurrency);
+                    var roleMap = roles.ToDictionary(r => r.Id, r => r); // tra cứu nhanh
+                    var tasks = users.Select(async user =>
                     {
-                        var role = roles.FirstOrDefault(r => r.Id == user.RoleId);
-                        if (role == null) continue;
-
-                        var defaultPassword = GenerateStrongPassword();
-                        IdentityResult result = await UserManager.CreateAsync(user, defaultPassword);
-
-                        if (result.Succeeded)
+                        await semaphore.WaitAsync();
+                        try
                         {
+                            if (!roleMap.TryGetValue(user.RoleId, out var role))
+                                return;
+
+                            var defaultPassword = GenerateStrongPassword();
+                            var result = await UserManager.CreateAsync(user, defaultPassword);
+
+                            if (!result.Succeeded)
+                            {
+                                Console.WriteLine($"Failed to create user: {user.UserName}, Errors: {string.Join(", ", result.Errors.Select(e => e.Description))}");
+                                return;
+                            }
+
                             await UserManager.AddToRoleAsync(user, role.NormalizedName);
 
-                            if (role.NormalizedName == "DOCTOR")
+                            switch (role.NormalizedName)
                             {
-                                var doctor = DoctorSeed.SeedOneDoctorsData(user.Id);
-                                appContext.Doctors.Add(doctor);
-
-                            }
-                            else if (role.NormalizedName == "PATIENT")
-                            {
-                                var patient = PatientSeed.SeedPatientsData(user.Id);
-                                appContext.Patients.Add(patient);
-                            }
-                            else if (role.NormalizedName == "EMPLOYEE")
-                            {
-                            }
-                            else if (role.NormalizedName == "ADMIN")
-                            {
+                                case "DOCTOR":
+                                    appContext.Doctors.Add(DoctorSeed.SeedOneDoctorsData(user.Id));
+                                    break;
+                                case "PATIENT":
+                                    appContext.Patients.Add(PatientSeed.SeedPatientsData(user.Id));
+                                    break;
+                                case "EMPLOYEE":
+                                case "ADMIN":
+                                    break;
                             }
                         }
-                        else
+                        finally
                         {
-                            var t = $"Failed to create user: {user.UserName}, Errors: {string.Join(", ", result.Errors.Select(e => e.Description))}";
-                            Console.WriteLine($"Failed to create user: {user.UserName}, Errors: {string.Join(", ", result.Errors.Select(e => e.Description))}");
+                            semaphore.Release();
                         }
-                    }
+                    }).ToList();
+
+                    await Task.WhenAll(tasks);
+
+                    // Save all at once if needed
+                    await appContext.SaveChangesAsync();
                 }
 
                 // Adding Medication
@@ -132,7 +143,7 @@ namespace PureLifeClinic.Infrastructure.Persistence.Data
                 if (!appContext.HealthServices.Any())
                 {
                     using var transaction = appContext.Database.BeginTransaction();
-                    appContext.HealthServices.AddRange(HealthServiceSeed.SeedHealthServicesData());
+                    appContext.HealthServices.AddRange(HealthServiceSeed.SeedHealthServicesData(10));
                     await appContext.SaveChangesAsync();
                     transaction.Commit();
                     foreach (var service in appContext.HealthServices)
@@ -142,17 +153,26 @@ namespace PureLifeClinic.Infrastructure.Persistence.Data
                     await appContext.SaveChangesAsync();
                 }
 
+                // add Rooms
+                if (!appContext.Rooms.Any())
+                {
+                    using var transaction = appContext.Database.BeginTransaction();
+                    appContext.RoomTypes.AddRange(RoomTypeSeed.SeedRoomTypeData());
+                    await appContext.SaveChangesAsync();
+                    transaction.Commit();
+                }
+
                 // add AppointmentHealthServices    
                 if (!appContext.AppointmentHealthServices.Any())
                 {
                     using var transaction = appContext.Database.BeginTransaction();
                     var appointments = appContext.Appointments.ToList();
                     var healthServices = appContext.HealthServices.ToList();
-
-                    if (!appContext.Appointments.Any() || !appContext.HealthServices.Any())
+                    var rooms = appContext.Rooms.ToList();  
+                    if (!appointments.Any() || !healthServices.Any() || !rooms.Any())
                         return;
 
-                    var appointmentHealthServices = AppointmentHealthServiceSeed.SeedAppointmentHealthServicesData(appointments, healthServices);
+                    var appointmentHealthServices = AppointmentHealthServiceSeed.SeedAppointmentHealthServicesData(appointments, healthServices, rooms);
                     appContext.AppointmentHealthServices.AddRange(appointmentHealthServices);
                     await appContext.SaveChangesAsync();
                     transaction.Commit();

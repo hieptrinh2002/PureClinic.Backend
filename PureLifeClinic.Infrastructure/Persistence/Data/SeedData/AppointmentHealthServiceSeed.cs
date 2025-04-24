@@ -7,14 +7,15 @@ namespace PureLifeClinic.Infrastructure.Persistence.Data.SeedData
     {
         public static IEnumerable<AppointmentHealthService> SeedAppointmentHealthServicesData(
             IEnumerable<Appointment> appointments,
-            IEnumerable<HealthService> healthServices)
+            IEnumerable<HealthService> healthServices,
+            IEnumerable<Room> rooms)
         {
             var appointmentList = appointments.ToList();
             var healthServiceList = healthServices.ToList();
             var faker = new Faker<AppointmentHealthService>()
                 .RuleFor(ahs => ahs.AppointmentId, f => f.PickRandom(appointmentList).Id)
                 .RuleFor(ahs => ahs.HealthServiceId, f => f.PickRandom(healthServiceList).Id)
-
+                .RuleFor(ahs => ahs.RoomId, f => f.PickRandom(rooms).Id)
                 .RuleFor(ahs => ahs.EntryDate, f => DateTime.Now)
                 // Get price at the present time    
                 .RuleFor(ahs => ahs.Price, (f, ahs) =>

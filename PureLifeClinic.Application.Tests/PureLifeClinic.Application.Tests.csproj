@@ -19,5 +19,12 @@
 				<PrivateAssets>all</PrivateAssets>			
 				<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>	
 			</PackageReference>
+		</ItemGroup>	
+		<ItemGroup>
+		  <ProjectReference Include="..\PeruLife.Clinic.Application\PureLifeClinic.Application.csproj" />
+		  <ProjectReference Include="..\PureLifeClinic.Core\PureLifeClinic.Core.csproj" />
+		</ItemGroup>	
+		<ItemGroup>
+		  <Folder Include="Services\" />
 		</ItemGroup>
 </Project>

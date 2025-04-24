@@ -12,7 +12,7 @@ namespace PureLifeClinic.Core.Entities.General
 
         public bool IsActive { get; set; } = true;
 
-        public required RoomType RoomType { get; set; } // FK to RoomType   
+        public RoomType RoomType { get; set; } // FK to RoomType   
 
         [ForeignKey(nameof(RoomTypeId))]
         public int RoomTypeId { get; set; } // FK to RoomType

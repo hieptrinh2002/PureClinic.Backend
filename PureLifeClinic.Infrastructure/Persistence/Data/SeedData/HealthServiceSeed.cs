@@ -5,7 +5,7 @@ namespace PureLifeClinic.Infrastructure.Persistence.Data.SeedData
 {
     public static class HealthServiceSeed
     {
-        public static IEnumerable<HealthService> SeedHealthServicesData()
+        public static IEnumerable<HealthService> SeedHealthServicesData(int recordNumber)
         {
             var serviceNames = new List<string>
             {
@@ -30,7 +30,7 @@ namespace PureLifeClinic.Infrastructure.Persistence.Data.SeedData
                 .RuleFor(h => h.IsActive, f => f.Random.Bool())
                 .RuleFor(h => h.EntryDate, f => DateTime.Now);
 
-            return faker.Generate(10);
+            return faker.Generate(recordNumber);
         }
     }
 }
