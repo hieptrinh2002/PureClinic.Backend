@@ -260,7 +260,6 @@ namespace PureLifeClinic.Application.Services
                 cancellationToken
             );
 
-
             return new ResponseViewModel<IEnumerable<AppointmentViewModel>>
             {
                 Success = true,

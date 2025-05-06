@@ -11,12 +11,13 @@ namespace PureLifeClinic.Infrastructure.Persistence.Repositories
         {
         }
 
-        Task<List<AppointmentHealthService>> IAppointmentHealthServiceRepository.GetAllByAppointmentId(int appointmentId, CancellationToken cancellationToken)
+        public Task<List<AppointmentHealthService>> GetAllByAppointmentId(int appointmentId, CancellationToken cancellationToken)
         {
             return _dbContext.AppointmentHealthServices
                 .Where(x => x.AppointmentId == appointmentId)
                 .Include(x => x.HealthService)
                 .Include(x => x.Room)
+                .OrderBy(a => a.SortOrder)
                 .ToListAsync(cancellationToken);
         }
     }

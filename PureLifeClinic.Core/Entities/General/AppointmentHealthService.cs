@@ -15,7 +15,7 @@ namespace PureLifeClinic.Core.Entities.General
         [ForeignKey(nameof(HealthServiceId))]
         public HealthService HealthService { get; set; }
 
-        // FK to HealthService
+        // FK to Room
         public int RoomId { get; set; }
         [ForeignKey(nameof(RoomId))]
         public Room? Room { get; set; }

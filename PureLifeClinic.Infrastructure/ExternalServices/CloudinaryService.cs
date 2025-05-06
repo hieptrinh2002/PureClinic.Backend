@@ -81,9 +81,7 @@ namespace PureLifeClinic.Infrastructure.ExternalServices
         public async Task<List<MedicalFile>> UploadFilesAsync(List<FileUploadViewModel> modelFiles)
         {
             var files = modelFiles.Select(f => f.FileDetails).ToList();
-
             var uploadTasks = files.Select(file => UploadFileAsync(file)); // create list Task<MedicalFile>
-
             var medicalFiles = await Task.WhenAll(uploadTasks); // parallel upload all files
 
             return medicalFiles.ToList();

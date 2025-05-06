@@ -54,7 +54,8 @@ namespace PureLifeClinic.Infrastructure.Persistence.Data
                         RoleId = r.Id,
                         Email = "kawser2133@gmail.com",
                         EntryDate = DateTime.Now,
-                        IsActive = true
+                        IsActive = true,
+                        EmailConfirmed = true
                     };
 
                     IdentityResult userResult = await UserManager.CreateAsync(defaultUser, "Hamid@12");

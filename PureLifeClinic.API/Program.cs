@@ -12,10 +12,11 @@ using PureLifeClinic.API.Middlewares;
 using PureLifeClinic.Application.Interfaces.IServices;
 using PureLifeClinic.Core.Common;
 using PureLifeClinic.Infrastructure.Caching;
-using PureLifeClinic.Infrastructure.ExternalServices;
 using PureLifeClinic.Infrastructure.Persistence.Data;
 using PureLifeClinic.Infrastructure.SignalR.Hubs;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Net;
+using System.Threading.RateLimiting;
 using RecurringJobScheduler = PureLifeClinic.Infrastructure.BackgroundServices.Schedulers.RecurringJobScheduler;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -153,6 +154,33 @@ builder.Services.AddCors(options =>
     });
 });
 
+
+
+builder.Services.AddRateLimiter(options =>
+{
+    // Thông số toàn cục khi throttle
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.OnRejected = async (context, ct) =>
+    {
+        await context.HttpContext.Response.WriteAsync("Too many requests, please try again later.", ct);
+    };
+
+    // config fixed window rate limiting    
+    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, IPAddress>(ctx =>
+    {
+        var ip = ctx.Connection.RemoteIpAddress!;
+        return RateLimitPartition.GetFixedWindowLimiter(ip, _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 30,
+            Window = TimeSpan.FromMinutes(1),
+            QueueLimit = 0,
+            AutoReplenishment = true,
+            QueueProcessingOrder = QueueProcessingOrder.OldestFirst
+        });
+    });
+});
+
+
 var app = builder.Build();
 
 app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
@@ -204,7 +232,6 @@ else
     app.UseHsts();
 }
 
-
 app.UseStaticFiles();
 app.UseRouting(); // Add this line to configure routing
 
@@ -221,10 +248,26 @@ using (var scope = app.Services.CreateScope())
     RecurringJobScheduler.ConfigureJobs(scope.ServiceProvider);
 }
 
-
 #region Custom Middleware
 app.UseMiddleware<RequestResponseLoggingMiddleware>();
 #endregion
+
+// Implement IP Filtering and Geofencing
+app.Use(async (context, next) =>
+{
+    var ipAddress = context.Connection.RemoteIpAddress;
+    var restrictedIps = new[] { "" };// { "192.168.1.100", "192.168.1.2" }; // Add malicious IPs here
+
+    if (restrictedIps.Contains(ipAddress?.ToString()))
+    {
+        context.Response.StatusCode = StatusCodes.Status403Forbidden;
+        await context.Response.WriteAsync("Forbidden");
+        return;
+    }
+
+    await next.Invoke();
+});
+app.UseRateLimiter();
 
 app.MapControllers(); // API controllers
 app.MapHub<NotificationHub>("/NotificationHub"); // SignalR hub

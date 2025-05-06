@@ -21,6 +21,7 @@ namespace PureLifeClinic.API.Controllers.V1
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [AllowAnonymous]
     public class ProductController : ControllerBase
     {
         private readonly ILogger<ProductController> _logger;
