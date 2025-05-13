@@ -77,6 +77,7 @@ namespace PureLifeClinic.Infrastructure.Persistence.Data
                 AuditLogs.Add(auditLog);
             };
 
+            UpdateTimestamp();
             return base.SaveChangesAsync(cancellationToken);
         }
 
@@ -94,6 +95,26 @@ namespace PureLifeClinic.Infrastructure.Persistence.Data
             }    
                 
             return changes.ToString();  
+        }
+
+        private void UpdateTimestamp()
+        {
+            var entities = ChangeTracker.Entries<Base<int>>();
+            foreach (var entity in entities)
+            {
+                switch (entity.State)
+                {
+                    case EntityState.Added:
+                        entity.Entity.EntryDate = DateTime.UtcNow;
+                        break;
+                    case EntityState.Modified:
+                        entity.Entity.UpdatedDate = DateTime.UtcNow;
+                        break;
+                    case EntityState.Deleted:
+                        entity.Entity.DeletedDate = DateTime.UtcNow;
+                        break;
+                }
+            }   
         }
 
         protected override void OnModelCreating(ModelBuilder builder)

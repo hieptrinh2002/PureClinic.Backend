@@ -62,7 +62,9 @@ namespace PureLifeClinic.Infrastructure.Persistence.Repositories
 
         public async Task<bool> IsExistsAppointment(int doctorId, DateTime date, CancellationToken cancellationToken)
         {
-            return await _dbContext.Appointments.AsNoTracking().Where(a => a.DoctorId == doctorId && a.AppointmentDate == date).AnyAsync(cancellationToken);
+            return await _dbContext.Appointments.AsNoTracking()
+                .Where(a => a.DoctorId == doctorId && a.AppointmentDate == date)
+                .AnyAsync(cancellationToken);
         }
 
         public async Task<List<Appointment>> GetUpcomingAppointmentsBatchAsync(int pageIndex, int batchSize, int hoursBefore)
@@ -84,7 +86,7 @@ namespace PureLifeClinic.Infrastructure.Persistence.Repositories
             return await _dbContext.Appointments
                 .Include(a => a.Patient)    
                 .ThenInclude(p => p.User)   
-                .Where(apt => apt.AppointmentDate > now && apt.Status == AppointmentStatus.Approved).ToListAsync();
+                .Where(apt => apt.AppointmentDate < now && apt.Status == AppointmentStatus.Approved).ToListAsync();
         }
 
         public async Task<int> CountConsecutiveMissedAppointments(int patientId)
