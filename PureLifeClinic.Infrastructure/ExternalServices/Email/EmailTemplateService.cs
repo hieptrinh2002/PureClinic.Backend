@@ -14,7 +14,8 @@ namespace PureLifeClinic.Infrastructure.ExternalServices.Email
 
         public async Task<string> RenderTemplateAsync(string templateName, Dictionary<string, string> values)
         {
-            var path = Path.Combine(_env.ContentRootPath, "ExternalServices", "Email", "Templates", templateName).Replace("PureLifeClinic.API", "PureLifeClinic.Infrastructure");
+            var path = Path.Combine(_env.ContentRootPath, "ExternalServices", "Email", "Templates", templateName)
+                .Replace("PureLifeClinic.API", "PureLifeClinic.Infrastructure");
 
             if (!File.Exists(path))
                 throw new FileNotFoundException($"Email template not found: {templateName}");
@@ -23,7 +24,7 @@ namespace PureLifeClinic.Infrastructure.ExternalServices.Email
 
             foreach (var kv in values)
             {
-                template = template.Replace(kv.Key, kv.Value);
+                template = template.Replace("{{" + kv.Key + "}}", kv.Value);
             }
 
             return template;

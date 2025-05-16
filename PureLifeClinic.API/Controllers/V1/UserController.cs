@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PureLifeClinic.API.ActionFilters;
 using PureLifeClinic.API.Helpers;
 using PureLifeClinic.Application.BusinessObjects.EmailViewModels;
 using PureLifeClinic.Application.BusinessObjects.ErrorViewModels;
@@ -23,13 +24,13 @@ namespace PureLifeClinic.API.Controllers.V1
     {
         private readonly ILogger<UserController> _logger;
         private readonly IUserService _userService;
-        private readonly IMailService _emailService;    
+        private readonly IMailService _emailService;
         private readonly IBackgroundJobService _backgroundJobService;
         private readonly IEmailTemplateService _emailTemplateService;
         public UserController(
-            ILogger<UserController> logger, 
-            IUserService userService, 
-            IMailService emailService, 
+            ILogger<UserController> logger,
+            IUserService userService,
+            IMailService emailService,
             IBackgroundJobService backgroundJobService,
             IEmailTemplateService emailTemplateService)
         {
@@ -62,19 +63,7 @@ namespace PureLifeClinic.API.Controllers.V1
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while retrieving users");
-
-                var errorResponse = new ResponseViewModel<IEnumerable<UserViewModel>>
-                {
-                    Success = false,
-                    Message = "Error retrieving users",
-                    Error = new ErrorViewModel
-                    {
-                        Code = "ERROR_CODE",
-                        Message = ex.Message
-                    }
-                };
-
-                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
+                throw;
             }
         }
 
@@ -97,19 +86,7 @@ namespace PureLifeClinic.API.Controllers.V1
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while retrieving users");
-
-                var errorResponse = new ResponseViewModel<IEnumerable<UserViewModel>>
-                {
-                    Success = false,
-                    Message = "Error retrieving users",
-                    Error = new ErrorViewModel
-                    {
-                        Code = "ERROR_CODE",
-                        Message = ex.Message
-                    }
-                };
-
-                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
+                throw;
             }
         }
 
@@ -131,222 +108,84 @@ namespace PureLifeClinic.API.Controllers.V1
             }
             catch (Exception ex)
             {
-                if (ex.Message == "No data found")
-                {
-                    return StatusCode(StatusCodes.Status404NotFound, new ResponseViewModel<UserViewModel>
-                    {
-                        Success = false,
-                        Message = "User not found",
-                        Error = new ErrorViewModel
-                        {
-                            Code = "NOT_FOUND",
-                            Message = "User not found"
-                        }
-                    });
-                }
 
                 _logger.LogError(ex, $"An error occurred while retrieving the user");
-
-                var errorResponse = new ResponseViewModel<UserViewModel>
-                {
-                    Success = false,
-                    Message = "Error retrieving user",
-                    Error = new ErrorViewModel
-                    {
-                        Code = "ERROR_CODE",
-                        Message = ex.Message
-                    }
-                };
-
-                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
+                throw;
             }
         }
 
-        [HttpPost, AllowAnonymous]
+        [HttpPost]
+        [ServiceFilter(typeof(ValidateInputViewModelFilter))]
+        [AllowAnonymous]
+
         public async Task<IActionResult> Create(UserCreateViewModel model, CancellationToken cancellationToken)
         {
-            if (ModelState.IsValid)
+            var response = await _userService.Create(model, cancellationToken);
+
+            if (response.Success)
             {
-                string message = "";
-                if (await _userService.IsExists("UserName", model.UserName, cancellationToken))
+                // Create activate email token => return link activate
+                var result = await _userService.GenerateEmailConfirmationTokenAsync(model.Email);
+                if (!result.Success)
+                    throw new ErrorException(result.Message);
+                var confirmationLink = Url.Action("ConfirmEmail", "Register", new { result.Data.ActivationToken, email = model.Email }, Request.Scheme);
+
+                var dict = new Dictionary<string, string>()
                 {
-                    message = $"The user name- '{model.UserName}' already exists";
-                    return StatusCode(StatusCodes.Status400BadRequest, new ResponseViewModel<UserViewModel>
-                    {
-                        Success = false,
-                        Message = message,
-                        Error = new ErrorViewModel
-                        {
-                            Code = "DUPLICATE_NAME",
-                            Message = message
-                        }
-                    });
-                }
+                    { "UserName", model.UserName },
+                    { "ActivationLink", confirmationLink ?? string.Empty},
+                    { "ResetPasswordLink", "" },
+                    { "Year", DateTime.Now.Year.ToString() },
+                    { "UserEmail", "johndoe@example.com" }
+                };
 
-                if (await _userService.IsExists("Email", model.Email, cancellationToken))
+                var emailBody = await _emailTemplateService.RenderTemplateAsync("MailTemplate.html", dict);
+
+                var mailRequestViewModel = new MailRequestViewModel
                 {
-                    message = $"The user Email- '{model.Email}' already exists";
-                    return StatusCode(StatusCodes.Status400BadRequest, new ResponseViewModel<UserViewModel>
-                    {
-                        Success = false,
-                        Message = message,
-                        Error = new ErrorViewModel
-                        {
-                            Code = "DUPLICATE_CODE",
-                            Message = message
-                        }
-                    });
-                }
+                    ToEmail = model.Email,
+                    Subject = "Activate Your Account",
+                    Body = emailBody,
+                };
 
-                try
-                {
-                    var response = await _userService.Create(model, cancellationToken);
+                _backgroundJobService.ScheduleImmediateJob<IMailService>(m => m.SendEmailAsync(mailRequestViewModel));
 
-                    if (response.Success)
-                    {
-                        // Create activate email token => return link activate
-                        var result = await _userService.GenerateEmailConfirmationTokenAsync(model.Email);
-                        if(!result.Success)
-                            throw new ErrorException(result.Message);    
-                        var confirmationLink = Url.Action("ConfirmEmail", "Register", new { result.Data.ActivationToken, email = model.Email }, Request.Scheme);
-
-                        //var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Template", "MailTemplate.html");
-                        //var emailBody = MailHelper.ReadAndProcessHtmlTemplate(filePath, confirmationLink, model.UserName);
-
-                        var dict = new Dictionary<string, string>()
-                        {
-                            { "{{UserName}}", model.UserName },
-                            { "{{ActivationLink}}", confirmationLink},
-                            { "{{ResetPasswordLink}}", "" },
-                            { "{{Year}}", DateTime.Now.Year.ToString() },
-                            { "{{UserEmail}}", "johndoe@example.com" }
-                        };
-
-                        var emailBody = await _emailTemplateService.RenderTemplateAsync("MailTemplate.html", dict);
-
-                        var mailRequestViewModel = new MailRequestViewModel
-                        {
-                            ToEmail = model.Email,
-                            Subject = "Activate Your Account",
-                            Body = emailBody,
-                        };
-
-                        _backgroundJobService.ScheduleImmediateJob<IMailService>(m => m.SendEmailAsync(mailRequestViewModel));
-                       
-                        return Ok(response);
-                    }
-                    else
-                    {
-                        return BadRequest(response);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, $"An error occurred while adding the user");
-                    message = $"An error occurred while adding the user- " + ex.Message;
-
-                    return StatusCode(StatusCodes.Status500InternalServerError, new ResponseViewModel<UserViewModel>
-                    {
-                        Success = false,
-                        Message = message,
-                        Error = new ErrorViewModel
-                        {
-                            Code = "ADD_USER_ERROR",
-                            Message = message
-                        }
-                    });
-                }
+                return Ok(response);
             }
 
-            return StatusCode(StatusCodes.Status400BadRequest, new ResponseViewModel<UserViewModel>
-            {
-                Success = false,
-                Message = "Invalid input",
-                Error = new ErrorViewModel
-                {
-                    Code = "INPUT_VALIDATION_ERROR",
-                    Message = ModelStateHelper.GetErrors(ModelState)
-                }
-            });
+            return BadRequest(response);
         }
 
         [HttpPut]
+        [ServiceFilter(typeof(ValidateInputViewModelFilter))]
         public async Task<IActionResult> Edit(UserUpdateViewModel model, CancellationToken cancellationToken)
         {
-            if (ModelState.IsValid)
+
+            if (await _userService.IsExistsForUpdate(model.Id, "UserName", model.UserName, cancellationToken))
             {
-                string message = "";
-                if (await _userService.IsExistsForUpdate(model.Id, "UserName", model.UserName, cancellationToken))
-                {
-                    message = $"The user name- '{model.UserName}' already exists";
-                    return StatusCode(StatusCodes.Status400BadRequest, new ResponseViewModel<UserViewModel>
-                    {
-                        Success = false,
-                        Message = message,
-                        Error = new ErrorViewModel
-                        {
-                            Code = "DUPLICATE_NAME",
-                            Message = message
-                        }
-                    });
-                }
-
-                if (await _userService.IsExistsForUpdate(model.Id, "Email", model.Email, cancellationToken))
-                {
-                    message = $"The user Email- '{model.Email}' already exists";
-                    return StatusCode(StatusCodes.Status400BadRequest, new ResponseViewModel<UserViewModel>
-                    {
-                        Success = false,
-                        Message = message,
-                        Error = new ErrorViewModel
-                        {
-                            Code = "DUPLICATE_CODE",
-                            Message = message
-                        }
-                    });
-                }
-
-                try
-                {
-                    var response = await _userService.Update(model, cancellationToken);
-
-                    if (response.Success)
-                    {
-                        return Ok(response);
-                    }
-                    else
-                    {
-                        return BadRequest(response);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, $"An error occurred while updating the user");
-                    message = $"An error occurred while updating the user- " + ex.Message;
-
-                    return StatusCode(StatusCodes.Status500InternalServerError, new ResponseViewModel<UserViewModel>
-                    {
-                        Success = false,
-                        Message = message,
-                        Error = new ErrorViewModel
-                        {
-                            Code = "UPDATE_USER_ERROR",
-                            Message = message
-                        }
-                    });
-                }
+                throw new BadRequestException($"The user name - '{model.UserName}' already exists");
             }
 
-            return StatusCode(StatusCodes.Status400BadRequest, new ResponseViewModel<UserViewModel>
+            if (await _userService.IsExistsForUpdate(model.Id, "Email", model.Email, cancellationToken))
             {
-                Success = false,
-                Message = "Invalid input",
-                Error = new ErrorViewModel
+                throw new BadRequestException($"The user Email - '{model.Email}' already exists");
+            }
+
+            try
+            {
+                var response = await _userService.Update(model, cancellationToken);
+
+                if (response.Success)
                 {
-                    Code = "INPUT_VALIDATION_ERROR",
-                    Message = ModelStateHelper.GetErrors(ModelState)
+                    return Ok(response);
                 }
-            });
+                throw new BadRequestException(response.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"An error occurred while updating the user");
+                throw;
+            }
         }
 
         [HttpDelete("{id}")]
@@ -367,19 +206,7 @@ namespace PureLifeClinic.API.Controllers.V1
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while deleting the user");
-
-                var errorResponse = new ResponseViewModel<UserViewModel>
-                {
-                    Success = false,
-                    Message = "Error deleting the user",
-                    Error = new ErrorViewModel
-                    {
-                        Code = "DELETE_USER_ERROR",
-                        Message = ex.Message
-                    }
-                };
-
-                return StatusCode(StatusCodes.Status500InternalServerError, errorResponse);
+                throw;
             }
         }
     }

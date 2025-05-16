@@ -43,43 +43,37 @@ namespace PureLifeClinic.API.Controllers.V1
             try
             {
                 var result = await _authService.Login(model.UserName, model.Password);
-                if (result.Success)
+                // get Token data
+                var tokenData = await _tokenService.GenerateJwtToken(result.Data.Id);
+                var refreshToken = tokenData.Data.RefreshToken;
+
+                // insert Refresh Token
+                RefreshTokenCreateViewModel refreshTokenModel = new RefreshTokenCreateViewModel
                 {
-                    // get Token data
-                    var tokenData = await _tokenService.GenerateJwtToken(result.Data.Id);
-                    var refreshToken = tokenData.Data.RefreshToken;
+                    Token = refreshToken.Token,
+                    CreateOn = refreshToken.CreateOn,
+                    ExpireOn = refreshToken.ExpireOn,
+                    AccessTokenId = tokenData.Data.AccessTokenId,
+                };
 
-                    // insert Refresh Token
-                    RefreshTokenCreateViewModel refreshTokenModel = new RefreshTokenCreateViewModel
+                var createdTokenResult = await _refreshTokenService.InsertRefreshToken(result.Data.Id, refreshTokenModel, default);
+
+                if (createdTokenResult?.Data != null)
+                    SetRefreshTokenInCookies(createdTokenResult.Data.Token, createdTokenResult.Data.ExpireOn);
+
+                return Ok(new ResponseViewModel<AuthResultViewModel>
+                {
+                    Success = true,
+                    Data = new AuthResultViewModel
                     {
-                        Token = refreshToken.Token,
-                        CreateOn = refreshToken.CreateOn,
-                        ExpireOn = refreshToken.ExpireOn,
-                        AccessTokenId = tokenData.Data.AccessTokenId,
-                    };
-
-                    var createdTokenResult = await _refreshTokenService.InsertRefreshToken(result.Data.Id, refreshTokenModel, default);
-                    if (createdTokenResult?.Data != null)
-                    {
-                        SetRefreshTokenInCookies(createdTokenResult.Data.Token, createdTokenResult.Data.ExpireOn);
-                    }
-
-                    return Ok(new ResponseViewModel<AuthResultViewModel>
-                    {
-                        Success = true,
-                        Data = new AuthResultViewModel
-                        {
-                            AccessToken = tokenData.Data.AccessToken,
-                            RefreshToken = createdTokenResult.Data,
-                            Role = result.Data.Role,
-                            UserEmail = result.Data.Email,
-                            UserId = result.Data.Id
-                        },
-                        Message = "Login successfully"
-                    });
-                }
-
-                return Ok(result);
+                        AccessToken = tokenData.Data.AccessToken,
+                        RefreshToken = createdTokenResult.Data,
+                        Role = result.Data.Role,
+                        UserEmail = result.Data.Email,
+                        UserId = result.Data.Id
+                    },
+                    Message = "Login successfully"
+                });
             }
             catch (Exception ex)
             {
@@ -114,13 +108,7 @@ namespace PureLifeClinic.API.Controllers.V1
                 var result = await _refreshTokenService.RefreshTokenCheckAsync(refreshToken);
 
                 if (!result)
-                {
-                    return BadRequest(new ResponseViewModel
-                    {
-                        Message = "Invalid refresh token.",
-                        Success = false,
-                    });
-                }
+                    throw new BadRequestException("Invalid refresh token");
 
                 var tokenData = await _tokenService.GenerateJwtToken(Convert.ToInt32(_userContext.UserId));
                 var refreshTokenData = _tokenService.GenerateRefreshToken();
@@ -133,7 +121,7 @@ namespace PureLifeClinic.API.Controllers.V1
                 refreshTokenData.AccessTokenId = tokenData?.Data?.AccessTokenId;
 
                 // autp mapper
-                RefreshTokenCreateViewModel refreshTokenCreateModel = new RefreshTokenCreateViewModel
+                var refreshTokenCreateModel = new RefreshTokenCreateViewModel
                 {
                     Token = refreshTokenData.Token,
                     CreateOn = refreshTokenData.CreateOn,
@@ -155,7 +143,7 @@ namespace PureLifeClinic.API.Controllers.V1
                     Data = new AuthResultViewModel
                     {
                         AccessToken = tokenData.Data.AccessToken,
-                        RefreshToken = createdTokenResult.Data //_refreshTokenViewModelMapper.MapModel(refreshTokenData)
+                        RefreshToken = createdTokenResult.Data 
                     }
                 });
 
@@ -182,7 +170,6 @@ namespace PureLifeClinic.API.Controllers.V1
             //cookieOptionsExpires = DateTime.UtcNow.AddSeconds(cookieOptions.Timeout);
             Response.Cookies.Append("refreshTokenKey", refreshToken, cookieOptions);
         }
-
         #endregion
     }
 }

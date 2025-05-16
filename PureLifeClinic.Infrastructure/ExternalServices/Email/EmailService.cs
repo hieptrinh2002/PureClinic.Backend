@@ -13,13 +13,11 @@ namespace PureLifeClinic.Infrastructure.ExternalServices.Email
     {
         private readonly AppSettings _appSettings;
         private readonly IEmailTemplateService _emailTemplateService;
-        private readonly IWebHostEnvironment _env;
 
         public EmailService(IOptions<AppSettings> appSettings, IEmailTemplateService emailTemplateService, IWebHostEnvironment env)
         {
             _appSettings = appSettings.Value;
             _emailTemplateService = emailTemplateService;
-            _env = env;
         }
 
         public async Task SendEmailAsync(MailRequestViewModel mailRequest)
@@ -48,6 +46,11 @@ namespace PureLifeClinic.Infrastructure.ExternalServices.Email
             builder.HtmlBody = mailRequest.Body;
             email.Body = builder.ToMessageBody();
             using var smtp = new SmtpClient();
+            var host = _appSettings?.MailSettings?.Host;
+
+            if (string.IsNullOrEmpty(host))
+                throw new Exception("SMTP host is not configured.");
+
             smtp.Connect(_appSettings.MailSettings.Host, _appSettings.MailSettings.Port, SecureSocketOptions.StartTls);
             smtp.Authenticate(_appSettings.MailSettings.Mail, _appSettings.MailSettings.Password);
             await smtp.SendAsync(email);

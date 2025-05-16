@@ -53,10 +53,7 @@ namespace PureLifeClinic.API.Controllers.V1
             var file = _invoiceService.CreateInvoiceFileAsync(model, cancellationToken);
 
             if (file == null || file?.Data == null)
-            {
-                _logger.LogError("Error while generating invoice file");
                 throw new ErrorException("Error while generating invoice file");
-            }
 
             _backgroundJobService.ScheduleImmediateJob<IInvoiceService>
                 (service => service.ProcessInvoiceAsync(model, file.Data, cancellationToken));

@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PureLifeClinic.Core.Entities.General
+namespace PureLifeClinic.Core.Entities.General.Notification
 {
-    public class AnnouncementUser: Base<int>
+    public class AnnouncementUser : Base<int>
     {
         public int AnnouncementId { get; set; }
 

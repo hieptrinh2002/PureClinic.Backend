@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PureLifeClinic.Core.Entities.General
+namespace PureLifeClinic.Core.Entities.General.Notification
 {
     public class Announcement : Base<int>
     {

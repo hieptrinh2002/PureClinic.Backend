@@ -250,10 +250,10 @@ namespace PureLifeClinic.API.Controllers.V1
 
         [HttpPost("{appointmentId}/health-services")]
         public async Task<IActionResult> AssignServiceToAppointment(
-            int appointmentId, [FromBody] List<AppointmentHealthServiceCreateViewModel> model, CancellationToken cancellationToken)
+            int appointmentId, [FromBody] List<AppointmentHealthServiceCreateVM> model, CancellationToken cancellationToken)
         {
-            List<AppointmentHealthServiceViewModel> result = await _appointmentService.AssignServiceToAppointment(appointmentId, model, cancellationToken);
-            return Ok(new ResponseViewModel<List<AppointmentHealthServiceViewModel>>
+           var result = await _appointmentService.AssignServiceToAppointment(appointmentId, model, cancellationToken);
+            return Ok(new ResponseViewModel<List<AppointmentHealthServiceVM>>
             {
                 Success = true,
                 Message = "Services assigned successfully",
@@ -265,7 +265,7 @@ namespace PureLifeClinic.API.Controllers.V1
         public async Task<IActionResult> GetAppointmentHealthService(int appointmentId, int serviceId, CancellationToken cancellationToken)
         {
             var result = await _appointmentService.GetAppointmentHealthService(appointmentId, serviceId, cancellationToken);
-            return Ok(new ResponseViewModel<List<AppointmentHealthServiceViewModel>>
+            return Ok(new ResponseViewModel<List<AppointmentHealthServiceVM>>
             {
                 Success = true,
                 Message = "Services retrieved successfully",

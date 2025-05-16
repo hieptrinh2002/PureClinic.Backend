@@ -20,7 +20,7 @@ namespace PureLifeClinic.Core.Entities.General
         public string? Address { get; set; } 
         public Gender? Gender { get; set; } 
         public DateTime? DateOfBirth { get; set; }
-        public string? ImagePath { get; set; }
+        public string ImagePath { get; set; } = string.Empty;
 
         public bool IsLockPermission { get; set; } = false; 
         public int? Age

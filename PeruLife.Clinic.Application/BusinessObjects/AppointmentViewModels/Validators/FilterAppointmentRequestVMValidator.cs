@@ -3,9 +3,9 @@ using PureLifeClinic.Application.BusinessObjects.AppointmentViewModels.Request;
 
 namespace PureLifeClinic.Application.BusinessObjects.AppointmentViewModels.Validators
 {
-    public sealed class FilterAppointmentRequestViewModelValidator : AbstractValidator<FilterAppointmentRequestViewModel>
+    public sealed class FilterAppointmentRequestVMValidator : AbstractValidator<FilterAppointmentRequestViewModel>
     {
-        public FilterAppointmentRequestViewModelValidator()
+        public FilterAppointmentRequestVMValidator()
         {
             RuleFor(x => x.Top)
                 .GreaterThan(0)

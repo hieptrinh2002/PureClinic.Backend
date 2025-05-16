@@ -3,9 +3,9 @@ using PureLifeClinic.Application.BusinessObjects.AppointmentViewModels.Request;
 
 namespace PureLifeClinic.Application.BusinessObjects.AppointmentViewModels.Validators
 {
-    public sealed class AppointmentCreateViewModelValidator : AbstractValidator<AppointmentCreateViewModel>
+    public sealed class AppointmentCreateVMValidator : AbstractValidator<AppointmentCreateViewModel>
     {
-        public AppointmentCreateViewModelValidator()
+        public AppointmentCreateVMValidator()
         {
             RuleFor(model => model.AppointmentDate).NotNull().WithMessage("Appointment date is not null")
                    .NotEmpty().WithMessage("Appointment date is not empty")

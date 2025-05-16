@@ -67,16 +67,6 @@ namespace PureLifeClinic.API.Controllers.V1
             if (!ModelState.IsValid)
                 throw new BadRequestException("Invalid input: " + ModelStateHelper.GetErrors(ModelState), ErrorCode.InputValidateError);
 
-            if (await _userService.IsExists("UserName", model.UserName, cancellationToken))
-            {
-                throw new BadRequestException($"The user name- '{model.UserName}' already exists", ErrorCode.DuplicateUserNameError);
-            }
-
-            if (await _userService.IsExists("Email", model.Email, cancellationToken))
-            {
-                var message = $"The user Email- '{model.Email}' already exists";
-                throw new BadRequestException(message, ErrorCode.DuplicateUserNameError);
-            }
             try
             {
                 var response = await _userService.Create(model, cancellationToken);
@@ -149,9 +139,6 @@ namespace PureLifeClinic.API.Controllers.V1
         {
             try
             {
-                if (!ModelState.IsValid)
-                    throw new BadRequestException("Invalid input: " + ModelStateHelper.GetErrors(ModelState), ErrorCode.InputValidateError);
-
                 // get User by email
                 var user = await _userService.GetByEmail(model.Email, default) 
                     ?? throw new NotFoundException("email not found");
@@ -197,11 +184,11 @@ namespace PureLifeClinic.API.Controllers.V1
 
             var dict = new Dictionary<string, string>()
             {
-                { "{{UserName}}", userName },
-                { "{{ActivationLink}}", confirmationLink},
-                { "{{ResetPasswordLink}}", "" },
-                { "{{Year}}", DateTime.Now.Year.ToString() },
-                { "{{UserEmail}}", "johndoe@example.com" }
+                { "UserName", userName },
+                { "ActivationLink", confirmationLink},
+                { "ResetPasswordLink", "" },
+                { "Year", DateTime.Now.Year.ToString() },
+                { "UserEmail", "johndoe@example.com" }
             };
 
             var emailBody = await _emailTemplateService.RenderTemplateAsync("MailTemplate.html", dict);

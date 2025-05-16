@@ -168,12 +168,12 @@ namespace PureLifeClinic.Infrastructure.Persistence.Repositories
             return token;
         }
 
-        public async Task<User> GetDoctorById(int userId, CancellationToken cancellationToken)
+        public async Task<User> GetDoctorById(int doctorId, CancellationToken cancellationToken)
         {
             var user = await _dbContext.Users
                 .Include(u => u.Role)
                 .Include(u => u.Doctor)
-                .FirstOrDefaultAsync(u => u.Id == userId && u.Role.NormalizedName == "DOCTOR", cancellationToken);
+                .FirstOrDefaultAsync(u => u.Doctor!.Id == doctorId && u.Role.NormalizedName == "DOCTOR", cancellationToken);
             return user ?? throw new NotFoundException("No data found");
         }
 

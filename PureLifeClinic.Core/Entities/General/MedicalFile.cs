@@ -7,7 +7,7 @@ namespace PureLifeClinic.Core.Entities.General
     {
         public FileType FileType { get; set; }
 
-        public string FilePath { get; set; }= String.Empty;
+        public string FilePath { get; set; } = String.Empty;
 
         public float FileSize { get; set; } = 0;
 

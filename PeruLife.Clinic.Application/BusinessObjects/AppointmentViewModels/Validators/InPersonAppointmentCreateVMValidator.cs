@@ -3,9 +3,9 @@ using PureLifeClinic.Application.BusinessObjects.AppointmentViewModels.Request;
 
 namespace PureLifeClinic.Application.BusinessObjects.AppointmentViewModels.Validators
 {
-    public sealed class InPersonAppointmentCreateViewModelValidator : AbstractValidator<InPersonAppointmentCreateViewModel>
+    public sealed class InPersonAppointmentCreateVMValidator : AbstractValidator<InPersonAppointmentCreateViewModel>
     {
-        public InPersonAppointmentCreateViewModelValidator()
+        public InPersonAppointmentCreateVMValidator()
         {
             RuleFor(x => x.FullName)
                 .NotEmpty().WithMessage("FullName is required.")

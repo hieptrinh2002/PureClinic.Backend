@@ -2,7 +2,7 @@
 
 namespace PureLifeClinic.Application.BusinessObjects.AppointmentHealthServices
 {
-    public class AppointmentHealthServiceViewModel
+    public class AppointmentHealthServiceVM
     {
         public int AppointmentId { get; set; }
         public string HealthServiceName { get; set; } = string.Empty;

@@ -4,8 +4,6 @@ using PureLifeClinic.API.Helpers;
 using PureLifeClinic.Application.BusinessObjects.ErrorViewModels;
 using PureLifeClinic.Application.BusinessObjects.MedicalReportViewModels;
 using PureLifeClinic.Application.BusinessObjects.ResponseViewModels;
-using PureLifeClinic.Application.BusinessObjects.RoleViewModels.Response;
-using PureLifeClinic.Application.BusinessObjects.UserViewModels;
 using PureLifeClinic.Application.Interfaces.IServices;
 using PureLifeClinic.Core.Exceptions;
 
@@ -36,21 +34,6 @@ namespace PureLifeClinic.API.Controllers.V1
         [HttpGet("{id}")]
         public async Task<IActionResult> GetMedicalReportById(int id, CancellationToken cancellationToken)
         {
-            var mrp = await _medicalReportService.GetById(id, cancellationToken);
-            if (mrp == null)
-            {
-                return StatusCode(StatusCodes.Status404NotFound, new ResponseViewModel<RoleViewModel>
-                {
-                    Success = false,
-                    Message = "Medical report not found",
-                    Error = new ErrorViewModel
-                    {
-                        Code = "NOT_FOUND",
-                        Message = "Medical report not found"
-                    }
-                });
-            }
-            string message = "";
             try
             {
                 var result = await _medicalReportService.GetById(id, cancellationToken);
@@ -66,7 +49,6 @@ namespace PureLifeClinic.API.Controllers.V1
         [HttpGet("patient/{patientId}")]
         public async Task<IActionResult> GetMedicalReportByPatientId(int patientId, CancellationToken cancellationToken)
         {
-            string message = "";
             try
             {
                 var result = await _medicalReportService.GetByPatientId(patientId, cancellationToken);

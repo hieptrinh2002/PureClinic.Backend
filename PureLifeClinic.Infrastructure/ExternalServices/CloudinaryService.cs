@@ -18,8 +18,7 @@ namespace PureLifeClinic.Infrastructure.ExternalServices
         }
         private MedicalFile CreateUploadParams(Stream fileStream, string fileName, string contentType)
         {
-            var fileDescription = new FileDescription(fileName, fileStream);
-            MedicalFile medicalFile = new MedicalFile
+            var medicalFile = new MedicalFile
             {
                 FileName = fileName,
                 FileSize = fileStream.Length / 1024f, 
