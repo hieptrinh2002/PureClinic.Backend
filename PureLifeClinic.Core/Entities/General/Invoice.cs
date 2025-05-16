@@ -20,6 +20,8 @@ namespace PureLifeClinic.Core.Entities.General
 
         public string? FilePath { get; set; }
 
+        public string? FilePathPublicId { get; set; }
+
         public void CalculateTotalAmount()
         {
             double total = 0;

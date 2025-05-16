@@ -7,11 +7,13 @@ namespace PureLifeClinic.Core.Entities.General
     {
         public FileType FileType { get; set; }
 
-        public string FilePath { get; set; } = String.Empty;
+        public string FilePath { get; set; } = string.Empty;
+
+        public string FilePathPublicId { get; set; } = string.Empty;
 
         public float FileSize { get; set; } = 0;
 
-        public string FileName { get; set; } = String.Empty;
+        public string FileName { get; set; } = string.Empty;
 
         // Navigation property
         public int MedicalReportId { get; set; }
