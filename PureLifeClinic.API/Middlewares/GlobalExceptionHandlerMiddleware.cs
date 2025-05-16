@@ -82,7 +82,12 @@ namespace PureLifeClinic.API.Middlewares
 
             context.Response.StatusCode = statusCode;
             context.Response.ContentType = "application/json";
-            await context.Response.WriteAsync(JsonConvert.SerializeObject(response));
+            await context.Response.WriteAsync(
+                JsonConvert.SerializeObject(response, new JsonSerializerSettings
+                {
+                    ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver()
+                })
+            );
         }
     }
 }
