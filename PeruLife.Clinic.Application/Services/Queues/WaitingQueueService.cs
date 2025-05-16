@@ -34,7 +34,7 @@ namespace PureLifeClinic.Application.Services.Queues
 
         public async Task<string> CheckInPatient(CancellationToken cancellationToken)
         {
-            await _unitOfWork.BeginTransactionAsync(cancellationToken);
+            await _unitOfWork.BeginTransactionAsync(cancellationToken: cancellationToken);
 
             // Generate queue number (A20231015-001)
             var queueNumber = await GenerateSequenceNumberOfConsultationQueue(cancellationToken);

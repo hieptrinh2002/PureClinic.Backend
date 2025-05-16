@@ -21,6 +21,7 @@ namespace PureLifeClinic.Application.Interfaces.IServices
            int doctorId, int pageNumber, int pageSize, List<ExpressionFilter>? filters, string sortBy, string sortOrder, CancellationToken cancellationToken);
         Task<bool> CheckAvailableTimeSlots(int doctorId, DateTime appointmentDate, CancellationToken cancellationToken);
         Task<User> GetUserAsync(int doctorId, CancellationToken cancellationToken);
+        Task<DoctorViewModel> UpdateProfile(int doctorId, DoctorUpdateProfileRequestVM model, CancellationToken cancellationToken);
 
         //new Task<PaginatedDataViewModel<PatientViewModel>> GetPaginatedPatientData(
         //    int doctorId, int pageNumber, int pageSize, string? sortBy, string? sortOrder, string? searchKey, CancellationToken cancellationToken);

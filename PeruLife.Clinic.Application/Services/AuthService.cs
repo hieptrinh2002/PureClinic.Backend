@@ -4,6 +4,7 @@ using PureLifeClinic.Application.BusinessObjects.ResponseViewModels;
 using PureLifeClinic.Application.BusinessObjects.UserViewModels;
 using PureLifeClinic.Application.Interfaces.IServices;
 using PureLifeClinic.Core.Entities.General;
+using PureLifeClinic.Core.Exceptions;
 using PureLifeClinic.Core.Interfaces.IRepositories;
 
 namespace PeruLife.Clinic.Application.Services
@@ -79,28 +80,15 @@ namespace PeruLife.Clinic.Application.Services
         public async Task<ResponseViewModel<UserViewModel>> Login(string userName, string password)
         {
             var result = await LoginProcess(userName, password);
-            if (result.Success)
+            if (!result.Success)
+                throw new BadRequestException(result.Message);
+
+            return new ResponseViewModel<UserViewModel>
             {
-                return new ResponseViewModel<UserViewModel>
-                {
-                    Success = true,
-                    Message = "Login successful",
-                    Data = result.Data
-                };
-            }
-            else
-            {
-                return new ResponseViewModel<UserViewModel>
-                {
-                    Success = false,
-                    Message = "Login failed",
-                    Error = new ErrorViewModel
-                    {
-                        Code = "LOGIN_ERROR",
-                        Message = result.Message
-                    }
-                };
-            }
+                Success = true,
+                Message = "Login successful",
+                Data = result.Data
+            };
         }
 
         public async Task Logout()

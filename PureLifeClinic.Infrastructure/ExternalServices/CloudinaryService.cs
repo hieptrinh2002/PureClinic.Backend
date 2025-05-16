@@ -2,6 +2,8 @@
 using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Http;
 using PureLifeClinic.Application.BusinessObjects.FileViewModels;
+using PureLifeClinic.Application.BusinessObjects.FileViewModels.Response;
+using PureLifeClinic.Application.Extentions.Mapping;
 using PureLifeClinic.Application.Interfaces.IServices;
 using PureLifeClinic.Core.Entities.General;
 using PureLifeClinic.Core.Enums;
@@ -16,13 +18,26 @@ namespace PureLifeClinic.Infrastructure.ExternalServices
         {
             _cloudinary = cloudinary;
         }
-        private MedicalFile CreateUploadParams(Stream fileStream, string fileName, string contentType)
+
+        public async Task<(string Url, string PublicId)> UploadImgAsync(IFormFile file, string folder)
         {
-            var medicalFile = new MedicalFile
+            using var stream = file.OpenReadStream();
+            var uploadParams = new ImageUploadParams
+            {
+                File = new FileDescription(file.FileName, stream),
+                Folder = folder
+            };
+
+            var result = await _cloudinary.UploadAsync(uploadParams);
+            return (result.SecureUrl.ToString(), result.PublicId);
+        }
+
+        private FileInfoVM CreateUploadParams(Stream fileStream, string fileName, string contentType)
+        {
+            var file = new FileInfoVM()
             {
                 FileName = fileName,
                 FileSize = fileStream.Length / 1024f, 
-                FilePath = null, 
                 FileType = contentType.ToLower() switch
                 {
                     "image/jpeg" or "image/png" or "image/gif" => FileType.Image,
@@ -31,26 +46,27 @@ namespace PureLifeClinic.Infrastructure.ExternalServices
                     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" => FileType.Excel,
                     _ => FileType.Other
                 },
-                MedicalReportId = 0,
             };
 
-            return medicalFile;
+            return file;
         }
 
-        public async Task<MedicalFile> UploadFileAsync(IFormFile file)
+        public async Task<MedicalFile> UploadMedicalFileAsync(IFormFile file)
         {
             using var stream = file.OpenReadStream();
-            var medicalFile = CreateUploadParams(stream, file.FileName, file.ContentType);
-
+            var medicalFileInfo = CreateUploadParams(stream, file.FileName, file.ContentType);
+            var medicalFile = medicalFileInfo.MapToMedicalFile();
             var uploadParams = new RawUploadParams
             {
                 File = new FileDescription(file.FileName, stream)
             };
             UploadResult uploadResult = await _cloudinary.UploadAsync(uploadParams);
-            medicalFile.FilePath = uploadResult.SecureUrl?.ToString();
+            medicalFile.FilePath = uploadResult.SecureUrl.ToString();
+            medicalFile.FilePathPublicId = uploadResult.PublicId;
             return medicalFile;
         }
-        public async Task<string> UploadStreamFileAsync(Stream streamFile, string fileName, string contentType = "application/pdf")
+
+        public async Task<(string Url, string PublicId)> UploadStreamFileAsync(Stream streamFile, string fileName, string contentType = "application/pdf")
         {
             var uploadParams = new RawUploadParams
             {
@@ -58,63 +74,19 @@ namespace PureLifeClinic.Infrastructure.ExternalServices
             };
             UploadResult uploadResult = await _cloudinary.UploadAsync(uploadParams);
 
-            return uploadResult.SecureUrl?.ToString();
+            return (uploadResult.SecureUrl.ToString(), uploadResult.PublicId) ;
         }
 
-        // Upload multiple files
-        //public async Task<List<MedicalFile>> UploadFilesAsync(FileMultiUploadViewModel model)
-        //{
-        //    var files = model.Files.Select(f => f.FileDetails).ToList();
-        //    var medicalFiles = new List<MedicalFile>();
 
-        //    foreach (var file in files)
-        //    {
-        //        var medicalFile = await UploadFileAsync(file); 
-        //        medicalFiles.Add(medicalFile);
-        //    }
-        //    return medicalFiles;
-        //}
-
-
-        // way 1: Upload multiple files in parallel
-        public async Task<List<MedicalFile>> UploadFilesAsync(List<FileUploadViewModel> modelFiles)
+        // Upload multiple files in parallel
+        public async Task<List<MedicalFile>> UploadMedicalFilesAsync(List<FileUploadViewModel> modelFiles)
         {
             var files = modelFiles.Select(f => f.FileDetails).ToList();
-            var uploadTasks = files.Select(file => UploadFileAsync(file)); // create list Task<MedicalFile>
+            var uploadTasks = files.Select(file => UploadMedicalFileAsync(file)); // create list Task<MedicalFile>
             var medicalFiles = await Task.WhenAll(uploadTasks); // parallel upload all files
 
             return medicalFiles.ToList();
         }
-
-        // way 2: Upload multiple files with limit ( dùng cho nhiều file ) 
-        //public async Task<List<MedicalFile>> UploadFilesAsync(FileMultiUploadViewModel model)
-        //{
-        //    var files = model.Files.Select(f => f.FileDetails).ToList();
-        //    var medicalFiles = new List<MedicalFile>();
-        //    var semaphore = new SemaphoreSlim(15); // tối đa 5 upload song song
-
-        //    var tasks = files.Select(async file =>
-        //    {
-        //        await semaphore.WaitAsync();
-        //        try
-        //        {
-        //            var medicalFile = await UploadFileAsync(file);
-        //            lock (medicalFiles) // tránh conflict khi nhiều task add vào list
-        //            {
-        //                medicalFiles.Add(medicalFile);
-        //            }
-        //        }
-        //        finally
-        //        {
-        //            semaphore.Release();
-        //        }
-        //    });
-
-        //    await Task.WhenAll(tasks);
-
-        //    return medicalFiles;
-        //}
-
 
         // Delete a single file
         public async Task<bool> DeleteFileAsync(string publicId)

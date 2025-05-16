@@ -67,10 +67,10 @@ namespace PureLifeClinic.Application.Services
         {
             // 1. upload file to cloudinary
             string fileName = $"invoice_{model.PatientInfo.PatientId}_{DateTime.UtcNow.Ticks}.pdf";
-            var uploadedPath = await _cloudinaryService.UploadStreamFileAsync(fileStream, fileName);
+            var result = await _cloudinaryService.UploadStreamFileAsync(fileStream, fileName);
 
             // 2. update invoice file path to db
-            await UpdateFilePathToInvoiceAsync(model.AppoinmentId, uploadedPath);
+            await UpdateFilePathToInvoiceAsync(model.AppoinmentId, result.Url, result.PublicId);
 
             // 3. Send email to patient
             var mailRequest = new MailRequestViewModel
@@ -83,7 +83,7 @@ namespace PureLifeClinic.Application.Services
             await _emailService.SendEmailAsync(mailRequest);
         }
 
-        public async Task UpdateFilePathToInvoiceAsync(int appoinmentId, string uploadedPath)
+        public async Task UpdateFilePathToInvoiceAsync(int appoinmentId, string uploadedPath, string uploadedPathPublicId)
         {
             // Get invoice by appointment id
             var invoice = await _unitOfWork.Invoices.GetInvoiceByAppoinmentId(appoinmentId)
@@ -92,6 +92,7 @@ namespace PureLifeClinic.Application.Services
             invoice.UpdatedDate = DateTime.Now;
             invoice.UpdatedBy = Convert.ToInt32(_userContext.UserId);
             invoice.FilePath = uploadedPath;
+            invoice.FilePathPublicId = uploadedPathPublicId;
             await _unitOfWork.Invoices.Update(invoice, default);
             await _unitOfWork.SaveChangesAsync();
         }

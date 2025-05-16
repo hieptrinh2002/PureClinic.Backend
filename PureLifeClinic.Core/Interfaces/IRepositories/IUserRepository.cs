@@ -12,7 +12,7 @@ namespace PureLifeClinic.Core.Interfaces.IRepositories
         Task<IEnumerable<User>> GetAllDoctor(CancellationToken cancellationToken);
         Task<IdentityResult> CreateDoctor(Doctor model);
         Task<IdentityResult> CreatePatient(Patient model);
-        Task<User> GetDoctorById(int userId, CancellationToken cancellationToken);
+        Task<User> GetDoctorById(int doctorId, CancellationToken cancellationToken);
         Task<IEnumerable<User>> GetAllPatient(CancellationToken cancellationToken);
         Task<bool> UnlockAccountAsync(User user);
         Task<IdentityResult> ResetPasswordAsync(User user, string token, string newPassword);

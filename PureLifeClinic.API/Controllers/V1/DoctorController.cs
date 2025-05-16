@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PureLifeClinic.API.Attributes;
+using PureLifeClinic.Application.BusinessObjects.DoctorViewModels.Request;
 using PureLifeClinic.Application.BusinessObjects.DoctorViewModels.Response;
 using PureLifeClinic.Application.BusinessObjects.PatientsViewModels;
 using PureLifeClinic.Application.BusinessObjects.ResponseViewModels;
@@ -19,6 +20,7 @@ namespace PureLifeClinic.API.Controllers.V1
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [AllowAnonymous]
     public class DoctorController : ControllerBase
     {
         private readonly ILogger<DoctorController> _logger;
@@ -51,13 +53,13 @@ namespace PureLifeClinic.API.Controllers.V1
 
                 var filters = new List<ExpressionFilter>()
                 {
-                    new ExpressionFilter
+                    new()
                     {
                         PropertyName = "PatientStatus",
                         Value = patientStatus,
                         Comparison = Comparison.Equal
                     },
-                    new ExpressionFilter
+                    new()
                     {
                         PropertyName = "User.Name",
                         Value = search,
@@ -141,13 +143,13 @@ namespace PureLifeClinic.API.Controllers.V1
             }
         }
 
-        [PermissionAuthorize(ResourceConstants.Doctor, PermissionAction.View)]
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id, CancellationToken cancellationToken)
+        //[PermissionAuthorize(ResourceConstants.Doctor, PermissionAction.View)]
+        [HttpGet("profile/{doctorId}")]
+        public async Task<IActionResult> Get(int doctorId, CancellationToken cancellationToken)
         {
             try
             {
-                var data = await _doctorService.GetById(id, cancellationToken);
+                var data = await _doctorService.GetById(doctorId, cancellationToken);
 
                 var response = new ResponseViewModel<DoctorViewModel>
                 {
@@ -160,8 +162,32 @@ namespace PureLifeClinic.API.Controllers.V1
             }
             catch (Exception ex)
             {
-              
-                _logger.LogError(ex, $"An error occurred while retrieving the doctor with id = {id}");
+                _logger.LogError(ex, $"An error occurred while retrieving the doctor with id = {doctorId}");
+                throw;
+            }
+        }
+
+        //impl api update doctor profile
+        [PermissionAuthorize(ResourceConstants.Doctor, PermissionAction.Update)]
+        [HttpPut("profile/{doctorId}")]
+        public async Task<IActionResult> Update(int doctorId, [FromForm] DoctorUpdateProfileRequestVM model, CancellationToken cancellationToken)
+        {
+            try
+            {
+                DoctorViewModel doctorVM = await _doctorService.UpdateProfile(doctorId, model, cancellationToken);
+
+                var response = new ResponseViewModel<DoctorViewModel>
+                {
+                    Success = true,
+                    Message = "Updated successfully",
+                    Data = doctorVM
+                };
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"An error occurred while updating the doctor with id = {doctorId}");
                 throw;
             }
         }

@@ -46,7 +46,7 @@ namespace PureLifeClinic.Application.Services
             }
 
 
-            await _unitOfWork.BeginTransactionAsync(cancellationToken);
+            await _unitOfWork.BeginTransactionAsync(cancellationToken: cancellationToken);
             foreach (var permission in models)
             {
                 var filters = new List<ExpressionFilter>() {
@@ -220,7 +220,7 @@ namespace PureLifeClinic.Application.Services
 
         public async Task UpdateRolePermissions(int roleId, List<ResourcePermissionViewModel> models, CancellationToken cancellationToken)
         {
-            await _unitOfWork.BeginTransactionAsync(cancellationToken);
+            await _unitOfWork.BeginTransactionAsync(cancellationToken: cancellationToken);
             foreach (var model in models)
             {
                 var roleClaims = await _unitOfWork.Permissions.GetRoleClaimsPermissions(roleId, cancellationToken);
@@ -246,7 +246,7 @@ namespace PureLifeClinic.Application.Services
 
         public async Task UpdateUserPermissions(int userId, List<ResourcePermissionViewModel> models, CancellationToken cancellationToken)
         {
-            await _unitOfWork.BeginTransactionAsync(cancellationToken);
+            await _unitOfWork.BeginTransactionAsync(cancellationToken: cancellationToken);
             foreach (var model in models)
             {
                 var userClaims = await _unitOfWork.Permissions.GetUserClaimsPermissions(userId, cancellationToken);

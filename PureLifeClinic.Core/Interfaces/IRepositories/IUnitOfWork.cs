@@ -1,5 +1,5 @@
-﻿using PureLifeClinic.Core.Entities.General;
-using PureLifeClinic.Core.Interfaces.IRepositories.FeedBack;
+﻿using PureLifeClinic.Core.Interfaces.IRepositories.FeedBack;
+using System.Data;
 
 namespace PureLifeClinic.Core.Interfaces.IRepositories
 {
@@ -32,7 +32,7 @@ namespace PureLifeClinic.Core.Interfaces.IRepositories
         IAppointmentHealthServiceRepository AppointmentHealthServices { get; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
-        Task BeginTransactionAsync(CancellationToken cancellationToken = default);
+        Task BeginTransactionAsync(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted, CancellationToken cancellationToken = default);
         Task CommitTransactionAsync(CancellationToken cancellationToken = default);
         Task RollbackTransactionAsync(CancellationToken cancellationToken = default);
         new void Dispose();

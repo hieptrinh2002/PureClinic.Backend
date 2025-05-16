@@ -89,7 +89,7 @@ namespace PureLifeClinic.Application.Services
 
         public async Task<AppointmentViewModel> CreateInPersonAppointment(InPersonAppointmentCreateViewModel model, CancellationToken cancellationToken)
         {
-            await _unitOfWork.BeginTransactionAsync(cancellationToken);
+            await _unitOfWork.BeginTransactionAsync(cancellationToken: cancellationToken);
             try
             {
                 if (model.Email != null && await _unitOfWork.Users.GetByEmail(model.Email, cancellationToken) != null)
@@ -131,7 +131,7 @@ namespace PureLifeClinic.Application.Services
 
                 return _mapper.Map<AppointmentViewModel>(_mapper.Map<AppointmentViewModel>(patient.Appointments.Last()));
             }
-            catch (Exception ex)
+            catch
             {
                 await _unitOfWork.RollbackTransactionAsync(cancellationToken);
                 throw;
@@ -267,9 +267,9 @@ namespace PureLifeClinic.Application.Services
             };
         }
 
-        public async Task<List<AppointmentHealthServiceViewModel>> AssignServiceToAppointment(
+        public async Task<List<AppointmentHealthServiceVM>> AssignServiceToAppointment(
             int appointmentId, 
-            List<AppointmentHealthServiceCreateViewModel> services, 
+            List<AppointmentHealthServiceCreateVM> services, 
             CancellationToken cancellationToken)
         {
             var appointment = await _unitOfWork.Appointments.GetById(appointmentId, cancellationToken)
@@ -291,7 +291,7 @@ namespace PureLifeClinic.Application.Services
             return healthServiceList.MapToAppointmentHealthServiceViewModelList();
         }
 
-        public async Task<List<AppointmentHealthServiceViewModel>> GetAppointmentHealthService(
+        public async Task<List<AppointmentHealthServiceVM>> GetAppointmentHealthService(
             int appointmentId,
             int serviceId, 
             CancellationToken cancellationToken)

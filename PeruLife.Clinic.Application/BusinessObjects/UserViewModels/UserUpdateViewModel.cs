@@ -6,14 +6,14 @@ namespace PureLifeClinic.Application.BusinessObjects.UserViewModels
     {
         public int Id { get; set; }
 
-        [Required, StringLength(100, MinimumLength = 2)]
-        public string? FullName { get; set; }
+        [StringLength(100, MinimumLength = 2)]
+        public required string FullName { get; set; }
 
-        [Required, StringLength(20, MinimumLength = 2)]
-        public string? UserName { get; set; }
+        [StringLength(20, MinimumLength = 2)]
+        public required string UserName { get; set; }
 
         [Required, EmailAddress]
-        public string? Email { get; set; }
+        public required string Email { get; set; }
 
         [Required]
         public int RoleId { get; set; }

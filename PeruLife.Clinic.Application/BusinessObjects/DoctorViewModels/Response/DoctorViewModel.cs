@@ -5,6 +5,8 @@ namespace PureLifeClinic.Application.BusinessObjects.DoctorViewModels.Response
     public class DoctorViewModel
     {
         public int Id { get; set; }
+
+        public string ImagePath { get; set; } = string.Empty;   
         public string? FullName { get; set; }
         public string? Email { get; set; }
 

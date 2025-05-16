@@ -5,9 +5,9 @@ namespace PureLifeClinic.Application.Extentions.Mapping
 {
     public static class AppointmentHealthServiceMappingEtxs
     {
-        public static AppointmentHealthServiceViewModel MapToAppointmentHealthServiceViewModel(this AppointmentHealthService entity)
+        public static AppointmentHealthServiceVM MapToAppointmentHealthServiceViewModel(this AppointmentHealthService entity)
         {
-            return new AppointmentHealthServiceViewModel
+            return new AppointmentHealthServiceVM
             {
                 AppointmentId = entity.AppointmentId,
                 HealthServiceName = entity.HealthService?.Name ?? string.Empty,
@@ -19,9 +19,9 @@ namespace PureLifeClinic.Application.Extentions.Mapping
             };
         }
 
-        public static List<AppointmentHealthServiceViewModel> MapToAppointmentHealthServiceViewModelList(this List<AppointmentHealthService> entities)
+        public static List<AppointmentHealthServiceVM> MapToAppointmentHealthServiceViewModelList(this List<AppointmentHealthService> entities)
         {
-            return entities.Select(entity => new AppointmentHealthServiceViewModel
+            return entities.Select(entity => new AppointmentHealthServiceVM
             {
                 AppointmentId = entity.AppointmentId,
                 HealthServiceName = entity.HealthService?.Name ?? string.Empty,
@@ -33,7 +33,7 @@ namespace PureLifeClinic.Application.Extentions.Mapping
             }).ToList();
         }
 
-        public static AppointmentHealthService MapToAppointmentHealthService(this AppointmentHealthServiceCreateViewModel model)
+        public static AppointmentHealthService MapToAppointmentHealthService(this AppointmentHealthServiceCreateVM model)
         {
             return new AppointmentHealthService
             {

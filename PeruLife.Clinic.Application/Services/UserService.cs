@@ -12,7 +12,8 @@ using PureLifeClinic.Core.Entities.General;
 using PureLifeClinic.Core.Exceptions;
 using PureLifeClinic.Core.Interfaces.IRepositories;
 using System.Linq.Expressions;
-
+using PureLifeClinic.Core.Common.Constants;
+using PureLifeClinic.Application.Extentions.Mapping;
 namespace PureLifeClinic.Application.Services
 {
     public class UserService : BaseService<User, UserViewModel>, IUserService
@@ -38,8 +39,7 @@ namespace PureLifeClinic.Application.Services
         {
             var includeList = new List<Expression<Func<User, object>>> { x => x.Role };
             var entities = await _unitOfWork.Users.GetAll(includeList, cancellationToken);
-
-            return _mapper.Map<IEnumerable<UserViewModel>>(entities);
+            return UserMappingExts.MapToListUserViewModel(entities.ToList());
         }
 
         public async Task<IEnumerable<PatientViewModel>> GetAllPatient(CancellationToken cancellationToken)
@@ -53,7 +53,7 @@ namespace PureLifeClinic.Application.Services
             var includeList = new List<Expression<Func<User, object>>> { x => x.Role, x => x.Patient, x => x.Doctor };
 
             var paginatedData = await _unitOfWork.Users.GetPaginatedData(includeList, pageNumber, pageSize, cancellationToken);
-            var mappedData = _mapper.Map<IEnumerable<UserViewModel>>(paginatedData.Data);
+            var mappedData = UserMappingExts.MapToListUserViewModel(paginatedData.Data.ToList());
             var paginatedDataViewModel = new PaginatedData<UserViewModel>(mappedData.ToList(), paginatedData.TotalCount);
             return paginatedDataViewModel;
         }
@@ -73,6 +73,18 @@ namespace PureLifeClinic.Application.Services
 
         public async Task<ResponseViewModel> Create(UserCreateViewModel model, CancellationToken cancellationToken)
         {
+
+            if (await IsExists("UserName", model.UserName, cancellationToken))
+            {
+                throw new BadRequestException($"The user name- '{model.UserName}' already exists", ErrorCode.DuplicateUserNameError);
+            }
+
+            if (await IsExists("Email", model.Email, cancellationToken))
+            {
+                var message = $"The user Email- '{model.Email}' already exists";
+                throw new BadRequestException(message, ErrorCode.DuplicateUserNameError);
+            }
+
             var user = new User
             {
                 FullName = model.FullName,
@@ -90,6 +102,7 @@ namespace PureLifeClinic.Application.Services
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
                 return new ResponseViewModel { Success = true, Message = "User created successfully" };
             }
+
             else
             {
                 return new ResponseViewModel

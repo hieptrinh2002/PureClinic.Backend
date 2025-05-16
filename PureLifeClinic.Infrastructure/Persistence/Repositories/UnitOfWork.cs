@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using PureLifeClinic.Application.Interfaces.IServices;
 using PureLifeClinic.Core.Entities.General;
@@ -7,6 +8,7 @@ using PureLifeClinic.Core.Interfaces.IRepositories;
 using PureLifeClinic.Core.Interfaces.IRepositories.FeedBack;
 using PureLifeClinic.Infrastructure.Persistence.Data;
 using PureLifeClinic.Infrastructure.Persistence.Repositories.Feedback;
+using System.Data;
 
 namespace PureLifeClinic.Infrastructure.Persistence.Repositories
 {
@@ -97,11 +99,11 @@ namespace PureLifeClinic.Infrastructure.Persistence.Repositories
             _dbContext.Dispose();
         }
 
-        public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)
+        public async Task BeginTransactionAsync(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted, CancellationToken cancellationToken = default)
         {
             if (_transaction != null)
                 throw new InvalidOperationException("Transction is already in process");
-            _transaction = await _dbContext.Database.BeginTransactionAsync(cancellationToken);
+            _transaction = await _dbContext.Database.BeginTransactionAsync(isolationLevel);
         }
 
         public async Task CommitTransactionAsync(CancellationToken cancellationToken = default)

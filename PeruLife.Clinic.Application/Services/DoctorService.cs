@@ -5,6 +5,7 @@ using PureLifeClinic.Application.BusinessObjects.DoctorViewModels.Response;
 using PureLifeClinic.Application.BusinessObjects.PatientsViewModels;
 using PureLifeClinic.Application.BusinessObjects.ResponseViewModels;
 using PureLifeClinic.Application.BusinessObjects.Schedule.WorkDays;
+using PureLifeClinic.Application.Extentions.Mapping;
 using PureLifeClinic.Application.Interfaces.IServices;
 using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Entities.Business;
@@ -20,11 +21,13 @@ namespace PureLifeClinic.Application.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly ICloudinaryService _cloudinaryService; 
 
-        public DoctorService(IMapper mapper, IUnitOfWork unitOfWork) : base(mapper, unitOfWork.Doctors)
+        public DoctorService(IMapper mapper, IUnitOfWork unitOfWork, ICloudinaryService cloudinaryService) : base(mapper, unitOfWork.Doctors)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _cloudinaryService = cloudinaryService;
         }
 
         public async Task<bool> CheckAvailableTimeSlots(int doctorId, DateTime appointmentDate, CancellationToken cancellationToken)
@@ -35,7 +38,7 @@ namespace PureLifeClinic.Application.Services
         public async Task<IEnumerable<DoctorViewModel>> GetAll(CancellationToken cancellationToken)
         {
             var entities = await _unitOfWork.Users.GetAllDoctor(cancellationToken);
-            var doctorViewModels = _mapper.Map<IEnumerable<DoctorViewModel>>(entities);
+            var doctorViewModels = entities.ToList().MapToListDoctorViewModel();
             return doctorViewModels;
         }
 
@@ -52,7 +55,7 @@ namespace PureLifeClinic.Application.Services
         public async Task<DoctorViewModel> GetById(int id, CancellationToken cancellationToken)
         {
             var doctor = await _unitOfWork.Users.GetDoctorById(id, cancellationToken);
-            return _mapper.Map<DoctorViewModel>(doctor);
+            return doctor.MapToDoctorViewModel();
         }
 
         public async Task<IEnumerable<AppointmentSlotViewModel>> GetDoctorAvailableTimeSlots(int doctorId, DateTime weekStartDate, CancellationToken cancellationToken)
@@ -125,7 +128,7 @@ namespace PureLifeClinic.Application.Services
             };
             var paginatedData = await _unitOfWork.Users.GetPaginatedData(includeList, pageNumber, pageSize, cancellationToken, filters);
 
-            var paginatedDataViewModel = new PaginatedData<DoctorViewModel>(_mapper.Map<IEnumerable<DoctorViewModel>>(paginatedData.Data), paginatedData.TotalCount);
+            var paginatedDataViewModel = new PaginatedData<DoctorViewModel>(paginatedData.Data.ToList().MapToListDoctorViewModel(), paginatedData.TotalCount);
             return paginatedDataViewModel;
         }
 
@@ -150,6 +153,40 @@ namespace PureLifeClinic.Application.Services
         public Task<ResponseViewModel> Update(DoctorUpdateViewModel model, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<DoctorViewModel> UpdateProfile(int doctorId, DoctorUpdateProfileRequestVM doctorUpdateViewModel, CancellationToken cancellationToken)
+        {
+            var doctor = await _unitOfWork.Doctors.GetById(doctorId, cancellationToken)
+                ?? throw new NotFoundException($"Doctor id - {doctorId} not found");
+
+            var user = await _unitOfWork.Users.GetById(doctor.UserId, cancellationToken)
+                ?? throw new NotFoundException($"User id - {doctor.UserId} not found");
+
+            user.FullName = doctorUpdateViewModel.FullName;
+            user.Email = doctorUpdateViewModel.Email;
+            doctor.Specialty = doctorUpdateViewModel.Specialty;
+            doctor.Qualification = doctorUpdateViewModel.Qualification;
+            doctor.ExperienceYears = doctorUpdateViewModel.ExperienceYears;
+            doctor.Description = doctorUpdateViewModel.Description;
+            doctor.RegistrationNumber = doctorUpdateViewModel.RegistrationNumber;
+
+            if (doctorUpdateViewModel.Avatar != null && doctorUpdateViewModel.Avatar.Length > 0)
+            {
+                // delete old image from cloudinary
+                if (!string.IsNullOrEmpty(user.ImagePathPublicId))
+                {
+                    await _cloudinaryService.DeleteFileAsync(user.ImagePathPublicId);
+                }
+
+                var uploadResult = await _cloudinaryService.UploadImgAsync(doctorUpdateViewModel.Avatar, $"user_{user.Id}_avatars");
+                user.ImagePath = uploadResult.Url;
+                user.ImagePathPublicId = uploadResult.PublicId;
+            }
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);    
+
+            return user.MapToDoctorViewModel();
         }
     }
 }

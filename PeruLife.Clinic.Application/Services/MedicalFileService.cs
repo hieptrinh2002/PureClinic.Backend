@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using PureLifeClinic.Application.BusinessObjects.FileViewModels;
 using PureLifeClinic.Application.BusinessObjects.MedicalFileViewModels.Request;
 using PureLifeClinic.Application.BusinessObjects.MedicalFileViewModels.Response;
 using PureLifeClinic.Application.BusinessObjects.ResponseViewModels;
@@ -26,10 +25,11 @@ namespace PureLifeClinic.Application.Services
 
         public new async Task<ResponseViewModel<string>> Create(MedicalFileCreateViewModel model, CancellationToken cancellationToken)
         {
-            var medicalfile = await _cloudinaryService.UploadFileAsync(model.File);
+            var medicalfile = await _cloudinaryService.UploadMedicalFileAsync(model.File);
             medicalfile.EntryDate = DateTime.Now;
             medicalfile.EntryBy = Convert.ToInt32(_userContext.UserId);
             medicalfile.MedicalReportId = model.MedicalReportId;
+
             if (string.IsNullOrEmpty(medicalfile.FilePath))
             {
                 throw new ErrorException("Upload medical failed");
@@ -49,7 +49,7 @@ namespace PureLifeClinic.Application.Services
             var medicalReport = await _unitOfWork.MedicalReports.GetById(model.MedicalReportId, cancellationToken)
                 ?? throw new NotFoundException("Medical report not found");
 
-            var uploadedFiles = await _cloudinaryService.UploadFilesAsync(model.Files);
+            var uploadedFiles = await _cloudinaryService.UploadMedicalFilesAsync(model.Files);
 
             foreach (var medicalFile in uploadedFiles)
             {
@@ -58,7 +58,7 @@ namespace PureLifeClinic.Application.Services
                 medicalFile.EntryBy = Convert.ToInt32(_userContext.UserId);
             }
 
-            await _unitOfWork.BeginTransactionAsync(cancellationToken);
+            await _unitOfWork.BeginTransactionAsync(cancellationToken: cancellationToken);
 
             var createTasks = uploadedFiles.Select(file => _unitOfWork.MedicalFiles.Create(file, cancellationToken));
             await Task.WhenAll(createTasks);

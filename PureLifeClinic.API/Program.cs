@@ -16,6 +16,7 @@ using PureLifeClinic.Infrastructure.Persistence.Data;
 using PureLifeClinic.Infrastructure.SignalR.Hubs;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Net;
+using System.Text.Json;
 using System.Threading.RateLimiting;
 using RecurringJobScheduler = PureLifeClinic.Infrastructure.BackgroundServices.Schedulers.RecurringJobScheduler;
 
@@ -101,12 +102,15 @@ builder.Services
     });
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddControllers(
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+     {
+         options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+     });
     //options =>
     //{
     //    options.Filters.Add<ApiLoggingFilter>();
     //}
-);
 
 // Swagger Settings
 builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
