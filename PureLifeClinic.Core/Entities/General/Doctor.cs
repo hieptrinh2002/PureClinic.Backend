@@ -26,6 +26,7 @@ namespace PureLifeClinic.Core.Entities.General
         public Room? WorkingRoom { get; set; }
         public int? RoomId { get; set; } // FK to Room
 
+        public int SuccessfulPatients { get; set; } = 100;
         public ICollection<Patient> PrimaryPatients { get; set; } = new List<Patient>(); // Bệnh nhân chịu trách nhiệm chính
 
         public ICollection<Specialization> Specializations { get; set; } = new List<Specialization>();
