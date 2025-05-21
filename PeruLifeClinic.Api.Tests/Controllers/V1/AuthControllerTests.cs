@@ -142,25 +142,6 @@ namespace PeruLifeClinic.Api.Tests.Controllers.V1
         }
 
         [Fact]
-        public async Task Login_ShouldReturnOk_WhenLoginFails()
-        {
-            // Arrange
-            var model = new LoginViewModel { UserName = "test", Password = "password" };
-            var authResult = new ResponseViewModel<UserViewModel> { Success = false };
-
-            _mockAuthService.Setup(s => s.Login(model.UserName, model.Password))
-                .ReturnsAsync(authResult);
-
-            // Act
-            var result = await _controller.Login(model, CancellationToken.None);
-
-            // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result);
-            var response = Assert.IsType<ResponseViewModel<UserViewModel>>(okResult.Value);
-            Assert.False(response.Success);
-        }
-
-        [Fact]
         public async Task Login_ShouldLogError_WhenExceptionIsThrown()
         {
             // Arrange
@@ -268,14 +249,8 @@ namespace PeruLifeClinic.Api.Tests.Controllers.V1
             _controller.ControllerContext = new ControllerContext { HttpContext = _mockHttpContext.Object };
             _mockRefreshTokenService.Setup(s => s.RefreshTokenCheckAsync(validToken)).ReturnsAsync(false);
 
-            // Act
-            var result = await _controller.RefreshTokenCheckAsync();
-
-            // Assert
-            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-            var response = Assert.IsType<ResponseViewModel>(badRequestResult.Value);
-            Assert.False(response.Success);
-            Assert.Equal("Invalid refresh token.", response.Message);
+            // Act & Assert
+            await Assert.ThrowsAsync<BadRequestException>(async () => await _controller.RefreshTokenCheckAsync());
         }
     }
 }

@@ -8,7 +8,7 @@ namespace PureLifeClinic.Application.BusinessObjects.AuthViewModels.Validators.F
         public ForgotPasswordRequestValidator()
         {
             RuleFor(x => x.Email)
-                .NotEmpty().WithMessage("Email is no empty.")
+                .NotEmpty().WithMessage("Email is not empty.")
                 .EmailAddress().WithMessage("invalid email.");
 
             RuleFor(x => x.ClientUrl)

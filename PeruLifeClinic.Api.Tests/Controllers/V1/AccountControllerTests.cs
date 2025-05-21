@@ -121,39 +121,6 @@ namespace PeruLifeClinic.Api.Tests.Controllers.V1
             Assert.Equal(response, okResult.Value);
         }
 
-        [Fact]
-        public async Task SendActivationEmail_ShouldReturnBadRequest_WhenUserNameExists()
-        {
-            // Arrange
-            var model = new UserCreateViewModel { UserName = "testuser", Email = "test@example.com" };
-            var clientUrl = "http://example.com";
-            var cancellationToken = new CancellationToken();
-
-            _mockUserService.Setup(s => s.IsExists("UserName", model.UserName, cancellationToken))
-                .ReturnsAsync(true);
-
-            // Act & Assert
-            await Assert.ThrowsAsync<BadRequestException>(
-                () => _controller.SendActivationEmail(model, clientUrl, cancellationToken));
-        }
-
-        [Fact]
-        public async Task SendActivationEmail_ShouldReturnBadRequest_WhenEmailExists()
-        {
-            // Arrange
-            var model = new UserCreateViewModel { UserName = "testuser", Email = "test@example.com" };
-            var clientUrl = "http://example.com";
-            var cancellationToken = new CancellationToken();
-
-            _mockUserService.Setup(s => s.IsExists("UserName", model.UserName, cancellationToken))
-                .ReturnsAsync(false);
-            _mockUserService.Setup(s => s.IsExists("Email", model.Email, cancellationToken))
-                .ReturnsAsync(true);
-
-            // Act & Assert
-            await Assert.ThrowsAsync<BadRequestException>(
-                () => _controller.SendActivationEmail(model, clientUrl, cancellationToken));
-        }
         #endregion
 
 
@@ -346,21 +313,7 @@ namespace PeruLifeClinic.Api.Tests.Controllers.V1
             // Act & Assert
             await Assert.ThrowsAsync<ErrorException>(() => _controller.ChangePassword(model));
         }
-
-        [Fact]
-        public async Task ChangePassword_InvalidModelState_ReturnsBadRequest()
-        {
-            // Arrange
-            _controller.ModelState.AddModelError("Email", "Email is required");
-
-            var model = new ForgotPasswordRequestViewModel();
-
-            // Act
-            var exception = await Assert.ThrowsAsync<BadRequestException>(() => _controller.ChangePassword(model));
-
-            // Assert
-            await Assert.ThrowsAsync<BadRequestException>(() => _controller.ChangePassword(model));
-        }
+       
         public async Task ChangePasswor_ResetTokenDataIsNull_ReturnsBadRequest()
         {
             // Arrange

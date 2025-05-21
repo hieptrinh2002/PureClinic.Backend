@@ -61,12 +61,10 @@ namespace PureLifeClinic.API.Controllers.V1
         }
 
         [HttpPost("register")]
+        [ServiceFilter(typeof(ValidateInputViewModelFilter))]
         [AllowAnonymous]
         public async Task<IActionResult> SendActivationEmail([FromBody] UserCreateViewModel model, string clientUrl, CancellationToken cancellationToken)
         {
-            if (!ModelState.IsValid)
-                throw new BadRequestException("Invalid input: " + ModelStateHelper.GetErrors(ModelState), ErrorCode.InputValidateError);
-
             try
             {
                 var response = await _userService.Create(model, cancellationToken);
