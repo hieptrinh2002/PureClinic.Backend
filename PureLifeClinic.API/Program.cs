@@ -36,6 +36,7 @@ builder.Services.AddHangfireServer();
 
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("ConnectionStrings"));
+builder.Services.Configure<IPWhitelistOptions>(builder.Configuration.GetSection("IPWhitelistOptions")); 
 
 // Add caching services
 builder.Services.AddMemoryCache();
@@ -240,7 +241,7 @@ app.UseStaticFiles();
 app.UseRouting(); // Add this line to configure routing
 
 app.UseCors("AllowReactApp");
-
+app.UseIPWhitelist();
 app.UseAuthentication();
 app.UseMiddleware<PermissionHandlerMiddleware>();
 app.UseAuthorization();
@@ -256,21 +257,6 @@ using (var scope = app.Services.CreateScope())
 app.UseMiddleware<RequestResponseLoggingMiddleware>();
 #endregion
 
-// Implement IP Filtering and Geofencing
-app.Use(async (context, next) =>
-{
-    var ipAddress = context.Connection.RemoteIpAddress;
-    var restrictedIps = new[] { "" };// { "192.168.1.100", "192.168.1.2" }; // Add malicious IPs here
-
-    if (restrictedIps.Contains(ipAddress?.ToString()))
-    {
-        context.Response.StatusCode = StatusCodes.Status403Forbidden;
-        await context.Response.WriteAsync("Forbidden");
-        return;
-    }
-
-    await next.Invoke();
-});
 app.UseRateLimiter();
 
 app.MapControllers(); // API controllers
