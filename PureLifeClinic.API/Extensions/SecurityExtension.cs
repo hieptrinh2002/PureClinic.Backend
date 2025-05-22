@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using PureLifeClinic.API.Helpers.Authz.PolicyProvider;
 using PureLifeClinic.Core.Entities.General;
+using PureLifeClinic.Infrastructure.Identity.Validators;
 using PureLifeClinic.Infrastructure.Persistence.Data;
 using System.Text;
 
@@ -23,10 +24,11 @@ namespace PureLifeClinic.API.Extensions
                 // lock account 
                 options.Lockout.MaxFailedAccessAttempts = 5;
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromHours(3);
-                options.Lockout.AllowedForNewUsers = true;                 
+                options.Lockout.AllowedForNewUsers = true;
 
-            }).AddEntityFrameworkStores<ApplicationDbContext>()
-            .AddDefaultTokenProviders();
+            }).AddPasswordValidator<CustomPasswordValidator<User>>()
+              .AddEntityFrameworkStores<ApplicationDbContext>()
+              .AddDefaultTokenProviders();
 
             #endregion
 
