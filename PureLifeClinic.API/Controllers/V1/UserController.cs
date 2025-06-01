@@ -3,16 +3,13 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PureLifeClinic.API.ActionFilters;
-using PureLifeClinic.API.Helpers;
 using PureLifeClinic.Application.BusinessObjects.EmailViewModels;
-using PureLifeClinic.Application.BusinessObjects.ErrorViewModels;
 using PureLifeClinic.Application.BusinessObjects.ResponseViewModels;
 using PureLifeClinic.Application.BusinessObjects.UserViewModels;
 using PureLifeClinic.Application.Interfaces.IBackgroundJobs;
 using PureLifeClinic.Application.Interfaces.IServices;
 using PureLifeClinic.Core.Entities.Business;
 using PureLifeClinic.Core.Exceptions;
-using PureLifeClinic.Infrastructure.ExternalServices.Email;
 
 namespace PureLifeClinic.API.Controllers.V1
 {

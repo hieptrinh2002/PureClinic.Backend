@@ -4,7 +4,7 @@ namespace PureLifeClinic.Application.BusinessObjects.PatientsViewModels
 {
     public class PatientViewModel
     {
-        public int Id { get; set; }
+        public int PatientId { get; set; }
         public string? FullName { get; set; }
         public string? UserName { get; set; }
         public string? Email { get; set; }

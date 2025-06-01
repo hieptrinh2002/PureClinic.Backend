@@ -1,4 +1,5 @@
-﻿using PureLifeClinic.Core.Interfaces.IRepositories.FeedBack;
+﻿using PureLifeClinic.Core.Entities.General;
+using PureLifeClinic.Core.Interfaces.IRepositories.FeedBack;
 using System.Data;
 
 namespace PureLifeClinic.Core.Interfaces.IRepositories
@@ -30,6 +31,7 @@ namespace PureLifeClinic.Core.Interfaces.IRepositories
         IClinicFeedbackRepository ClinicFeedbacks { get; }
         IHealthServiceFeedbackRepository HealthServiceFeedbacks { get; }
         IAppointmentHealthServiceRepository AppointmentHealthServices { get; }
+        ILabResultRepository LabResults { get; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
         Task BeginTransactionAsync(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted, CancellationToken cancellationToken = default);

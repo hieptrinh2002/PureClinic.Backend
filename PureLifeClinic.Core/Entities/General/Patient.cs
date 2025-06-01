@@ -13,8 +13,8 @@ namespace PureLifeClinic.Core.Entities.General
 
         public int UserId { get; set; }
 
-        [Required, ForeignKey(nameof(UserId))]
-        public User User { get; set; }
+        [ForeignKey(nameof(UserId))]
+        public User? User { get; set; }
 
         public int? PrimaryDoctorId { get; set; }
 

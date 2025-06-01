@@ -6,7 +6,9 @@ using PureLifeClinic.Application.BusinessObjects.ResponseViewModels;
 using PureLifeClinic.Application.Interfaces.IServices;
 using PureLifeClinic.Core.Common;
 using PureLifeClinic.Core.Entities.General;
+using PureLifeClinic.Core.Interfaces.IRepositories;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -19,30 +21,34 @@ namespace PureLifeClinic.Application.Services
         private readonly AppSettings _appSettings;
         private readonly ILogger<TokenService> _logger;
         private readonly IUserService _userService;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public TokenService(IOptions<AppSettings> appSettings, IUserService userService, ILogger<TokenService> logger)
+        public TokenService(IOptions<AppSettings> appSettings, IUserService userService, ILogger<TokenService> logger, IUnitOfWork unitOfWork)
         {
             _appSettings = appSettings.Value;
             _logger = logger;
             _userService = userService;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<ResponseViewModel<GenerateTokenViewModel>> GenerateJwtToken(int userId)
         {
             try
             {
-                var user = await _userService.GetById(userId, default);
+                var includeList = new List<Expression<Func<User, object>>> { x => x.Role };
+                var user = await _unitOfWork.Users.GetById(includeList, userId, default);
                 var jwtTokenHandler = new JwtSecurityTokenHandler();
-                var key = Encoding.ASCII.GetBytes(_appSettings.JwtConfig.Secret);
+                var key = Encoding.ASCII.GetBytes(_appSettings.JwtConfig!.Secret!);
 
                 var claims = new List<Claim>
-            {
-                new Claim(JwtRegisteredClaimNames.Aud, _appSettings.JwtConfig.ValidAudience),
-                new Claim(JwtRegisteredClaimNames.Iss, _appSettings.JwtConfig.ValidIssuer),
-                new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.Role, user.Role)
-            };
+                {
+                    new Claim(JwtRegisteredClaimNames.Aud, _appSettings.JwtConfig.ValidAudience!),
+                    new Claim(JwtRegisteredClaimNames.Iss, _appSettings.JwtConfig.ValidIssuer!),
+                    new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    new Claim(ClaimTypes.Role, user.Role.Name!.ToString()),
+                    new Claim("userRoleId", user.Role.Id.ToString()),
+                };
 
                 var tokenDescriptor = new SecurityTokenDescriptor
                 {

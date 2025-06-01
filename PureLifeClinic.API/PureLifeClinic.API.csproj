@@ -48,4 +48,9 @@
     <ProjectReference Include="..\PureLifeClinic.Infrastructure\PureLifeClinic.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\V1\Dashboard\" />
+    <Folder Include="Controllers\V1\Reports\" />
+  </ItemGroup>
+
 </Project>

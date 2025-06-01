@@ -36,7 +36,7 @@ builder.Services.AddHangfireServer();
 
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("ConnectionStrings"));
-builder.Services.Configure<IPWhitelistOptions>(builder.Configuration.GetSection("IPWhitelistOptions")); 
+builder.Services.Configure<IPWhitelistOptions>(builder.Configuration.GetSection("AppSettings:IPWhitelistOptions")); 
 
 // Add caching services
 builder.Services.AddMemoryCache();
@@ -158,7 +158,6 @@ builder.Services.AddCors(options =>
                .SetIsOriginAllowed(host => true);
     });
 });
-
 
 
 builder.Services.AddRateLimiter(options =>

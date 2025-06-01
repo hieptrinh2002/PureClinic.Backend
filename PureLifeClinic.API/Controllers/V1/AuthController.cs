@@ -67,7 +67,7 @@ namespace PureLifeClinic.API.Controllers.V1
                     Data = new AuthResultViewModel
                     {
                         AccessToken = tokenData.Data.AccessToken,
-                        RefreshToken = createdTokenResult.Data,
+                        //RefreshToken = createdTokenResult.Data,
                         Role = result.Data.Role,
                         UserEmail = result.Data.Email,
                         UserId = result.Data.Id
@@ -143,7 +143,6 @@ namespace PureLifeClinic.API.Controllers.V1
                     Data = new AuthResultViewModel
                     {
                         AccessToken = tokenData.Data.AccessToken,
-                        RefreshToken = createdTokenResult.Data 
                     }
                 });
 

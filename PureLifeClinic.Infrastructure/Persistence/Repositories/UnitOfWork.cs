@@ -48,6 +48,7 @@ namespace PureLifeClinic.Infrastructure.Persistence.Repositories
         public IHealthServiceFeedbackRepository HealthServiceFeedbacks { get; }
         public IAppointmentHealthServiceRepository AppointmentHealthServices { get; }
 
+        public ILabResultRepository LabResults { get; } 
         public UnitOfWork(
             ApplicationDbContext dbContext,
             UserManager<User> userManager,
@@ -88,6 +89,7 @@ namespace PureLifeClinic.Infrastructure.Persistence.Repositories
             ClinicFeedbacks = new ClinicFeedbackRepository(_dbContext);
             HealthServiceFeedbacks = new HealthServiceFeedbackRepository(_dbContext);   
             AppointmentHealthServices = new AppointmentHealthServiceRepository(_dbContext);
+            LabResults = new LabResultRepository(_dbContext);
         }
         public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {

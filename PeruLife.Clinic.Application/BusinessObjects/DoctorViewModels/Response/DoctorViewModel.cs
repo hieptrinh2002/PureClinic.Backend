@@ -1,13 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace PureLifeClinic.Application.BusinessObjects.DoctorViewModels.Response
+﻿namespace PureLifeClinic.Application.BusinessObjects.DoctorViewModels.Response
 {
     public class DoctorViewModel
     {
         public int Id { get; set; }
 
         public string ImagePath { get; set; } = string.Empty;   
+
         public string? FullName { get; set; }
+
         public string? Email { get; set; }
 
         public string? Specialty { get; set; }
@@ -19,6 +19,11 @@ namespace PureLifeClinic.Application.BusinessObjects.DoctorViewModels.Response
         public string? Description { get; set; }
 
         public string? RegistrationNumber { get; set; }
+
+        public string? PhoneNumber { get; set; }
+
+        public int SuccessfulPatients { get; set; } = 0;
+
         public string? Role { get; set; }
     }
 }

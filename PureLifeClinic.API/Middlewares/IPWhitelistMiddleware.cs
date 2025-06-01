@@ -18,21 +18,17 @@ namespace PureLifeClinic.API.Middlewares
 
         public async Task Invoke(HttpContext context)
         {
-            if (context.Request.Method != HttpMethod.Get.Method)
+            var ipAddress = context.Connection.RemoteIpAddress;
+            List<string> whiteListIPList = _iPWhitelistOptions.WhitelistedIPs;
+            var isIPWhitelisted = whiteListIPList
+            .Where(ip => IPAddress.Parse(ip)
+            .Equals(ipAddress))
+            .Any();
+            if (!isIPWhitelisted)
             {
-                var ipAddress = context.Connection.RemoteIpAddress;
-                List<string> whiteListIPList =
-                _iPWhitelistOptions.WhitelistedIPs;
-                var isIPWhitelisted = whiteListIPList
-                .Where(ip => IPAddress.Parse(ip)
-                .Equals(ipAddress))
-                .Any();
-                if (!isIPWhitelisted)
-                {
-                    _logger.LogWarning("Request from Remote IP address: {RemoteIp} is forbidden.", ipAddress);
-                    context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                    return;
-                }
+                _logger.LogWarning("Request from Remote IP address: {RemoteIp} is forbidden.", ipAddress);
+                context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                return;
             }
             await _next.Invoke(context);
         }

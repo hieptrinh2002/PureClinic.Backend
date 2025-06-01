@@ -1,4 +1,5 @@
 using CloudinaryDotNet;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using PeruLife.Clinic.Application.Services;
 using PureLifeClinic.API.ActionFilters;
@@ -49,6 +50,8 @@ namespace PureLifeClinic.API.Extensions
             services.AddScoped<IPrescriptionDetailService, PrescriptionDetailService>();
             services.AddScoped<IMedicalFileService, MedicalFileService>();
             services.AddScoped<IInvoiceService, InvoiceService>();
+            services.AddScoped<IPatientService, PatientService>();  
+            services.AddScoped<ILabResultService, LabResultService>();
             services.AddTransient<IWaitingQueueService, WaitingQueueService>();
             services.AddTransient<IConsultationQueueService, ConsultationQueueService>();
             services.AddTransient<IExaminationQueueService, ExaminationQueueService>();

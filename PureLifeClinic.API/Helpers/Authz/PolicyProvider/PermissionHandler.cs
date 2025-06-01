@@ -8,6 +8,7 @@ namespace PureLifeClinic.API.Helpers.Authz.PolicyProvider
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, PermissionRequirement requirement)
         {
             string resource = requirement.Resource;
+
             //1. Get all claims related to the resource   
             var permissionClaims = context.User.FindAll(resource)
                 .Select(c => int.TryParse(c.Value, out var value) ? value : 0)
@@ -23,9 +24,7 @@ namespace PureLifeClinic.API.Helpers.Authz.PolicyProvider
             bool hasPermission = requirement.PermissionOperator switch
             {
                 PermissionOperator.And => requirement.Permissions.All(reqValue => permissionClaims.Any(p => (p & reqValue) == reqValue)),
-
                 PermissionOperator.Or => requirement.Permissions.Any(reqValue => permissionClaims.Any(p => (p & reqValue) != 0)),
-
                 _ => false
             };
 
