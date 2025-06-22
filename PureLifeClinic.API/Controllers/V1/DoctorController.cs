@@ -20,7 +20,6 @@ namespace PureLifeClinic.API.Controllers.V1
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    [AllowAnonymous]
     public class DoctorController : ControllerBase
     {
         private readonly ILogger<DoctorController> _logger;
@@ -33,7 +32,7 @@ namespace PureLifeClinic.API.Controllers.V1
         }
 
         [PermissionAuthorize(ResourceConstants.Patient, PermissionAction.View)]
-        [HttpGet("{doctorId}/patients")]
+        [HttpGet("{doctorId}/patients/paginated-data")]
         public async Task<IActionResult> GetPatients(
             int doctorId,
             int? pageNumber,
@@ -86,7 +85,7 @@ namespace PureLifeClinic.API.Controllers.V1
         }
 
         [PermissionAuthorize(ResourceConstants.Doctor, PermissionAction.View)]
-        [HttpGet("paginated")]
+        [HttpGet("paginated-data")]
         public async Task<IActionResult> Get(int? pageNumber, int? pageSize, CancellationToken cancellationToken)
         {
             try
@@ -144,12 +143,30 @@ namespace PureLifeClinic.API.Controllers.V1
         }
 
         //[PermissionAuthorize(ResourceConstants.Doctor, PermissionAction.View)]
-        [HttpGet("profile/{doctorId}")]
-        public async Task<IActionResult> Get(int doctorId, CancellationToken cancellationToken)
+        [HttpGet("profile")]
+        public async Task<IActionResult> GetProfile(CancellationToken cancellationToken)
         {
+            var doctorId = User.Claims.FirstOrDefault(c => c.Type == "userRoleId")?.Value;
+            if (doctorId == null)
+            {
+                return BadRequest(new ResponseViewModel
+                {
+                    Success = false,
+                    Message = "Doctor ID is null."
+                });
+            }
+            if (!int.TryParse(doctorId, out int parsedDoctorId))
+            {
+                return BadRequest(new ResponseViewModel
+                {
+                    Success = false,
+                    Message = "Invalid Doctor ID format."
+                });
+            }
+
             try
             {
-                var data = await _doctorService.GetById(doctorId, cancellationToken);
+                var data = await _doctorService.GetById(parsedDoctorId, cancellationToken);
 
                 var response = new ResponseViewModel<DoctorViewModel>
                 {
@@ -169,12 +186,29 @@ namespace PureLifeClinic.API.Controllers.V1
 
         //impl api update doctor profile
         [PermissionAuthorize(ResourceConstants.Doctor, PermissionAction.Update)]
-        [HttpPut("profile/{doctorId}")]
-        public async Task<IActionResult> Update(int doctorId, [FromForm] DoctorUpdateProfileRequestVM model, CancellationToken cancellationToken)
+        [HttpPut("profile")]
+        public async Task<IActionResult> Update([FromForm] DoctorUpdateProfileRequestVM model, CancellationToken cancellationToken)
         {
+            var doctorId = User.Claims.FirstOrDefault(c => c.Type == "userRoleId")?.Value;
+            if (doctorId == null)
+            {
+                return BadRequest(new ResponseViewModel
+                {
+                    Success = false,
+                    Message = "Doctor ID is null."
+                });
+            }
+            if (!int.TryParse(doctorId, out int parsedDoctorId))
+            {
+                return BadRequest(new ResponseViewModel
+                {
+                    Success = false,
+                    Message = "Invalid Doctor ID format."
+                });
+            }
             try
             {
-                DoctorViewModel doctorVM = await _doctorService.UpdateProfile(doctorId, model, cancellationToken);
+                DoctorViewModel doctorVM = await _doctorService.UpdateProfile(parsedDoctorId, model, cancellationToken);
 
                 var response = new ResponseViewModel<DoctorViewModel>
                 {

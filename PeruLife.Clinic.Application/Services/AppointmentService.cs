@@ -15,7 +15,6 @@ using PureLifeClinic.Core.Entities.General;
 using PureLifeClinic.Core.Enums;
 using PureLifeClinic.Core.Exceptions;
 using PureLifeClinic.Core.Interfaces.IRepositories;
-using static iText.IO.Util.IntHashtable;
 
 namespace PureLifeClinic.Application.Services
 {
@@ -143,7 +142,7 @@ namespace PureLifeClinic.Application.Services
             return await _unitOfWork.Appointments.IsExistsAppointment(doctorId, date, cancellationToken);
         }
 
-        public async Task<ResponseViewModel> UpdateAppointmentAsync(int id, AppointmentUpdateViewModel model, CancellationToken cancellationToken)
+        public async Task<ResponseViewModel<AppointmentViewModel>> UpdateAppointmentAsync(int id, AppointmentUpdateViewModel model, CancellationToken cancellationToken)
         {
             var existingData = await _unitOfWork.Appointments.GetById(id, cancellationToken)
                 ?? throw new KeyNotFoundException($"Appointment with ID {id} not found.");
@@ -154,9 +153,10 @@ namespace PureLifeClinic.Application.Services
             await _unitOfWork.Appointments.Update(existingData, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return new ResponseViewModel
+            return new ResponseViewModel<AppointmentViewModel>
             {
                 Success = true,
+                Data = existingData.MapToAppointmentViewModel(),
                 Message = "Update apointment sucessfully !"
             };
         }

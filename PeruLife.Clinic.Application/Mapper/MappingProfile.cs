@@ -56,7 +56,6 @@ namespace PureLifeClinic.Application.Mapper
             CreateMap<WorkDay, TimespanWorkDayViewModel>().ForMember(dest => dest.WeekDate, opt => opt.MapFrom(src => src.Date));
 
             CreateMap<User, DoctorViewModel>()
-             .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Role != null ? src.Role.Name : null))
              .ForMember(dest => dest.Specialty, opt => opt.MapFrom(src => src.Doctor != null ? src.Doctor.Specialty : null))
              .ForMember(dest => dest.Qualification, opt => opt.MapFrom(src => src.Doctor != null ? src.Doctor.Qualification : null))
              .ForMember(dest => dest.ExperienceYears, opt => opt.MapFrom(src => src.Doctor != null ? src.Doctor.ExperienceYears : null))

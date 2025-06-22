@@ -23,7 +23,5 @@
         public string? PhoneNumber { get; set; }
 
         public int SuccessfulPatients { get; set; } = 0;
-
-        public string? Role { get; set; }
     }
 }

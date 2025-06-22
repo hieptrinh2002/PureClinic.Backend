@@ -50,6 +50,7 @@
 
   <ItemGroup>
     <Folder Include="Controllers\V1\Dashboard\" />
+    <Folder Include="Controllers\V1\Admin\" />
     <Folder Include="Controllers\V1\Reports\" />
   </ItemGroup>
 

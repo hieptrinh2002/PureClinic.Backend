@@ -105,10 +105,10 @@ namespace PureLifeClinic.API.Controllers.V1
         }
 
         [ServiceFilter(typeof(ValidateInputViewModelFilter))]
-        [HttpPost("filter")]
+        [HttpPost("filters")]
         [PermissionAuthorize(ResourceConstants.Appointment, PermissionAction.View)]
 
-        public async Task<IActionResult> GetFilterAppointment(FilterAppointmentRequestViewModel model, CancellationToken cancellationToken)
+        public async Task<IActionResult> FilterAppointment(FilterAppointmentRequestViewModel model, CancellationToken cancellationToken)
         {
             try
             {
@@ -233,7 +233,7 @@ namespace PureLifeClinic.API.Controllers.V1
 
         [PermissionAuthorize(ResourceConstants.Appointment, PermissionAction.Update)]
         [ServiceFilter(typeof(ValidateInputViewModelFilter))]
-        [HttpPatch("{id}")]
+        [HttpPatch("update/{id}")]
         public async Task<IActionResult> UpdateAppointmentStatus([FromBody] AppointmentStatusUpdateViewModel model, int id, CancellationToken cancellationToken)
         {
             try

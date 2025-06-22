@@ -13,7 +13,7 @@ namespace PureLifeClinic.Application.Interfaces.IServices
         Task<AppointmentViewModel> Create(AppointmentCreateViewModel model, CancellationToken cancellationToken);
         Task<AppointmentViewModel> CreateInPersonAppointment(InPersonAppointmentCreateViewModel model, CancellationToken cancellationToken);
         Task<bool> IsExists(int doctorId, DateTime date, CancellationToken cancellationToken);
-        Task<ResponseViewModel> UpdateAppointmentAsync(int id, AppointmentUpdateViewModel model, CancellationToken cancellationToken);
+        Task<ResponseViewModel<AppointmentViewModel>> UpdateAppointmentAsync(int id, AppointmentUpdateViewModel model, CancellationToken cancellationToken);
         Task<ResponseViewModel> UpdateAppointmentStatusAsync(int id, AppointmentStatus status, CancellationToken cancellationToken);
         Task<ResponseViewModel<IEnumerable<DoctorAppointmentViewModel>>> GetAllAppointmentsByDoctorIdAsync(int doctorId, CancellationToken cancellationToken);
         Task<ResponseViewModel<IEnumerable<PatientAppointmentViewModel>>> GetAllAppointmentsByPatientIdAsync(int patientId, CancellationToken cancellationToken);

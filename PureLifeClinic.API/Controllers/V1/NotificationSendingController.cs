@@ -13,7 +13,5 @@ namespace PureLifeClinic.API.Controllers.V1
         {
             _notificationService = notificationService;
         }
-
-       
     }
 }

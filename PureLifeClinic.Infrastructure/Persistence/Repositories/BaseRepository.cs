@@ -103,7 +103,6 @@ namespace PureLifeClinic.Infrastructure.Persistence.Repositories
             return entities;
         }
 
-
         public virtual async Task<PaginatedData<T>> GetPaginatedData(
             int pageNumber, 
             int pageSize,
@@ -115,7 +114,7 @@ namespace PureLifeClinic.Infrastructure.Persistence.Repositories
                 .AsNoTracking();
 
             var data = await query.ToListAsync(cancellationToken);
-            var totalCount = await _dbContext.Set<T>().CountAsync(cancellationToken);
+            var totalCount = await query.CountAsync(cancellationToken);
 
             return new PaginatedData<T>(data, totalCount);
         }
@@ -175,7 +174,7 @@ namespace PureLifeClinic.Infrastructure.Persistence.Repositories
                 .AsNoTracking()
                 .ToListAsync(cancellationToken);
 
-            var totalCount = await _dbContext.Set<T>().CountAsync(cancellationToken);
+            var totalCount = await query.CountAsync(cancellationToken);
 
             return new PaginatedData<T>(data, totalCount);
         }

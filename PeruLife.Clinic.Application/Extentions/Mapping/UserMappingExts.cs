@@ -52,7 +52,6 @@ namespace PureLifeClinic.Application.Extentions.Mapping
                 ExperienceYears = entity.Doctor.ExperienceYears,
                 Description = entity.Doctor.Description,
                 RegistrationNumber = entity.Doctor.RegistrationNumber,
-                Role = entity.Role.Name,
                 PhoneNumber = entity.PhoneNumber,
                 SuccessfulPatients = entity.Doctor.SuccessfulPatients,
             };
@@ -74,7 +73,6 @@ namespace PureLifeClinic.Application.Extentions.Mapping
                 ExperienceYears = entity.Doctor.ExperienceYears,
                 Description = entity.Doctor.Description,
                 RegistrationNumber = entity.Doctor.RegistrationNumber,
-                Role = entity.Role.Name,
                 PhoneNumber = entity.PhoneNumber,
                 SuccessfulPatients = entity.Doctor.SuccessfulPatients,
             }).ToList();
